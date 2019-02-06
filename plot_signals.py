@@ -1,33 +1,46 @@
 import matplotlib.pyplot as plt
 import pickle
 
-# fig, axs = plt.subplots(2,5, figsize=(15, 6), facecolor='w', edgecolor='k')
-# fig.subplots_adjust(hspace = .5, wspace=.001)
-#
-# axs = axs.ravel()
-#
-# for i in range(10):
-#
-#     axs[i].contourf(np.random.rand(10,10),5,cmap=plt.cm.Oranges)
-#     axs[i].set_title(str(250+i))
+def plot_signals(t, signals, labels):
 
-# t,s1,s2,s3,s4 = pickle.load(open("./reference_signals.pkl","rb+"))
-# signals = [s1,s2,s3,s4]
-
-def plot_signals(t, signals):
-
+    xlim = [5000,50000]
     num_signals = len(signals)
-    fig, axs = plt.subplots(num_signals, 1, figsize=(15, 25), facecolor='w', edgecolor='k')
-    axs = axs.ravel()
-    colors = ['k','r','g','b','y','m','c','xkcd:olive', 'xkcd:grey', 'xkcd:plum', 'xkcd:salmon', 'xkcd:coral']
-    for i in range(num_signals):
-        axs[i].plot(t, signals[i], colors[i],label=r'$f(v_1)$',linewidth = 3)
-        axs[i].legend(loc = 1,fontsize = 12)
-        axs[i].grid(True)
-        axs[i].axis([5000, 20000, 0, 1])
-        if i != num_signals-1:
-            axs[i].set_xticklabels([])
+    if num_signals <= 10:
+        fig, axs = plt.subplots(num_signals, 1, figsize=(15, 25), facecolor='w', edgecolor='k')
+        axs = axs.ravel()
+        colors = ['k','r','g','b','y','m','xkcd:tomato','xkcd:lavender', 'xkcd:darkgreen', 'xkcd:plum', 'xkcd:salmon', 'xkcd:coral']
+        for i in range(num_signals):
+            axs[i].plot(t, signals[i], colors[i],label=labels[i],linewidth = 3)
+            axs[i].legend(loc = 1,fontsize = 12)
+            axs[i].grid(True)
+            ylim = (max(signals[i][xlim[0]:xlim[1]]) if max(signals[i])>0.1 else 1)
+            axs[i].axis([xlim[0], xlim[1], 0, 1.1*ylim])
+            if i != num_signals-1:
+                axs[i].set_xticklabels([])
+        plt.show()
+    else:
+        fig, axs = plt.subplots(10, 1, figsize=(15, 25), facecolor='w', edgecolor='k')
+        axs = axs.ravel()
+        colors = ['k','r','g','b','y','m','xkcd:tomato','xkcd:lavender', 'xkcd:darkgreen', 'xkcd:plum', 'xkcd:salmon', 'xkcd:coral']
+        for i in range(10):
+            axs[i].plot(t, signals[i], colors[i],label=labels[i],linewidth = 3)
+            axs[i].legend(loc = 1,fontsize = 12)
+            axs[i].grid(True)
+            ylim = (max(signals[i][xlim[0]:xlim[1]]) if max(signals[i])>0.1 else 1)
+            axs[i].axis([xlim[0], xlim[1], 0, 1.1*ylim])
+            if i != 10-1:
+                axs[i].set_xticklabels([])
+        plt.show()
 
-    plt.show()
-
-# plot_signals(t,signals)
+        fig, axs = plt.subplots(num_signals-10, 1, figsize=(15, 25), facecolor='w', edgecolor='k')
+        axs = axs.ravel()
+        colors = ['k','r','g','b','y','m','xkcd:tomato','xkcd:lavender', 'xkcd:darkgreen', 'xkcd:plum', 'xkcd:salmon', 'xkcd:coral']
+        for i in range(num_signals-10):
+            axs[i].plot(t, signals[i+10], colors[i],label=labels[i+10],linewidth = 3)
+            axs[i].legend(loc = 1,fontsize = 12)
+            axs[i].grid(True)
+            ylim = (max(signals[i+10][xlim[0]:xlim[1]]) if max(signals[i+10])>0.1 else 1)
+            axs[i].axis([xlim[0], xlim[1], 0, 1.1*ylim])
+            if i != num_signals-1:
+                axs[i].set_xticklabels([])
+        plt.show()

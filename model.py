@@ -31,6 +31,11 @@ def mk(v1):
 def taonap(v1, tnapmax):
     return tnapmax / np.cosh((v1 + 48.0) / 12.0)
 
+def I(t,t1,t2):
+    if (t < t1) or (t > t2):
+        return 0
+    else:
+        return 400
 
 def vectorfield(w, t, p):
     num_nrns = int(len(w)/2)
@@ -51,7 +56,10 @@ def vectorfield(w, t, p):
 
     f.append((-Inap - Ik - Il[0] - IsynE[0] - IsynI[0]) / Capacity)
     for i in range(1,num_nrns):
-        f.append((-Iad[i] - Il[i] - IsynE[i] - IsynI[i]) / Capacity)
+        if i != 6:
+            f.append((-Iad[i] - Il[i] - IsynE[i] - IsynI[i]) / Capacity)
+        else:
+            f.append((-Iad[i] - Il[i] - IsynE[i] - IsynI[i] + 0.85*I(t, 25000, 32000)) / Capacity)
 
     f.append((hinfnap(V[0]) - M[0]) / taonap(V[0], tnapmax))
     for i in range(1,num_nrns):
@@ -89,13 +97,13 @@ def model(b, c, vectorfield):
     abserr = 1.0e-8
     relerr = 1.0e-6
     stoptime = 50000.0
-    numpoints = 8192
+    numpoints = 8192*2
     # Create the time samples for the output of the ODE solver.
     t = [stoptime * float(i) / (numpoints - 1) for i in range(numpoints)]
 
     # Pack up the parameters and initial conditions:
     p = [Capacity, gl, gnap, gk, gad, gsynE, gsynI, Ena, Ek, El, EsynE, EsynI, vhalf, kv, tnapmax, tad, kad, b, c, d]
-
+    np.random.seed(0)
     V0 = -70 + 40 * np.random.rand(num_nrns)
     M0 = np.random.rand(num_nrns)
     w0 = []
