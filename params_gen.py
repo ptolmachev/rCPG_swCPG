@@ -24,6 +24,7 @@ b[9,3] = 0.5 # KF -> AugE
 b[6,7] = 1.9 # Relay -> NTS1
 b[6,8] = 1.9 # Relay -> NTS2
 b[6,9] = 1.4 # Relay -> KF
+b[6,2] = 0.4 # Relay -> PostI
 b[0,10] = 1.5 # PreI -> M_HN
 b[8,10] = 0.9 # NTS1 -> M_HN
 b[4,11] = 2.8 # RampI -> M_PN
