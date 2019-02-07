@@ -96,7 +96,7 @@ def model(b, c, vectorfield):
     # ODE solver parameters
     abserr = 1.0e-8
     relerr = 1.0e-6
-    stoptime = 50000.0
+    stoptime = 80000.0
     numpoints = 8192*2
     # Create the time samples for the output of the ODE solver.
     t = [stoptime * float(i) / (numpoints - 1) for i in range(numpoints)]
