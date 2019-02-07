@@ -3,7 +3,7 @@ import pickle
 
 def plot_signals(t, signals, labels):
 
-    xlim = [5000,50000]
+    xlim = [5000,80000]
     num_signals = len(signals)
     if num_signals <= 10:
         fig, axs = plt.subplots(num_signals, 1, figsize=(15, 25), facecolor='w', edgecolor='k')
@@ -41,6 +41,6 @@ def plot_signals(t, signals, labels):
             axs[i].grid(True)
             ylim = (max(signals[i+10][xlim[0]:xlim[1]]) if max(signals[i+10])>0.1 else 1)
             axs[i].axis([xlim[0], xlim[1], 0, 1.1*ylim])
-            if i != num_signals-1:
+            if i != num_signals-10-1:
                 axs[i].set_xticklabels([])
         plt.show()
