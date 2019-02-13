@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 import pickle
 
-def plot_signals(t, signals, labels):
+def plot_signals(t, signals, labels, stoptime):
 
-    xlim = [5000,80000]
+    xlim = [5000,stoptime]
     num_signals = len(signals)
     if num_signals <= 10:
         fig, axs = plt.subplots(num_signals, 1, figsize=(15, 25), facecolor='w', edgecolor='k')
