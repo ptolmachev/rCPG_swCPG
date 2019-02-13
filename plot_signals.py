@@ -13,7 +13,7 @@ def plot_signals(t, signals, labels, stoptime):
             axs[i].plot(t, signals[i], colors[i],label=labels[i],linewidth = 3)
             axs[i].legend(loc = 1,fontsize = 12)
             axs[i].grid(True)
-            ylim = (max(signals[i][xlim[0]:xlim[1]]) if max(signals[i])>0.01 else 1)
+            ylim = (max(signals[i][xlim[0]:xlim[1]]) if max(signals[i])>0.11 else 1)
             axs[i].axis([xlim[0], xlim[1], 0, 1.1*ylim])
             if i != num_signals-1:
                 axs[i].set_xticklabels([])
@@ -26,7 +26,7 @@ def plot_signals(t, signals, labels, stoptime):
             axs[i].plot(t, signals[i], colors[i],label=labels[i],linewidth = 3)
             axs[i].legend(loc = 1,fontsize = 12)
             axs[i].grid(True)
-            ylim = (max(signals[i][xlim[0]:xlim[1]]) if max(signals[i])>0.01 else 1)
+            ylim = (max(signals[i][xlim[0]:xlim[1]]) if max(signals[i])>0.1 else 1)
             axs[i].axis([xlim[0], xlim[1], 0, 1.1*ylim])
             if i != 10-1:
                 axs[i].set_xticklabels([])
