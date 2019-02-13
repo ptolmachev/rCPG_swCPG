@@ -5,8 +5,8 @@ params = dict()
 
 num_nrns = 13
 num_drives = 3
-x = 1
-y = 1.1 #1.1
+x = 1.6
+y = 1.0 #1.1 0.7 - partial recovery
 
 # 0- PreI   # 1 - EarlyI  # 2 - PostI
 # 3 - AugE  # 4 - RampI   # 5 - EarlyI2
@@ -51,13 +51,13 @@ b[5,4] = -0.4  #EarlyI2 -> RampI
 
 b[7,0] = -0.1 #NTS1 -> PreI
 b[8,0] = -0.2 #NTS2 -> PreI
-b[7,8] = -0.37 #NTS1 -> NTS2
+b[7,8] = -0.37*x #NTS1 -> NTS2
 b[8,7] = -0.425*x #NTS2 -> NTS1
 # b[7,4] = 0.3 #NTS1 -> RampI
 # b[8,4] = 0.2 #NTS2 -> RampI
 
 b[9,7] = -0.22*x #KF -> NTS1
-b[9,8] = -0.22 #KF -> NTS2 #assymetric inhibition
+b[9,8] = -0.22*x #KF -> NTS2 #assymetric inhibition
 
 c = np.zeros((num_drives, num_nrns))
 # Pons
