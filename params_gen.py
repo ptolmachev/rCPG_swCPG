@@ -5,7 +5,7 @@ params = dict()
 
 num_nrns = 13
 num_drives = 3
-x = 1.6
+x = 1.0
 y = 1.0 #1.1 0.7 - partial recovery
 
 # 0- PreI   # 1 - EarlyI  # 2 - PostI
@@ -18,12 +18,15 @@ b = np.zeros((num_nrns, num_nrns))
 # positive weights
 b[0,0] = 0.3  #PreI -> PreI
 b[0,1] = 0.6  #PreI -> EarlyI
-b[0,4] = 1.5  #PreI -> RampI
-b[9,0] = 0.4 # KF -> PreI
-b[9,2] = 1.8 # KF -> PostI
-b[9,3] = 0.6 # KF -> AugE
-b[6,7] = 1.9 # Relay -> NTS1
-b[6,8] = 1.9 # Relay -> NTS2
+b[0,4] = 0.9  #PreI -> RampI
+b[7,0] = 0.3 # NTS1 -> PreI
+b[7,1] = 0.4 # NTS1 -> EarlyI1
+b[7,2] = 1.4 # NTS1 -> PostI
+b[8,2] = 0.5 # NTS2 -> PostI
+b[7,3] = 0.05 # NTS1 -> AugE
+b[9,2] = 0.9 # KF -> PostI
+b[6,7] = 0.2 # Relay -> NTS1
+b[6,8] = 1.2 # Relay -> NTS2
 b[6,9] = 1.4 # Relay -> KF
 b[6,2] = 0.4 # Relay -> PostI
 b[0,10] = 1.5 # PreI -> M_HN
@@ -32,39 +35,39 @@ b[4,11] = 2.8 # RampI -> M_PN
 b[2,12] = 1.7 # PostI -> M_VN
 b[4,12] = 0.9 # RampI -> M_VN
 b[8,12] = 1.8 # NTS2 - M_VN
+b[9,8]  =  0.22 #KF -> NTS2
+b[9,7]  =  0.22 #KF -> NTS1
 # negative weights
-b[1,2] = -0.25 #EarlyI -> PostI
+b[1,2] = -0.15 #EarlyI -> PostI
 b[1,3] = -0.39 #EarlyI -> AugE
 
 b[1,9] = -0.02 #EarlyI -> KF #!!!
 
-b[2,0] = -0.26 #PostI -> PreI
-b[2,1] = -0.07 #PostI -> EarlyI
-b[2,3] = -0.45 #PostI -> AugE
-b[2,4] = -0.6  #PostI -> RampI
-b[2,5] = -0.3  #PostI -> EarlyI2
+b[2,0] = -0.12 #PostI -> PreI
+b[2,1] = -0.04 #PostI -> EarlyI
+b[2,3] = -0.2 #PostI -> AugE
+b[2,4] = -0.2  #PostI -> RampI
+b[2,5] = -0.1  #PostI -> EarlyI2
 b[3,4] = -0.2  #AugE -> RampI
 b[3,0] = -0.32  #AugE -> PreI
 b[3,1] = -0.35  #AugE -> EarlyI
-b[3,2] = -0.105  #AugE -> PostI
+b[3,2] = -0.1  #AugE -> PostI
 b[5,4] = -0.4  #EarlyI2 -> RampI
 
-b[7,0] = -0.1 #NTS1 -> PreI
-b[8,0] = -0.2 #NTS2 -> PreI
-b[7,8] = -0.37*x #NTS1 -> NTS2
-b[8,7] = -0.425*x #NTS2 -> NTS1
+# b[7,0] = -0.1 #NTS1 -> PreI
+# b[8,0] = -0.2 #NTS2 -> PreI
+b[7,8] = -0.45*x #NTS1 -> NTS2
+b[8,7] = -0.15*x #NTS2 -> NTS1
 # b[7,4] = 0.3 #NTS1 -> RampI
 # b[8,4] = 0.2 #NTS2 -> RampI
 
-b[9,7] = -0.22*x #KF -> NTS1
-b[9,8] = -0.22*x #KF -> NTS2 #assymetric inhibition
 
 c = np.zeros((num_drives, num_nrns))
 # Pons
-c[0,0] = 0.2
+c[0,0] = 0.0
 c[0,1] = 0.0
 c[0,2] = 0.0
-c[0,3] = 0.1
+c[0,3] = 0.0
 c[0,4] = 0.6
 c[0,5] = 0.2
 
@@ -74,9 +77,9 @@ c[0,8] = 0.5
 c[0,9] = 0.5*y
 
 #Rtn/BotC
-c[1,0] = 0.15
-c[1,1] = 0.25
-c[1,3] = 0.3
+c[1,0] = 0.00
+c[1,1] = 0.0
+c[1,3] = 0.1
 
 #PreBotC
 c[2,0] = 0.025
