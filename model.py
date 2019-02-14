@@ -56,7 +56,7 @@ def vectorfield(w, t, p):
 
     f.append((-Inap - Ik - Il[0] - IsynE[0] - IsynI[0]) / Capacity)
     for i in range(1,num_nrns):
-        if i != 6:
+        if i != 5:
             f.append((-Iad[i] - Il[i] - IsynE[i] - IsynI[i]) / Capacity)
         else:
             f.append((-Iad[i] - Il[i] - IsynE[i] - IsynI[i] + 0.85*I(t, 25000, 32000)) / Capacity)
