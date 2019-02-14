@@ -3,16 +3,16 @@ import numpy as np
 
 params = dict()
 
-num_nrns = 13
+num_nrns = 14
 num_drives = 3
-x = 1.0
+x = [0.5,1.0,1.5][1] # Disinh-inh of NTS
 y = [0.4,1.0,3.5][0] # Disinh-inh of KF
 
 # 0- PreI   # 1 - EarlyI  # 2 - PostI
 # 3 - AugE  # 4 - RampI   # 5 - Relay
 # 6 - NTS1  # 7 - NTS2    # 8 - KF
 # 9 - M_HN  # 10- M_PN    # 11 - M_VN
-# 12 - KF_inh
+# 12 - KF_inh # 13 - NTS_inh
 b = np.zeros((num_nrns, num_nrns))
 # positive weights
 b[0,1] = 0.6  #PreI -> EarlyI
@@ -55,6 +55,8 @@ b[3,2] = -0.45  #AugE -> PostI
 b[6,7] = -0.15*x #NTS1 -> NTS2
 b[7,6] = -0.15*x #NTS2 -> NTS1
 b[12,8] = -0.2*y #KF_inh -> KF
+b[13,6] = -0.2*x #NTS_inh -> NTS1
+b[13,7] = -0.2*x #NTS_inh -> NTS1
 # b[6,0] = -0.1 #NTS1 -> PreI
 # b[7,0] = -0.2 #NTS2 -> PreI
 # b[7,4] = 0.3 #NTS1 -> RampI
@@ -67,10 +69,11 @@ c[0,1] = 0.0 #To EarlyI
 c[0,2] = 0.0 #To PostI
 c[0,3] = 0.0 #To AugE
 c[0,4] = 0.0 #To RampI
-c[0,6] = 0.7 #To NTS1
+c[0,6] = 0.9 #To NTS1
 c[0,7] = 0.0 #To NTS2
 c[0,8] = 1.1 #To KF
 c[0,12] = 0.4 #To KF_inh
+c[0,13] = 0.4 #To NTS_inh
 #Rtn/BotC
 c[1,0] = 0.0 #To PreI
 c[1,1] = 0.0 #To EarlyI
