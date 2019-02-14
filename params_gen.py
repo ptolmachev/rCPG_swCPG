@@ -5,8 +5,8 @@ params = dict()
 
 num_nrns = 14
 num_drives = 3
-x = [0.5,1.0,1.5][1] # Disinh-inh of NTS
-y = [0.4,1.0,3.5][0] # Disinh-inh of KF
+x = [0.5,1.0,3.5][1] # Disinh-inh of NTS
+y = [0.4,1.0,3.5][2] # Disinh-inh of KF
 
 # 0- PreI   # 1 - EarlyI  # 2 - PostI
 # 3 - AugE  # 4 - RampI   # 5 - Relay
@@ -28,13 +28,13 @@ b[5,8] = 2.5 # Relay -> KF
 b[5,12] = 1.3 # Relay -> KF_inh
 # b[6,0] = 0.3 # NTS1 -> PreI
 # b[6,1] = 0.4 # NTS1 -> EarlyI1
-b[6,2] = 0.23 # NTS1 -> PostI
+b[6,2] = 0.27 # NTS1 -> PostI
 b[6,3] = 0.07 # NTS1 -> AugE
-b[7,2] = 0.23 # NTS2 -> PostI
+b[7,2] = 0.27 # NTS2 -> PostI
 b[7,3] = 0.07 # NTS2 -> AugE
 # b[7,9] = 0.9 # NTS2 -> M_HN
 # b[7,11] = 1.8 # NTS2 - M_VN
-b[8,2] = 0.57 # KF -> PostI
+b[8,2] = 0.55 # KF -> PostI
 # b[8,3] = 0.01 # KF -> AugE
 b[8,6]  =  0.1 # KF -> NTS1
 b[8,7]  =  0.1 # KF -> NTS2
