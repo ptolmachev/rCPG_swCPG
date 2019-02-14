@@ -35,7 +35,7 @@ def I(t,t1,t2):
     if (t < t1) or (t > t2):
         return 0
     else:
-        return 400
+        return 600
 
 def vectorfield(w, t, p):
     num_nrns = int(len(w)/2)
@@ -59,7 +59,7 @@ def vectorfield(w, t, p):
         if i != 5:
             f.append((-Iad[i] - Il[i] - IsynE[i] - IsynI[i]) / Capacity)
         else:
-            f.append((-Iad[i] - Il[i] - IsynE[i] - IsynI[i] + 0.85*I(t, 25000, 32000)) / Capacity)
+            f.append((-Iad[i] - Il[i] - IsynE[i] - IsynI[i] + 0.85*I(t, 25000, 35000)) / Capacity)
 
     f.append((hinfnap(V[0]) - M[0]) / taonap(V[0], tnapmax))
     for i in range(1,num_nrns):

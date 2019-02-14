@@ -17,7 +17,7 @@ params = json.load(file)
 b = np.array(params["b"])
 c = np.array(params["c"])
 
-labels = ["PreI","EarlyI", "PostI", "AugE", "RampI", "Relay", "NTS1", "NTS2", "KF","Motor_HN", "Motor_PN", "Motor_VN"]
+labels = ["PreI","EarlyI", "PostI", "AugE", "RampI", "Relay", "NTS1", "NTS2", "KF","Motor_HN", "Motor_PN", "Motor_VN","KF_inh"]
 stoptime = 60000
 res = model(b, c, vectorfield, stoptime)
 t = res[0]
