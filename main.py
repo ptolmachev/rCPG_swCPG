@@ -4,7 +4,7 @@ import numpy as np
 import json
 
 # DEFINING PARAMETERS
-num_nrns = 13
+num_nrns = 14
 num_drives = 3
 
 # 0- PreI   # 1 - EarlyI  # 2 - PostI

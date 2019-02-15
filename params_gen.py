@@ -6,7 +6,7 @@ params = dict()
 num_nrns = 14
 num_drives = 3
 x = [0.5,1.0,3.5][1] # Disinh-inh of NTS
-y = [0.4,1.0,3.5][2] # Disinh-inh of KF
+y = [0.4,1.0,3.5][1] # Disinh-inh of KF
 
 # 0- PreI   # 1 - EarlyI  # 2 - PostI
 # 3 - AugE  # 4 - RampI   # 5 - Relay
@@ -28,16 +28,16 @@ b[5,8] = 2.5 # Relay -> KF
 b[5,12] = 1.3 # Relay -> KF_inh
 # b[6,0] = 0.3 # NTS1 -> PreI
 # b[6,1] = 0.4 # NTS1 -> EarlyI1
-b[6,2] = 0.27 # NTS1 -> PostI
-b[6,3] = 0.07 # NTS1 -> AugE
-b[7,2] = 0.27 # NTS2 -> PostI
-b[7,3] = 0.07 # NTS2 -> AugE
+b[6,2] = 1.0 # NTS1 -> PostI
+b[6,3] = 0.09 # NTS1 -> AugE
+b[7,2] = 1.0 # NTS2 -> PostI
+b[7,3] = 0.09 # NTS2 -> AugE
 # b[7,9] = 0.9 # NTS2 -> M_HN
 # b[7,11] = 1.8 # NTS2 - M_VN
-b[8,2] = 0.55 # KF -> PostI
+# b[8,2] = 0.05 # KF -> PostI
 # b[8,3] = 0.01 # KF -> AugE
-b[8,6]  =  0.1 # KF -> NTS1
-b[8,7]  =  0.1 # KF -> NTS2
+b[8,6]  =  0.7 # KF -> NTS1
+b[8,7]  =  0.7 # KF -> NTS2
 
 # negative weights
 b[1,2] = -0.15 #EarlyI -> PostI
@@ -69,7 +69,7 @@ c[0,1] = 0.0 #To EarlyI
 c[0,2] = 0.0 #To PostI
 c[0,3] = 0.0 #To AugE
 c[0,4] = 0.0 #To RampI
-c[0,6] = 0.9 #To NTS1
+c[0,6] = 0.2 #To NTS1
 c[0,7] = 0.0 #To NTS2
 c[0,8] = 1.1 #To KF
 c[0,12] = 0.4 #To KF_inh
