@@ -6,7 +6,7 @@ params = dict()
 num_nrns = 15
 num_drives = 3
 x = [0.5,1.0,3.5][1] # Disinh-inh of NTS
-y = [0.4,1.0,3.5][1] # Disinh-inh of KF
+y = [0.4,1.0, 7.0][1] # Disinh-inh of KF
 
 # 0- PreI   # 1 - EarlyI  # 2 - PostI
 # 3 - AugE  # 4 - RampI   # 5 - Relay
@@ -21,63 +21,51 @@ b[0,10] = 1.5 # PreI -> M_HN
 b[2,12] = 1.7 # PostI -> M_VN
 b[4,11] = 2.8 # RampI -> M_PN
 b[4,12] = 0.9 # RampI -> M_VN
-b[5,3] = 0.1 # Relay -> AugE
 b[5,6] = 0.2 # Relay -> NTS1
 b[5,7] = 1.2 # Relay -> NTS2
-b[5,9] = 2.5 # Relay -> KF
-b[5,13] = 1.3 # Relay -> KF_inh
-# b[6,0] = 0.3 # NTS1 -> PreI
-# b[6,1] = 0.4 # NTS1 -> EarlyI1
-b[6,2] = 1.0 # NTS1 -> PostI
-b[6,3] = 0.09 # NTS1 -> AugE
-b[7,2] = 1.0 # NTS2 -> PostI
-b[7,3] = 0.09 # NTS2 -> AugE
-# b[7,10] = 0.9 # NTS2 -> M_HN
-# b[7,12] = 1.8 # NTS2 - M_VN
-# b[9,2] = 0.05 # KF -> PostI
-# b[9,3] = 0.01 # KF -> AugE
-b[9,6]  =  0.7 # KF -> NTS1
-b[9,7]  =  0.7 # KF -> NTS2
+# b[5,8] = 1.5 # Relay -> NTS3
+b[8,2] = 0.8 # NTS3 -> PostI
+b[8,3] = 0.2 # NTS3 -> AugE
+b[9,8] = 1.2 # KF -> NTS3
 
 # negative weights
 b[1,2] = -0.15 #EarlyI -> PostI
 b[1,3] = -0.39 #EarlyI -> AugE
 b[1,4] = -0.15  #EarlyI1 -> RampI
-b[1,9] = -0.02 #EarlyI -> KF #!!!
-b[2,0] = -0.13 #PostI -> PreI
+b[2,0] = -0.15 #PostI -> PreI
 b[2,1] = -0.1 #PostI -> EarlyI
 b[2,3] = -0.4 #PostI -> AugE
 b[2,4] = -0.4  #PostI -> RampI
 b[3,4] = -0.2  #AugE -> RampI
-b[3,0] = -0.3  #AugE -> PreI
+b[3,0] = -0.4  #AugE -> PreI
 b[3,1] = -0.3  #AugE -> EarlyI
 b[3,2] = -0.45  #AugE -> PostI
-b[6,7] = -0.15*x #NTS1 -> NTS2
+b[6,7] = -0.05*x #NTS1 -> NTS2
+# b[6,8] = -0.05*x #NTS1 -> NTS3
 b[7,6] = -0.15*x #NTS2 -> NTS1
+# b[7,8] = -0.05*x #NTS2 -> NTS3
 b[13,9] = -0.2*y #KF_inh -> KF
 b[14,6] = -0.2*x #NTS_inh -> NTS1
 b[14,7] = -0.2*x #NTS_inh -> NTS1
-# b[6,0] = -0.1 #NTS1 -> PreI
-# b[7,0] = -0.2 #NTS2 -> PreI
-# b[7,4] = 0.3 #NTS1 -> RampI
-# b[9,4] = 0.2 #NTS2 -> RampI
+
 
 c = np.zeros((num_drives, num_nrns))
 # other
 c[0,0] = 0.0 #To PreI
 c[0,1] = 0.0 #To EarlyI
-c[0,2] = 0.0 #To PostI
+c[0,2] = 0.1 #To PostI
 c[0,3] = 0.0 #To AugE
 c[0,4] = 0.0 #To RampI
 c[0,6] = 0.2 #To NTS1
 c[0,7] = 0.0 #To NTS2
-c[0,9] = 1.1 #To KF
-c[0,13] = 0.4 #To KF_inh
+c[0,8] = 0.0 #To NTS3
+c[0,9] = 1.4 #To KF
+c[0,13] = 0.5 #To KF_inh
 c[0,14] = 0.4 #To NTS_inh
 #Rtn/BotC
 c[1,0] = 0.0 #To PreI
 c[1,1] = 0.0 #To EarlyI
-c[1,3] = 0.2 #To AugE
+c[1,3] = 0.18 #To AugE
 
 #PreBotC
 c[2,0] = 0.025 #To PreI
