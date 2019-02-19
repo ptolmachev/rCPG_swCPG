@@ -3,92 +3,86 @@ import numpy as np
 
 params = dict()
 
-num_nrns = 13
+num_nrns = 15
 num_drives = 3
-x = 1.6
-y = 1.0 #1.1 0.7 - partial recovery
+x = [0.5,1.0,7.0][2] # Disinh-inh of NTS
+y = [0.4,1.0, 7.0][1] # Disinh-inh of KF
 
 # 0- PreI   # 1 - EarlyI  # 2 - PostI
-# 3 - AugE  # 4 - RampI   # 5 - EarlyI2
-# 6 - Relay # 7 - NTS1    # 8 - NTS2
-# 9 - KF #  # 10 - M_HN   # 11- M_PN
-# 12 - M_VN
-
+# 3 - AugE  # 4 - RampI   # 5 - Relay
+# 6 - NTS1  # 7 - NTS2    # 8 - NTS3
+# 9 - KF    # 10 - M_HN    # 11- M_PN
+# 12 - M_VN # 13 - KF_inh # 14 - NTS_inh
 b = np.zeros((num_nrns, num_nrns))
 # positive weights
-b[0,0] = 0.3  #PreI -> PreI
+b[0,0] = 0.2  #PreI -> PreI
 b[0,1] = 0.6  #PreI -> EarlyI
-b[0,4] = 1.5  #PreI -> RampI
-b[9,0] = 0.4 # KF -> PreI
-b[9,2] = 1.8 # KF -> PostI
-b[9,3] = 0.6 # KF -> AugE
-b[6,7] = 1.9 # Relay -> NTS1
-b[6,8] = 1.9 # Relay -> NTS2
-b[6,9] = 1.4 # Relay -> KF
-b[6,2] = 0.4 # Relay -> PostI
+b[0,4] = 0.9  #PreI -> RampI
 b[0,10] = 1.5 # PreI -> M_HN
-b[8,10] = 0.9 # NTS2 -> M_HN
-b[4,11] = 2.8 # RampI -> M_PN
 b[2,12] = 1.7 # PostI -> M_VN
+b[4,11] = 2.8 # RampI -> M_PN
 b[4,12] = 0.9 # RampI -> M_VN
-b[8,12] = 1.8 # NTS2 - M_VN
+b[5,3] = 0.2 # Relay -> AugE
+b[5,6] = 1.2 # Relay -> NTS1
+b[5,7] = 1.5 # Relay -> NTS2
+b[5,8] = 2.1 # Relay -> NTS3
+b[5,9] = 1.5 # Relay -> KF #test
+# b[6,2] = 0.2 # NTS1 -> PostI
+# b[6,3] = 0.25 # NTS1 -> AugE
+# b[7,2] = 0.2 # NTS2 -> PostI
+# b[7,3] = 0.25 # NTS2 -> AugE
+b[8,2] = 0.65 # NTS3 -> PostI
+b[9,2] = 0.49 # KF -> PostI
+# b[9,3] = 0.1 # KF -> AugE
+b[9,8] = 1.2 # KF -> NTS3
+
 # negative weights
-b[1,2] = -0.25 #EarlyI -> PostI
+b[1,2] = -0.15 #EarlyI -> PostI
 b[1,3] = -0.39 #EarlyI -> AugE
-
-b[1,9] = -0.02 #EarlyI -> KF #!!!
-
-b[2,0] = -0.26 #PostI -> PreI
-b[2,1] = -0.07 #PostI -> EarlyI
-b[2,3] = -0.45 #PostI -> AugE
-b[2,4] = -0.6  #PostI -> RampI
-b[2,5] = -0.3  #PostI -> EarlyI2
+b[1,4] = -0.15  #EarlyI1 -> RampI
+b[2,0] = -0.1 #PostI -> PreI
+b[2,1] = -0.1 #PostI -> EarlyI
+b[2,3] = -0.55 #PostI -> AugE
+b[2,4] = -0.4  #PostI -> RampI
 b[3,4] = -0.2  #AugE -> RampI
-b[3,0] = -0.32  #AugE -> PreI
-b[3,1] = -0.35  #AugE -> EarlyI
-b[3,2] = -0.105  #AugE -> PostI
-b[5,4] = -0.4  #EarlyI2 -> RampI
-
-b[7,0] = -0.1 #NTS1 -> PreI
-b[8,0] = -0.2 #NTS2 -> PreI
-b[7,8] = -0.37*x #NTS1 -> NTS2
-b[8,7] = -0.425*x #NTS2 -> NTS1
-# b[7,4] = 0.3 #NTS1 -> RampI
-# b[8,4] = 0.2 #NTS2 -> RampI
-
-b[9,7] = -0.22*x #KF -> NTS1
-b[9,8] = -0.22*x #KF -> NTS2 #assymetric inhibition
+b[3,0] = -0.2  #AugE -> PreI
+b[3,1] = -0.3  #AugE -> EarlyI
+b[3,2] = -0.5  #AugE -> PostI
+b[6,7] = -0.3*x #NTS1 -> NTS2
+# b[6,8] = -0.05*x #NTS1 -> NTS3
+b[7,6] = -0.3*x #NTS2 -> NTS1
+# b[7,8] = -0.05*x #NTS2 -> NTS3
+b[13,9] = -0.3*y #KF_inh -> KF
+b[14,5] = -0.3*x #NTS_inh -> Relay
+b[14,6] = -0.2*x #NTS_inh -> NTS1
+b[14,7] = -0.2*x #NTS_inh -> NTS2
+b[14,8] = -0.2*x #NTS_inh -> NTS2
 
 c = np.zeros((num_drives, num_nrns))
-# Pons
-c[0,0] = 0.2
-c[0,1] = 0.0
-c[0,2] = 0.0
-c[0,3] = 0.1
-c[0,4] = 0.6
-c[0,5] = 0.2
-
-c[0,7] = 0.64
-c[0,8] = 0.5
-
-c[0,9] = 0.5*y
-
+# other
+c[0,0] = 0.0 #To PreI
+c[0,1] = 0.0 #To EarlyI
+c[0,2] = 0.07 #To PostI
+c[0,3] = 0.1 #To AugE
+c[0,4] = 0.0 #To RampI
+c[0,6] = 0.2 #To NTS1
+c[0,7] = 0.0 #To NTS2
+c[0,8] = 0.0 #To NTS3
+c[0,9] = 1.4 #To KF
+c[0,13] = 0.5 #To KF_inh
+c[0,14] = 0.4 #To NTS_inh
 #Rtn/BotC
-c[1,0] = 0.15
-c[1,1] = 0.25
-c[1,3] = 0.3
+c[1,0] = 0.0 #To PreI
+c[1,1] = 0.0 #To EarlyI
+c[1,3] = 0.2 #To AugE
 
 #PreBotC
-c[2,0] = 0.025
+c[2,0] = 0.025 #To PreI
 
 b = b.tolist()
 c = c.tolist()
 
-params["description"] = \
-    "# 0- PreI   # 1 - EarlyI  # 2 - PostI \
-    # 3 - AugE  # 4 - RampI   # 5 - EarlyI2\
-    # 6 - Relay # 7 - NTS1    # 8 - NTS2\
-    # 9 - KF"
+params["description"] = ""
 
 params["b"] = b
 
