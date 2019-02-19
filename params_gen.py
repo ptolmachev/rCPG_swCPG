@@ -5,8 +5,8 @@ params = dict()
 
 num_nrns = 15
 num_drives = 3
-x = [0.5,1.0,3.5][1] # Disinh-inh of NTS
-y = [0.4,1.0, 7.0][2] # Disinh-inh of KF
+x = [0.5,1.0,7.0][2] # Disinh-inh of NTS
+y = [0.4,1.0, 7.0][1] # Disinh-inh of KF
 
 # 0- PreI   # 1 - EarlyI  # 2 - PostI
 # 3 - AugE  # 4 - RampI   # 5 - Relay
@@ -22,16 +22,18 @@ b[0,10] = 1.5 # PreI -> M_HN
 b[2,12] = 1.7 # PostI -> M_VN
 b[4,11] = 2.8 # RampI -> M_PN
 b[4,12] = 0.9 # RampI -> M_VN
-b[5,9] = 0.6 # Relay -> KF #test
-b[5,6] = 1.0 # Relay -> NTS1
-b[5,7] = 1.2 # Relay -> NTS2
-# b[5,8] = 1.5 # Relay -> NTS3
-b[6,2] = 0.2 # NTS1 -> PostI
-b[6,3] = 0.25 # NTS1 -> AugE
-b[7,2] = 0.2 # NTS2 -> PostI
-b[7,3] = 0.25 # NTS2 -> AugE
-b[8,2] = 1.0 # NTS3 -> PostI
-b[8,3] = 0.15 # NTS3 -> AugE
+b[5,3] = 0.2 # Relay -> AugE
+b[5,6] = 1.2 # Relay -> NTS1
+b[5,7] = 1.5 # Relay -> NTS2
+b[5,8] = 2.1 # Relay -> NTS3
+b[5,9] = 1.5 # Relay -> KF #test
+# b[6,2] = 0.2 # NTS1 -> PostI
+# b[6,3] = 0.25 # NTS1 -> AugE
+# b[7,2] = 0.2 # NTS2 -> PostI
+# b[7,3] = 0.25 # NTS2 -> AugE
+b[8,2] = 0.65 # NTS3 -> PostI
+b[9,2] = 0.49 # KF -> PostI
+# b[9,3] = 0.1 # KF -> AugE
 b[9,8] = 1.2 # KF -> NTS3
 
 # negative weights
@@ -40,26 +42,27 @@ b[1,3] = -0.39 #EarlyI -> AugE
 b[1,4] = -0.15  #EarlyI1 -> RampI
 b[2,0] = -0.1 #PostI -> PreI
 b[2,1] = -0.1 #PostI -> EarlyI
-b[2,3] = -0.5 #PostI -> AugE
+b[2,3] = -0.55 #PostI -> AugE
 b[2,4] = -0.4  #PostI -> RampI
 b[3,4] = -0.2  #AugE -> RampI
 b[3,0] = -0.2  #AugE -> PreI
 b[3,1] = -0.3  #AugE -> EarlyI
-b[3,2] = -0.45  #AugE -> PostI
-b[6,7] = -0.05*x #NTS1 -> NTS2
+b[3,2] = -0.5  #AugE -> PostI
+b[6,7] = -0.3*x #NTS1 -> NTS2
 # b[6,8] = -0.05*x #NTS1 -> NTS3
-b[7,6] = -0.15*x #NTS2 -> NTS1
+b[7,6] = -0.3*x #NTS2 -> NTS1
 # b[7,8] = -0.05*x #NTS2 -> NTS3
-b[13,9] = -0.2*y #KF_inh -> KF
+b[13,9] = -0.3*y #KF_inh -> KF
+b[14,5] = -0.3*x #NTS_inh -> Relay
 b[14,6] = -0.2*x #NTS_inh -> NTS1
-b[14,7] = -0.2*x #NTS_inh -> NTS1
-
+b[14,7] = -0.2*x #NTS_inh -> NTS2
+b[14,8] = -0.2*x #NTS_inh -> NTS2
 
 c = np.zeros((num_drives, num_nrns))
 # other
 c[0,0] = 0.0 #To PreI
 c[0,1] = 0.0 #To EarlyI
-c[0,2] = 0.2 #To PostI
+c[0,2] = 0.07 #To PostI
 c[0,3] = 0.1 #To AugE
 c[0,4] = 0.0 #To RampI
 c[0,6] = 0.2 #To NTS1
