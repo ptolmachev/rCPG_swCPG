@@ -35,7 +35,7 @@ def I(t,t1,t2):
     if (t < t1) or (t > t2):
         return 0
     else:
-        return 600
+        return 630
 
 def vectorfield(w, t, p):
     num_nrns = int(len(w)/2)
