@@ -22,4 +22,4 @@ stoptime = 60000
 res = model(b, c, vectorfield, stoptime)
 t = res[0]
 signals = res[1:]
-plot_signals(t,signals, labels, stoptime)
+plot_signals(t,signals[:-2], labels, stoptime)
