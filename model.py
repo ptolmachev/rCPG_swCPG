@@ -31,11 +31,17 @@ def mk(v1):
 def taonap(v1, tnapmax):
     return tnapmax / np.cosh((v1 + 48.0) / 12.0)
 
-def I(t,t1,t2):
+def I_square(t,t1,t2):
     if (t < t1) or (t > t2):
         return 0
     else:
-        return 630
+        return 530
+
+def I_triangle(t,t1,t2):
+    if (t < t1) or (t > t2):
+        return 0
+    else:
+        return 400 + 240*(1-(t-t1)/(t2-t1))
 
 def vectorfield(w, t, p):
     num_nrns = int(len(w)/2)
@@ -59,7 +65,7 @@ def vectorfield(w, t, p):
         if i != 5:
             f.append((-Iad[i] - Il[i] - IsynE[i] - IsynI[i]) / Capacity)
         else:
-            f.append((-Iad[i] - Il[i] - IsynE[i] - IsynI[i] + 0.85*I(t, 25000, 35000)) / Capacity)
+            f.append((-Iad[i] - Il[i] - IsynE[i] - IsynI[i] + I_triangle(t, 25000, 35000)) / Capacity)
 
     f.append((hinfnap(V[0]) - M[0]) / taonap(V[0], tnapmax))
     for i in range(1,num_nrns):

@@ -6,7 +6,7 @@ params = dict()
 num_nrns = 15
 num_drives = 3
 x = [0.6,1.0,7.0][1] # Disinh-inh of NTS
-y = [0.2, 1.0, 7.0][2] # Disinh-inh of KF
+y = [0.25, 1.0, 7.0][1] # Disinh-inh of KF
 
 # 0- PreI   # 1 - EarlyI  # 2 - PostI
 # 3 - AugE  # 4 - RampI   # 5 - Relay
