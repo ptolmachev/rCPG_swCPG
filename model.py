@@ -65,7 +65,7 @@ def vectorfield(w, t, p):
         if i != 5:
             f.append((-Iad[i] - Il[i] - IsynE[i] - IsynI[i]) / Capacity)
         else:
-            f.append((-Iad[i] - Il[i] - IsynE[i] - IsynI[i] + I_triangle(t, 25000, 35000)) / Capacity)
+            f.append((-Iad[i] - Il[i] - IsynE[i] - IsynI[i] + I_square(t, 22000, 32000)) / Capacity)
 
     f.append((hinfnap(V[0]) - M[0]) / taonap(V[0], tnapmax))
     for i in range(1,num_nrns):
