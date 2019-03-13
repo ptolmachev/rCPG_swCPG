@@ -47,7 +47,7 @@ def vectorfield(w, t, p):
     num_nrns = int(len(w)/2)
     V = w[:num_nrns]
     M = w[num_nrns:]
-    Capacity, gl, gnap, gk, gad, gsynE, gsynI, Ena, Ek, El, EsynE, EsynI, vhalf, kv, tnapmax, tad, kad, b, c, d = p
+    Capacity, gl, gnap, gk, gad, gsynE, gsynI, Ena, Ek, El, EsynE, EsynI, vhalf, kv, tnapmax, tad, kad, b, c, d, t1, t2 = p
 
     # unique properties of bursting population
     Inap = gnap * mnap(V[0]) * M[0] * (V[0] - Ena)
@@ -65,7 +65,7 @@ def vectorfield(w, t, p):
         if i != 5:
             f.append((-Iad[i] - Il[i] - IsynE[i] - IsynI[i]) / Capacity)
         else:
-            f.append((-Iad[i] - Il[i] - IsynE[i] - IsynI[i] + I_square(t, 22000, 32000)) / Capacity)
+            f.append((-Iad[i] - Il[i] - IsynE[i] - IsynI[i] + I_square(t, t1, t2)) / Capacity)
 
     f.append((hinfnap(V[0]) - M[0]) / taonap(V[0], tnapmax))
     for i in range(1,num_nrns):
@@ -74,7 +74,7 @@ def vectorfield(w, t, p):
     return f
 
 
-def model(b, c, vectorfield, stoptime):
+def model(b, c, vectorfield, t1, t2, stoptime):
     num_nrns = b.shape[0]
     num_drives = 3
     # Parameter values
@@ -107,7 +107,7 @@ def model(b, c, vectorfield, stoptime):
     t = [stoptime * float(i) / (numpoints - 1) for i in range(numpoints)]
 
     # Pack up the parameters and initial conditions:
-    p = [Capacity, gl, gnap, gk, gad, gsynE, gsynI, Ena, Ek, El, EsynE, EsynI, vhalf, kv, tnapmax, tad, kad, b, c, d]
+    p = [Capacity, gl, gnap, gk, gad, gsynE, gsynI, Ena, Ek, El, EsynE, EsynI, vhalf, kv, tnapmax, tad, kad, b, c, d, t1, t2]
     np.random.seed(0)
     V0 = -70 + 40 * np.random.rand(num_nrns)
     M0 = np.random.rand(num_nrns)

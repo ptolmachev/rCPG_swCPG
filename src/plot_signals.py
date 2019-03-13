@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import pickle
 
-def plot_signals(t, signals, labels, stoptime):
+def plot_signals(t, signals, labels, stoptime, filename):
 
     xlim = [5000,stoptime]
     num_signals = len(signals)
@@ -17,7 +17,8 @@ def plot_signals(t, signals, labels, stoptime):
             axs[i].axis([xlim[0], xlim[1], 0, 1.1*ylim])
             if i != num_signals-1:
                 axs[i].set_xticklabels([])
-        plt.show()
+        # plt.show()
+        plt.savefig("../img/" + filename)
     else:
         fig, axs = plt.subplots(10, 1, figsize=(15, 25), facecolor='w', edgecolor='k')
         axs = axs.ravel()
@@ -30,7 +31,8 @@ def plot_signals(t, signals, labels, stoptime):
             axs[i].axis([xlim[0], xlim[1], 0, 1.1*ylim])
             if i != 10-1:
                 axs[i].set_xticklabels([])
-        plt.show()
+        # plt.show()
+        plt.savefig("../img/" + filename + "_1")
 
         fig, axs = plt.subplots(num_signals-10, 1, figsize=(15, 7.5), facecolor='w', edgecolor='k')
         axs = axs.ravel()
@@ -43,4 +45,5 @@ def plot_signals(t, signals, labels, stoptime):
             axs[i].axis([xlim[0], xlim[1], 0, 1.1*ylim])
             if i != num_signals-10-1:
                 axs[i].set_xticklabels([])
-        plt.show()
+        # plt.show()
+        plt.savefig("../img/" + filename + "_2")
