@@ -91,10 +91,19 @@ c[2,0] = 0.025 #To PreI
 b = b.tolist()
 c = c.tolist()
 
+t1 = 25000
+t2 = 35000
+amp = 200
+
 params["description"] = ""
 
 params["b"] = b
 
 params["c"] = c
+
+params["t1"] = t1
+params["t2"] = t2
+params["amp"] = amp
+
 
 json.dump(params, open('rCPG_swCPG.json', 'w', encoding='utf-8'), separators=(',', ':'), sort_keys=True, indent=4)
