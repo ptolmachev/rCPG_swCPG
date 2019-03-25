@@ -18,10 +18,16 @@ def plot_signals(t, signals, labels, starttime,stoptime, filename):
             pass
         else:
             non_motor_inds.append(i)
-
+    if len(motor_inds) == 0:
+        if len(non_motor_inds) == 0:
+            raise ValueError("Nothing to plot!")
+        indices = [non_motor_inds]
+    elif len(non_motor_inds) == 0:
+        indices = [motor_inds]
+    else:
+        indices = [non_motor_inds, motor_inds]
     colors = ['k','r','g','b','y','m','xkcd:tomato','xkcd:lavender', 'xkcd:darkgreen', 'xkcd:plum', 'xkcd:salmon', 'xkcd:coral']
 
-    indices = [non_motor_inds, motor_inds]
     figax = [plt.subplots(len(indices[i]), 1, figsize=(30, 2.5*len(indices[i])), facecolor='w', edgecolor='k') for i in range(len(indices))]
     figs = [figax[i][0] for i in range(len(figax))]
     axs = [figax[i][1].ravel() for i in range(len(figax))]
@@ -36,7 +42,7 @@ def plot_signals(t, signals, labels, starttime,stoptime, filename):
             if i != len(indices[k])-1:
                 axs[k][i].set_xticklabels([])
             axs[k][i].tick_params(labelsize=25)
-            # plt.show()
+
         figs[k].savefig("../img/" + filename + "_" + str(k+1))
 #test
 if __name__ == '__main__':
@@ -47,7 +53,7 @@ if __name__ == '__main__':
     c = np.array(params["c"])
     t1 = params["t1"]
     t2 = params["t2"]
-    amp = params["amp"]
+    amp = 0 #params["amp"]
     starttime = 5000
     stoptime = 60000
     res = model(b, c, vectorfield, t1, t2, amp, stoptime)

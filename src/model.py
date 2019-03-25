@@ -1,5 +1,4 @@
 import numpy as np
-from plot_signals import plot_signals
 from scipy.integrate import odeint
 import scipy
 
