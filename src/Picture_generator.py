@@ -1,34 +1,65 @@
-from model import *
-from plot_signals import plot_signals
+import pickle
 import numpy as np
-import json
-
-# DEFINING PARAMETERS
-num_nrns = 15
-num_drives = 3
-
-file = open("rCPG_swCPG.json", "rb+")
-params = json.load(file)
-b = np.array(params["b"])
-c = np.array(params["c"])
+from matplotlib import pyplot as plt
 
 
-labels = ["PreI","EarlyI", "PostI", "AugE", "RampI", "Relay", "NTS1", "NTS2", "NTS3", "KF","Motor_HN", "Motor_PN", "Motor_VN","KF_inh", "NTS_inh"]
-stoptime = 60000
+def nice_error_bar(x,y,error, title, xlabel,ylabel):
+    fig = plt.figure(figsize = (40,20))
+    plt.errorbar(x,y, yerr = error , color = 'red',
+             ecolor = 'gray', capsize = 3,linestyle = 'dashed', linewidth = 3, alpha = 0.8)
 
-# Different Aplitudes
-amps = [110 + 10*i for i in range(30) ]
-for i in range(len(amps)):
-    t1 = 25000
-    t2 = 35000
-    amp = amps[i]
-    file_name = "Normal_swallowing_" + str(amp)
-    res = model(b, c, vectorfield, t1, t2, amp, stoptime)
-    t = res[0]
-    signals = res[1:]
+    plt.title(title, fontsize = 20)
+    plt.xlabel(xlabel, fontsize = 15)
+    plt.ylabel(ylabel, fontsize = 15)
+    plt.grid(True)
+    plt.show()
 
 
-    # plot_signals(t,signals[:-2], labels, stoptime, file_name)
+info = pickle.load(open("features_var_amp_2.pkl",'rb+'))
+amps = info['amps']
+periods = info['periods']
+period_stds = info['period_stds']
+rough_periods = info['rough_periods']
+num_swallows = info['num_swallows_s']
+num_breakthroughs_AugE = info['num_breakthroughs_AugE_s']
+num_breakthroughs_PreI = info['num_breakthroughs_PreI_s']
 
-# t_start = [25000 + 250*i for i in range(7)]
-# t_stop = [25100 + 250*i for i in range(7)]
+#PLOTTING PERIOD AND STD
+# title = "Swallowing period and standard deviation"
+# xlabel = "Amplitude of the injected impulse"
+# ylabel = "Period of the swallowing"
+# start_idx = 67
+# x = amps[start_idx:]
+# y = np.mean(periods, axis = 1)[start_idx:]
+# error = np.mean(period_stds, axis = 1)[start_idx:]
+# nice_error_bar(x,y,error,title,xlabel,ylabel)
+
+#PLOTTING ROUGH_PERIODS
+# title = "Swallowing period (rougly) and standard deviation"
+# xlabel = "Amplitude of the injected impulse"
+# ylabel = "Period of the swallowing"
+# start_idx = 67
+# x = amps[start_idx:]
+# y = np.mean(rough_periods, axis = 1)[start_idx:]
+# error = np.std(rough_periods, axis = 1)[start_idx:]
+# nice_error_bar(x,y,error,title,xlabel,ylabel)
+
+# #PLOTTNG NUMBER OF SWALLOWS
+# title = "Dependence of number of swallows on amplitude"
+# xlabel = "Amplitude of the injected impulse"
+# ylabel = "Number of swallows"
+# start_idx = 0
+# x = amps[start_idx:]
+# y = np.mean(num_swallows, axis = 1)[start_idx:]
+# error = np.std(num_swallows, axis = 1)[start_idx:]
+# nice_error_bar(x,y,error,title,xlabel,ylabel)
+
+#PLOTTNG NUMBER OF Breakthroughs
+# title = "Dependence of number of breathing breakthroughs on amplitude"
+# xlabel = "Amplitude of the injected impulse"
+# ylabel = "Number of breakthroughs"
+# start_idx = 0
+# x = amps[start_idx:]
+# y = np.mean(num_breakthroughs_PreI, axis = 1)[start_idx:]
+# error = np.std(num_breakthroughs_PreI, axis = 1)[start_idx:]
+# nice_error_bar(x,y,error,title,xlabel,ylabel)
