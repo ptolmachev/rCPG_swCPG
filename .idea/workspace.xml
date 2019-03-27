@@ -2,15 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="eebbf286-5f0d-44eb-8bff-357892bdab06" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/detect_features_long_impulse.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/get_features_short_impulse.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img/test_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/img/test_1.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img/test_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/img/test_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/test_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/test_2.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Picture_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Picture_generator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/detect_features.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/get_features_short_impulse.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/get_features_short_impulse.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/params_gen.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/params_gen.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/plot_signals.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/plot_signals.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -24,8 +21,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Picture_generator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" selection-start-line="3" selection-end-line="3" />
+            <state relative-caret-position="231">
+              <caret line="112" selection-start-line="112" selection-end-line="112" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -36,22 +33,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="15" selection-start-line="15" selection-end-line="15" />
+            <state relative-caret-position="756">
+              <caret line="129" column="12" lean-forward="true" selection-start-line="129" selection-start-column="12" selection-end-line="129" selection-end-column="12" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/detect_features_long_impulse.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="356">
-              <caret line="94" column="61" selection-start-line="94" selection-start-column="61" selection-end-line="94" selection-end-column="61" />
-              <folding>
-                <element signature="e#150#168#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -60,8 +45,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/get_features_short_impulse.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="356">
-              <caret line="113" column="21" lean-forward="true" selection-start-line="113" selection-start-column="21" selection-end-line="113" selection-end-column="21" />
+            <state relative-caret-position="326">
+              <caret line="94" column="20" lean-forward="true" selection-start-line="94" selection-start-column="20" selection-end-line="94" selection-end-column="20" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -72,8 +57,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/params_gen.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="896">
-              <caret line="83" column="29" selection-start-line="83" selection-start-column="29" selection-end-line="83" selection-end-column="29" />
+            <state relative-caret-position="15">
+              <caret line="82" column="28" lean-forward="true" selection-start-line="82" selection-start-column="28" selection-end-line="82" selection-end-column="28" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -84,10 +69,22 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/plot_signals.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="735">
-              <caret line="49" column="41" lean-forward="true" selection-start-line="49" selection-start-column="41" selection-end-line="49" selection-end-column="41" />
+            <state relative-caret-position="476">
+              <caret line="62" column="4" lean-forward="true" selection-start-line="62" selection-start-column="4" selection-end-line="62" selection-end-column="67" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/detect_features_long_impulse.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="6">
+              <caret line="27" column="3" selection-start-line="27" selection-start-column="3" selection-end-line="27" selection-end-column="3" />
+              <folding>
+                <element signature="e#150#168#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -123,11 +120,11 @@
         <option value="$PROJECT_DIR$/model.py" />
         <option value="$PROJECT_DIR$/params_gen.py" />
         <option value="$PROJECT_DIR$/src/params_gen.py" />
+        <option value="$PROJECT_DIR$/src/detect_features.py" />
+        <option value="$PROJECT_DIR$/src/detect_features_long_impulse.py" />
         <option value="$PROJECT_DIR$/src/model.py" />
         <option value="$PROJECT_DIR$/src/plot_signals.py" />
         <option value="$PROJECT_DIR$/src/Picture_generator.py" />
-        <option value="$PROJECT_DIR$/src/detect_features.py" />
-        <option value="$PROJECT_DIR$/src/detect_features_long_impulse.py" />
         <option value="$PROJECT_DIR$/src/get_features_short_impulse.py" />
       </list>
     </option>
@@ -286,8 +283,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.get_features_short_impulse" />
-        <item itemvalue="Python.plot_signals" />
         <item itemvalue="Python.Picture_generator" />
+        <item itemvalue="Python.plot_signals" />
         <item itemvalue="Python.detect_features" />
         <item itemvalue="Python.params_gen (1)" />
       </list>
@@ -308,7 +305,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="67" y="25" width="1853" height="1055" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24972677" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -333,9 +329,14 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/Picture_generator.py</url>
+          <line>112</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/src/get_features_short_impulse.py</url>
-          <line>76</line>
-          <option name="timeStamp" value="11" />
+          <line>92</line>
+          <option name="timeStamp" value="25" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -343,47 +344,47 @@
   <component name="debuggerHistoryManager">
     <expressions id="evaluateExpression">
       <expression>
-        <expression-string>np.any((np.abs(PreI_peaks_neg - stim_id)) &lt; 50)</expression-string>
+        <expression-string>t[1]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>(np.abs(PreI_peaks_neg - stim_id)) &lt; 50</expression-string>
+        <expression-string>t[0]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>np.any(np.abs(PreI_peaks_neg - stim_id)) &lt; 50</expression-string>
+        <expression-string>PreI_begins</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>np.abs(PreI_peaks_neg - stim_id)</expression-string>
+        <expression-string>res[0]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>PreI_peaks_neg - stim_id</expression-string>
+        <expression-string>len(res[0])</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>np.any(PreI_peaks_neg - stim_id)</expression-string>
+        <expression-string>len(res)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>[PreI_peaks[i] for i in range(len(PreI_peaks))  if abs(PreI_change[i]) &gt; 0.0000005 ]</expression-string>
+        <expression-string>res</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>[PreI_peaks[i] for i in range(len(PreI_peaks))  if abs(PreI_change[i]) &gt; 0.000005 ]</expression-string>
+        <expression-string>np.array([T*i/3 for i in range(3)])*(t[-1])/len(t)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>[PreI_peaks[i] for i in range(len(PreI_peaks))  if abs(PreI_change[i]) &gt; 0.00005 ]</expression-string>
+        <expression-string>np.array([T*i/3 for i in range(3)])</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -410,50 +411,64 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/model.py">
+    <entry file="file://$USER_HOME$/miniconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="15" selection-start-line="15" selection-end-line="15" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="197">
+          <caret line="2919" selection-start-line="2919" selection-end-line="2919" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/plot_signals.py">
+    <entry file="file://$USER_HOME$/miniconda3/lib/python3.7/codecs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="735">
-          <caret line="49" column="41" lean-forward="true" selection-start-line="49" selection-start-column="41" selection-end-line="49" selection-end-column="41" />
-          <folding>
-            <element signature="e#0#31#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="167">
+          <caret line="320" selection-start-line="320" selection-end-line="320" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Picture_generator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" selection-start-line="3" selection-end-line="3" />
+        <state relative-caret-position="231">
+          <caret line="112" selection-start-line="112" selection-end-line="112" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="756">
+          <caret line="129" column="12" lean-forward="true" selection-start-line="129" selection-start-column="12" selection-end-line="129" selection-end-column="12" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/params_gen.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="896">
-          <caret line="83" column="29" selection-start-line="83" selection-start-column="29" selection-end-line="83" selection-end-column="29" />
+        <state relative-caret-position="15">
+          <caret line="82" column="28" lean-forward="true" selection-start-line="82" selection-start-column="28" selection-end-line="82" selection-end-column="28" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/plot_signals.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="62" column="4" lean-forward="true" selection-start-line="62" selection-start-column="4" selection-end-line="62" selection-end-column="67" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/detect_features_long_impulse.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="356">
-          <caret line="94" column="61" selection-start-line="94" selection-start-column="61" selection-end-line="94" selection-end-column="61" />
+        <state relative-caret-position="6">
+          <caret line="27" column="3" selection-start-line="27" selection-start-column="3" selection-end-line="27" selection-end-column="3" />
           <folding>
             <element signature="e#150#168#0" expanded="true" />
           </folding>
@@ -462,8 +477,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/get_features_short_impulse.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="356">
-          <caret line="113" column="21" lean-forward="true" selection-start-line="113" selection-start-column="21" selection-end-line="113" selection-end-column="21" />
+        <state relative-caret-position="326">
+          <caret line="94" column="20" lean-forward="true" selection-start-line="94" selection-start-column="20" selection-end-line="94" selection-end-column="20" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

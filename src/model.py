@@ -132,5 +132,5 @@ def model(b, c, vectorfield, t1, t2, amp, stoptime):
     res.append(t)
     for i in range(num_nrns):
         res.append(S[i])
-    return res
+    return res[1:], res[0]
 
