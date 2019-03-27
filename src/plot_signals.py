@@ -51,14 +51,13 @@ if __name__ == '__main__':
     params = json.load(file)
     b = np.array(params["b"])
     c = np.array(params["c"])
-    t1 = params["t1"]
+    t1 = 11500#params["t1"]
     t2 = params["t2"]
-    amp = 0 #params["amp"]
+    amp = 300 #params["amp"]
     starttime = 5000
     stoptime = 60000
-    res = model(b, c, vectorfield, t1, t2, amp, stoptime)
-    t = res[0]
-    signals = res[1:]
+    signals, t = model(b, c, vectorfield, t1, t2, amp, stoptime)
+
     labels = ["PreI","EarlyI", "PostI", "AugE", "RampI", "Relay", "NTS1", "NTS2", "NTS3", "KF","Motor_HN", "Motor_PN", "Motor_VN","KF_inh", "NTS_inh"]
     filename = "test"
     plot_signals(t, signals, labels, starttime, stoptime, filename)

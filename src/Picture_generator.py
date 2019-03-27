@@ -15,14 +15,14 @@ def nice_error_bar(x,y,error, title, xlabel,ylabel):
     plt.show()
 
 
-info = pickle.load(open("features_var_amp_2.pkl",'rb+'))
-amps = info['amps']
-periods = info['periods']
-period_stds = info['period_stds']
-rough_periods = info['rough_periods']
-num_swallows = info['num_swallows_s']
-num_breakthroughs_AugE = info['num_breakthroughs_AugE_s']
-num_breakthroughs_PreI = info['num_breakthroughs_PreI_s']
+info_amp = pickle.load(open("features_var_amp_2.pkl",'rb+'))
+amps = info_amp['amps']
+periods = info_amp['periods']
+period_stds = info_amp['period_stds']
+rough_periods = info_amp['rough_periods']
+num_swallows = info_amp['num_swallows_s']
+num_breakthroughs_AugE = info_amp['num_breakthroughs_AugE_s']
+num_breakthroughs_PreI = info_amp['num_breakthroughs_PreI_s']
 
 #PLOTTING PERIOD AND STD
 # title = "Swallowing period and standard deviation"
@@ -63,3 +63,63 @@ num_breakthroughs_PreI = info['num_breakthroughs_PreI_s']
 # y = np.mean(num_breakthroughs_PreI, axis = 1)[start_idx:]
 # error = np.std(num_breakthroughs_PreI, axis = 1)[start_idx:]
 # nice_error_bar(x,y,error,title,xlabel,ylabel)
+
+info_phase = pickle.load(open("features_var_phase_2.pkl",'rb+'))
+shifts = info_phase['shift']
+Ti_0s = info_phase['Ti_0s']
+T0s = info_phase['T0s']
+T1s = info_phase['T1s']
+Phis = info_phase['Phis']
+Thetas = info_phase['Thetas']
+Ti_1s = info_phase['Ti_1s']
+Ti_2s = info_phase['Ti_2s']
+
+#PLOTTNG Ti_0 from shifts
+title = "Dependence of number Ti_0 on shift"
+xlabel = "shift"
+ylabel = "Ti_0"
+start_idx = 0
+x = shifts[start_idx:]
+y = np.mean(Ti_0s, axis = 1)[start_idx:]
+error = np.std(Ti_0s, axis = 1)[start_idx:]
+nice_error_bar(x,y,error,title,xlabel,ylabel)
+
+#PLOTTNG Ti_0 from shifts
+title = "Dependence of number T0 on shift"
+xlabel = "shift"
+ylabel = "T0"
+start_idx = 0
+x = shifts[start_idx:]
+y = np.mean(T0s, axis = 1)[start_idx:]
+error = np.std(T0s, axis = 1)[start_idx:]
+nice_error_bar(x,y,error,title,xlabel,ylabel)
+
+#PLOTTNG T1 from shifts
+title = "Dependence of T1 on shift"
+xlabel = "shift"
+ylabel = "T1"
+start_idx = 0
+x = shifts[start_idx:]
+y = np.mean(T1s, axis = 1)[start_idx:]
+error = np.std(T1s, axis = 1)[start_idx:]
+nice_error_bar(x,y,error,title,xlabel,ylabel)
+
+# PLOTTNG Phis from shifts
+title = "Dependence of Phis on shift"
+xlabel = "shift"
+ylabel = "Phis"
+start_idx = 0
+x = shifts[start_idx:]
+y = np.mean(Phis, axis = 1)[start_idx:]
+error = np.std(Phis, axis = 1)[start_idx:]
+nice_error_bar(x,y,error,title,xlabel,ylabel)
+
+# PLOTTNG Thetas from shifts
+title = "Dependence of Thetas on shift"
+xlabel = "shift"
+ylabel = "Thetas"
+start_idx = 0
+x = shifts[start_idx:]
+y = np.mean(Thetas, axis = 1)[start_idx:]
+error = np.std(Thetas, axis = 1)[start_idx:]
+nice_error_bar(x,y,error,title,xlabel,ylabel)
