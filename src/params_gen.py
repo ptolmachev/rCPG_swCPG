@@ -6,7 +6,7 @@ params = dict()
 num_nrns = 15
 num_drives = 3
 # x = [0.5,1.0,7.0][1] # Disinh-inh of NTS
-y = [0.1, 0.7, 9.0][2] # Disinh-inh of KF
+y = [0.1, 0.7, 9.0][0] # Disinh-inh of KF
 
 # 0- PreI   # 1 - EarlyI  # 2 - PostI
 # 3 - AugE  # 4 - RampI   # 5 - Relay
@@ -40,7 +40,7 @@ b[9,8] = 1.2 # KF -> NTS3
 # negative weights
 b[1,2] = -0.15 #EarlyI -> PostI
 b[1,3] = -0.39 #EarlyI -> AugE
-# b[1,6] = -0.1 #EarlyI -> NTS1
+b[1,7] = -0.01 #EarlyI -> NTS2
 b[1,4] = -0.15  #EarlyI1 -> RampI
 b[2,0] = -0.1 #PostI -> PreI
 b[2,1] = -0.1 #PostI -> EarlyI
@@ -54,9 +54,11 @@ b[3,4] = -0.2  #AugE -> RampI
 b[3,0] = -0.2  #AugE -> PreI
 b[3,1] = -0.3  #AugE -> EarlyI
 b[3,2] = -0.5  #AugE -> PostI
+b[3,6] = -0.03  #AugE -> NTS1
+b[3,7] = -0.03  #AugE -> NTS2
 b[6,7] = -0.3 #NTS1 -> NTS2
 # b[6,8] = -0.05*x #NTS1 -> NTS3
-b[7,6] = -0.3 #NTS2 -> NTS1
+b[7,6] = -0.285 #NTS2 -> NTS1
 # b[7,8] = -0.05*x #NTS2 -> NTS3
 
 b[9,6] = -0.025 #KF -> NTS1
@@ -75,8 +77,8 @@ c[0,1] = 0.0 #To EarlyI
 c[0,2] = 0.07 #To PostI
 c[0,3] = 0.1 #To AugE
 c[0,4] = 0.0 #To RampI
-c[0,6] = 0.7 #To NTS1
-c[0,7] = 0.8 #To NTS2
+c[0,6] = 0.69 #To NTS1
+c[0,7] = 0.82 #To NTS2
 c[0,8] = 0.4 #To NTS3
 c[0,9] = 1.6 #To KF
 c[0,13] = 0.7 #To KF_inh
