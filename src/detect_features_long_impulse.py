@@ -77,8 +77,8 @@ if __name__ == '__main__':
     params = json.load(file)
     b = np.array(params["b"])
     c = np.array(params["c"])
-    t1_s = [8000, 10000,17500, 20000, 25000, 27500, 30500, 35000, 37500,25000 + 100*np.random.randn(), 30500 + 100*np.random.randn()]
-    amps = [100 + i*3 for i in range(120)]
+    t1_s = [8000, 10000, 17500, 20000, 25000, 27500, 30500, 35000, 37500,25000 + 100*np.random.randn(), 30500 + 100*np.random.randn()]
+    amps = [700 + i*3 for i in range(50)]
     periods = np.empty((len(amps), len(t1_s)), dtype = float)
     period_stds = np.empty((len(amps), len(t1_s)), dtype = float)
     rough_periods = np.empty((len(amps), len(t1_s)), dtype = float)
@@ -92,9 +92,7 @@ if __name__ == '__main__':
             print("Amp: {}, time : {}".format(amp, t1))
             t2 = t1 + 10000
             stoptime = 60000
-            res = model(b, c, vectorfield, t1, t2, amp, stoptime)
-            t = res[0]
-            signals = res[1:]
+            signals, t = model(b, c, vectorfield, t1, t2, amp, stoptime)
             period, period_std, rough_period, num_swallows, num_breakthroughs_PreI, num_breakthroughs_AugE = get_features_long_impulse(signals,t, t1, t2)
             periods[i,j] = period
             period_stds[i,j] = period_std
@@ -127,6 +125,6 @@ if __name__ == '__main__':
     nice_plot(num_breakthroughs_AugE_s_avg)
     nice_plot(num_breakthroughs_PreI_s_avg)
 
-    pickle.dump(info, open('features_var_amp_2.pkl', 'wb+'))
+    pickle.dump(info, open('features_var_amp_4.pkl', 'wb+'))
 
 

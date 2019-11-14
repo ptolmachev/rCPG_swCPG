@@ -68,63 +68,82 @@ y = np.mean(num_breakthroughs_PreI, axis = 1)[start_idx:]
 error = np.std(num_breakthroughs_PreI, axis = 1)[start_idx:]
 nice_error_bar(x,y,error,title,xlabel,ylabel, title)
 
-info_phase = pickle.load(open("features_var_phase.pkl",'rb+'))
+# info_phase = pickle.load(open("features_var_phase_3.pkl",'rb+'))
+#
+# shifts = info_phase['shift']
+# Ti_0s = info_phase['Ti_0s']
+# T0s = info_phase['T0s']
+# T1s = info_phase['T1s']
+# Phis = ((info_phase['Phis']/T0s) % 1.0)*2*np.pi
+# Thetas = info_phase['Thetas']
+# Ti_1s = info_phase['Ti_1s']
+# Ti_2s = info_phase['Ti_2s']
 
-shifts = info_phase['shift']
-Ti_0s = info_phase['Ti_0s']
-T0s = info_phase['T0s']
-T1s = info_phase['T1s']
-Phis = info_phase['Phis']
-Thetas = info_phase['Thetas']
-Ti_1s = info_phase['Ti_1s']
-Ti_2s = info_phase['Ti_2s']
+# #PLOTTNG Ti_0 from shifts
+# title = "Dependence of $Ti_0$ on shift"
+# xlabel = "Shift (in ms)"
+# ylabel = "$T_{i0}$"
+# start_idx = 0
+# x = np.mean(Phis, axis = 1)[start_idx:]
+# y = np.mean(Ti_0s, axis = 1)[start_idx:]
+# error = np.std(Ti_0s, axis = 1)[start_idx:]
+# nice_error_bar(x,y,error,title,xlabel,ylabel, title)
+#
+# #PLOTTNG Ti_0 from shifts
+# title = "Dependence of $T_0$ on shift"
+# xlabel = "Shift (in ms)"
+# ylabel = "$T_0$"
+# start_idx = 0
+# x = np.mean(Phis, axis = 1)[start_idx:]
+# y = np.mean(T0s, axis = 1)[start_idx:]
+# error = np.std(T0s, axis = 1)[start_idx:]
+# nice_error_bar(x,y,error,title,xlabel,ylabel, title)
+#
+# #PLOTTNG T1 from shifts
+# title = "Dependence of $T_1$ on shift"
+# xlabel = "Shift (in ms)"
+# ylabel = "$T_{1}$"
+# start_idx = 0
+# x = np.mean(Phis, axis = 1)[start_idx:]
+# y = np.mean(T1s, axis = 1)[start_idx:]
+# error = np.std(T1s, axis = 1)[start_idx:]
+# nice_error_bar(x,y,error,title,xlabel,ylabel, title)
+#
+# # PLOTTNG Phis from shifts
+# title = "Dependence of $\Phi$ on shift"
+# xlabel = "Shift (in ms)"
+# ylabel = "$\Phi$"
+# start_idx = 0
+# x = np.mean(Phis, axis = 1)[start_idx:]
+# y = np.mean(Phis, axis = 1)[start_idx:]
+# error = np.std(Phis, axis = 1)[start_idx:]
+# nice_error_bar(x,y,error,title,xlabel,ylabel, title)
+#
+# # PLOTTNG Thetas from shifts
+# title = "Dependence of $\Theta$ on shift"
+# xlabel = "Shift (in ms)"
+# ylabel = "$\Theta$"
+# start_idx = 0
+# x = np.mean(Phis, axis = 1)[start_idx:]
+# y = np.mean(Thetas, axis = 1)[start_idx:]
+# error = np.std(Thetas, axis = 1)[start_idx:]
+# nice_error_bar(x,y,error,title,xlabel,ylabel, title)
 
-#PLOTTNG Ti_0 from shifts
-title = "Dependence of $Ti_0$ on shift"
-xlabel = "Shift (in ms)"
-ylabel = "$T_{i0}$"
-start_idx = 0
-x = shifts[start_idx:]
-y = np.mean(Ti_0s, axis = 1)[start_idx:]
-error = np.std(Ti_0s, axis = 1)[start_idx:]
-nice_error_bar(x,y,error,title,xlabel,ylabel, title)
+# # PLOTTNG Thetas from shifts
+# title = "Dependence of $\Delta \Theta$ on \phi"
+# xlabel = "Phis (in ms)"
+# ylabel = "$\Delta \Theta"
+# start_idx = 0
+# x = np.mean(Phis, axis = 1)[start_idx:]
+# y = np.mean((T1s - T0s)/T0s, axis = 1)[start_idx:]
+# error = np.std((T1s - T0s)/T0s, axis = 1)[start_idx:]
+# nice_error_bar(x,y,error,title,xlabel,ylabel, title)
 
-#PLOTTNG Ti_0 from shifts
-title = "Dependence of $T_0$ on shift"
-xlabel = "Shift (in ms)"
-ylabel = "$T_0$"
-start_idx = 0
-x = shifts[start_idx:]
-y = np.mean(T0s, axis = 1)[start_idx:]
-error = np.std(T0s, axis = 1)[start_idx:]
-nice_error_bar(x,y,error,title,xlabel,ylabel, title)
-
-#PLOTTNG T1 from shifts
-title = "Dependence of $T_1$ on shift"
-xlabel = "Shift (in ms)"
-ylabel = "$T_{1}$"
-start_idx = 0
-x = shifts[start_idx:]
-y = np.mean(T1s, axis = 1)[start_idx:]
-error = np.std(T1s, axis = 1)[start_idx:]
-nice_error_bar(x,y,error,title,xlabel,ylabel, title)
-
-# PLOTTNG Phis from shifts
-title = "Dependence of $\Phi$ on shift"
-xlabel = "Shift (in ms)"
-ylabel = "$\Phi$"
-start_idx = 0
-x = shifts[start_idx:]
-y = np.mean(Phis, axis = 1)[start_idx:]
-error = np.std(Phis, axis = 1)[start_idx:]
-nice_error_bar(x,y,error,title,xlabel,ylabel, title)
-
-# PLOTTNG Thetas from shifts
-title = "Dependence of $\Theta$ on shift"
-xlabel = "Shift (in ms)"
-ylabel = "$\Theta$"
-start_idx = 0
-x = shifts[start_idx:]
-y = np.mean(Thetas, axis = 1)[start_idx:]
-error = np.std(Thetas, axis = 1)[start_idx:]
-nice_error_bar(x,y,error,title,xlabel,ylabel, title)
+# title = "Dependence of $(Ti_0s/T0s) on \phi"
+# xlabel = "Phis (in ms)"
+# ylabel = "$\Delta \Theta"
+# start_idx = 0
+# x = np.mean(Phis, axis = 1)[start_idx:]
+# y = np.mean((Ti_0s/T0s), axis = 1)[start_idx:]
+# error = np.std((Ti_0s/T0s), axis = 1)[start_idx:]
+# nice_error_bar(x,y,error,title,xlabel,ylabel, title)
