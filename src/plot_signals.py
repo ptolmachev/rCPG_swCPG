@@ -26,7 +26,7 @@ def plot_signals(t, signals, labels, starttime,stoptime, filename):
         indices = [motor_inds]
     else:
         indices = [non_motor_inds, motor_inds]
-    colors = ['k','r','g','b','y','m','xkcd:tomato','xkcd:lavender', 'xkcd:darkgreen', 'xkcd:plum', 'xkcd:salmon', 'xkcd:coral']
+    colors = ['k','r','g','b','y','m','xkcd:tomato','xkcd:lavender', 'xkcd:darkgreen', 'xkcd:plum', 'xkcd:salmon', 'xkcd:coral', 'xkcd:darkgreen', 'xkcd:plum', 'xkcd:salmon']
 
     figax = [plt.subplots(len(indices[i]), 1, figsize=(30, 2.5*len(indices[i])), facecolor='w', edgecolor='k') for i in range(len(indices))]
     figs = [figax[i][0] for i in range(len(figax))]
@@ -43,7 +43,8 @@ def plot_signals(t, signals, labels, starttime,stoptime, filename):
                 axs[k][i].set_xticklabels([])
             axs[k][i].tick_params(labelsize=25)
 
-        figs[k].savefig("../img/" + filename + "_" + str(k+1))
+        figs[k].savefig("../img/test/" + filename + "_" + str(k+1))
+        figs[k].show()
 #test
 if __name__ == '__main__':
 
@@ -51,11 +52,11 @@ if __name__ == '__main__':
     params = json.load(file)
     b = np.array(params["b"])
     c = np.array(params["c"])
-    t1 = 11500#params["t1"]
-    t2 = params["t2"]
+    t1 = 21500#params["t1"]
+    t2 = 32500#params["t2"]
     amp = 300 #params["amp"]
     starttime = 5000
-    stoptime = 60000
+    stoptime = 50000
     signals, t = model(b, c, vectorfield, t1, t2, amp, stoptime)
 
     labels = ["PreI","EarlyI", "PostI", "AugE", "RampI", "Relay", "NTS1", "NTS2", "NTS3", "KF","Motor_HN", "Motor_PN", "Motor_VN","KF_inh", "NTS_inh"]

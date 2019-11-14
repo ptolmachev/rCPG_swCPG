@@ -108,6 +108,7 @@ def model(b, c, vectorfield, t1, t2, amp, stoptime):
     # Pack up the parameters and initial conditions:
     p = [Capacity, gl, gnap, gk, gad, gsynE, gsynI, Ena, Ek, El, EsynE, EsynI, vhalf, kv, tnapmax, tad, kad, b, c, d, t1, t2, amp]
     np.random.seed(0)
+    #initial variables
     V0 = -70 + 40 * np.random.rand(num_nrns)
     M0 = np.random.rand(num_nrns)
     w0 = []
@@ -119,6 +120,7 @@ def model(b, c, vectorfield, t1, t2, amp, stoptime):
     # Call the ODE solver.
     wsol = odeint(vectorfield, w0, t, args=(p,))
 
+    #what is State
     S = [[] for i in range(num_nrns)]
     res = []
     res.append(np.array(t))
@@ -127,9 +129,9 @@ def model(b, c, vectorfield, t1, t2, amp, stoptime):
             S[i].append(fun(w[i],vhalf,kv))
     S = [np.array(x) for x in S]
 
-    res = []
-
-    res.append(t)
+    # res = []
+    #
+    # # res.append(t)
     for i in range(num_nrns):
         res.append(S[i])
     return res[1:], res[0]
