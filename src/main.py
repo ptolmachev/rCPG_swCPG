@@ -18,6 +18,6 @@ b = np.array(params["b"])
 c = np.array(params["c"])
 
 labels = ["PreI","EarlyI", "PostI", "AugE", "RampI", "Relay", "NTS1", "NTS2", "NTS3", "KF","Motor_HN", "Motor_PN", "Motor_VN","KF_inh", "NTS_inh"]
-stoptime = 40000
+stoptime = 60000
 signals, t = model(b, c, vectorfield, 15000, 25000, 500, stoptime)
-plot_signals(t,signals[:-2], labels, 5000, 40000, 'test_peretest')
+plot_signals(t,signals[:-2], labels, 5000, 60000, 'test_peretest')
