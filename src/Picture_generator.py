@@ -19,7 +19,7 @@ def nice_error_bar(x,y,error, title, xlabel,ylabel, save_to = None):
         fig.savefig("../img/" + save_to)
 
 
-info_amp = pickle.load(open("features_var_amp_2.pkl",'rb+'))
+info_amp = pickle.load(open("features_var_amp_5.pkl",'rb+'))
 amps = info_amp['amps']
 periods = info_amp['periods']
 period_stds = info_amp['period_stds']
