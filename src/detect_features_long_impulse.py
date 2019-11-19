@@ -78,7 +78,7 @@ if __name__ == '__main__':
     b = np.array(params["b"])
     c = np.array(params["c"])
     t1_s = [8000, 10000, 17500, 20000, 25000, 27500, 30500, 35000, 37500,25000 + 100*np.random.randn(), 30500 + 100*np.random.randn()]
-    amps = [700 + i*3 for i in range(50)]
+    amps = [150 + i*3 for i in range(150)]
     periods = np.empty((len(amps), len(t1_s)), dtype = float)
     period_stds = np.empty((len(amps), len(t1_s)), dtype = float)
     rough_periods = np.empty((len(amps), len(t1_s)), dtype = float)
@@ -125,6 +125,6 @@ if __name__ == '__main__':
     nice_plot(num_breakthroughs_AugE_s_avg)
     nice_plot(num_breakthroughs_PreI_s_avg)
 
-    pickle.dump(info, open('features_var_amp_4.pkl', 'wb+'))
+    pickle.dump(info, open('features_var_amp_5.pkl', 'wb+'))
 
 
