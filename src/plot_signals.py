@@ -52,8 +52,8 @@ if __name__ == '__main__':
     params = json.load(file)
     b = np.array(params["b"])
     c = np.array(params["c"])
-    t1 = 21500#params["t1"]
-    t2 = 32500#params["t2"]
+    t1 = 31500#params["t1"]
+    t2 = 42500#params["t2"]
     amp = 400 #params["amp"]
     starttime = 15000
     stoptime = 65000
