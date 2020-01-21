@@ -54,9 +54,9 @@ if __name__ == '__main__':
     c = np.array(params["c"])
     t1 = 21500#params["t1"]
     t2 = 32500#params["t2"]
-    amp = 300 #params["amp"]
-    starttime = 5000
-    stoptime = 50000
+    amp = 400 #params["amp"]
+    starttime = 15000
+    stoptime = 65000
     signals, t = model(b, c, vectorfield, t1, t2, amp, stoptime)
 
     labels = ["PreI","EarlyI", "PostI", "AugE", "RampI", "Relay", "NTS1", "NTS2", "NTS3", "KF","Motor_HN", "Motor_PN", "Motor_VN","KF_inh", "NTS_inh"]
