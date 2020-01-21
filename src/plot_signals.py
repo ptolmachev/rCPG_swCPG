@@ -34,7 +34,7 @@ def plot_signals(t, signals, labels, starttime,stoptime, filename):
     for k in range(len(indices)):
         for i in range(len(indices[k])):
             j = indices[k][i]
-            axs[k][i].plot(t, signals[j], colors[i],label=labels[j],linewidth = 3)
+            axs[k][i].plot(t, signals[j], colors[i],label=labels[j], linewidth = 3)
             axs[k][i].legend(loc = 1,fontsize = 25)
             axs[k][i].grid(True)
             ylim = 1 #(max(signals[i][xlim[0]:xlim[1]]) if max(signals[i])>0.1 else 1)
@@ -43,7 +43,7 @@ def plot_signals(t, signals, labels, starttime,stoptime, filename):
                 axs[k][i].set_xticklabels([])
             axs[k][i].tick_params(labelsize=25)
 
-        figs[k].savefig("../img/test/" + filename + "_" + str(k+1))
+        figs[k].savefig("../img/Model_21_01_2020/" + filename + "_" + str(k+1))
         figs[k].show()
 #test
 if __name__ == '__main__':
@@ -60,5 +60,5 @@ if __name__ == '__main__':
     signals, t = model(b, c, vectorfield, t1, t2, amp, stoptime)
 
     labels = ["PreI","EarlyI", "PostI", "AugE", "RampI", "Relay", "NTS1", "NTS2", "NTS3", "KF","Motor_HN", "Motor_PN", "Motor_VN","KF_inh", "NTS_inh"]
-    filename = "test"
+    filename = "intact"
     plot_signals(t, signals, labels, starttime, stoptime, filename)

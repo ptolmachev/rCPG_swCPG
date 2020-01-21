@@ -5,8 +5,8 @@ params = dict()
 
 num_nrns = 15
 num_drives = 3
-x = [0.5,1.0, 3.2][2] # Disinh-inh of NTS
-y = [0.1, 0.7, 4][1] # Disinh-inh of KF
+x = [0.5, 1.0, 3.2][1] # Disinh-inh of NTS
+y = [0.0, 0.7, 4][1] # Disinh-inh of KF
 
 # 0- PreI   # 1 - EarlyI  # 2 - PostI
 # 3 - AugE  # 4 - RampI   # 5 - Relay
@@ -15,8 +15,8 @@ y = [0.1, 0.7, 4][1] # Disinh-inh of KF
 # 12 - M_VN # 13 - KF_inh # 14 - NTS_inh
 b = np.zeros((num_nrns, num_nrns))
 # positive weights
-b[0,0] = 0.2  #PreI -> PreI
-b[0,1] = 0.6  #PreI -> EarlyI
+b[0,0] = 0.00  #PreI -> PreI
+b[0,1] = 0.45  #PreI -> EarlyI
 b[0,4] = 0.9  #PreI -> RampI
 b[0,10] = 1.5 # PreI -> M_HN
 b[2,12] = 1.7 # PostI -> M_VN
@@ -32,35 +32,36 @@ b[6,12] = 1.0 # NTS1 -> M_VN
 # b[6,3] = 0.25 # NTS1 -> AugE
 # b[7,2] = 0.2 # NTS2 -> PostI
 # b[7,3] = 0.25 # NTS2 -> AugE
-b[8,1] = 0.2 # NTS3 -> PreI
+b[8,1] = 0.1 # NTS3 -> PreI
 b[8,3] = 0.1 # NTS3 -> AugE
-b[8,2] = 0.5 # NTS3 -> PostI
-b[9,2] = 0.55 # KF -> PostI
+b[8,2] = 0.1 # NTS3 -> PostI
+b[9,2] = 0.2 # KF -> PostI
 b[9,3] = 0.1 # KF -> AugE
 b[9,8] = 1.2 # KF -> NTS3
 
 factor1=0.4
 # negative weights
-b[1,2] = -0.35 #EarlyI -> PostI
-b[1,3] = -0.45 #EarlyI -> AugE
+b[1,2] = -0.4 #EarlyI -> PostI
+b[1,3] = -1.2 #EarlyI -> AugE
 b[1,6] = -0.3  #EarlyI -> NTS1
 b[1,7] = -0.3  #EarlyI -> NTS2
 b[1,4] = -0.15 #EarlyI1 -> RampI
 
-b[2,0] = -0.25  #PostI -> PreI
-b[2,1] = -0.37  #PostI -> EarlyI
-b[2,3] = -0.59  #PostI -> AugE
-b[2,4] = -0.15   #PostI -> RampI
+b[2,0] = -0.15    #PostI -> PreI
+b[2,1] = -0.15   #PostI -> EarlyI
+b[2,3] = -0.3   #PostI -> AugE
+b[2,4] = -0.1   #PostI -> RampI
 b[2,6] = -0.005  #PostI -> NTS1
 b[2,7] = -0.005  #PostI -> NTS2
 
 
-b[3,4] = -0.15  #AugE -> RampI
-b[3,0] = -0.3  #AugE -> PreI
-b[3,1] = -0.2  #AugE -> EarlyI
-b[3,2] = -0.45 #AugE -> PostI
-b[3,6] = -0.02  #AugE -> NTS1
-b[3,7] = -0.02  #AugE -> NTS2
+b[3,4] = -0.2   #AugE -> RampI
+b[3,0] = -0.1  #AugE -> PreI
+b[3,1] = -0.1  #AugE -> EarlyI
+b[3,2] = -0.03 #AugE -> PostI
+b[3,6] = -0.0   #AugE -> NTS1
+b[3,7] = -0.0   #AugE -> NTS2
+b[3,9] = -0.01  #AugE -> KF
 
 # b[6,7] = -0.3 #NTS1 -> NTS2
 # b[7,6] = -0.285 #NTS2 -> NTS1
@@ -80,10 +81,10 @@ b[14,8] = -0.2*x #NTS_inh -> NTS2
 
 c = np.zeros((num_drives, num_nrns))
 # other
-c[0,0] = 0.15 #To PreI
+c[0,0] = 0.07 #To PreI
 c[0,1] = 0.2 #To EarlyI
-c[0,2] = 0.07 #To PostI
-c[0,3] = 0.18 #To AugE
+c[0,2] = 0.28 #To PostI
+c[0,3] = 0.47 #To AugE
 c[0,4] = 0.3 #To RampI
 c[0,6] = 0.69 #To NTS1
 c[0,7] = 0.82 #To NTS2
@@ -91,10 +92,7 @@ c[0,8] = 0.4 #To NTS3
 c[0,9] = 1.6 #To KF
 c[0,13] = 0.7 #To KF_inh
 c[0,14] = 0.4 #To NTS_inh
-#Rtn/BotC
-c[1,0] = 0.0 #To PreI
-c[1,1] = 0.0 #To EarlyI
-c[1,3] = 0.25 #To AugE
+
 
 #PreBotC
 c[2,0] = 0.025 #To PreI
