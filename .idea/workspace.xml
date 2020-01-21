@@ -2,16 +2,24 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="eebbf286-5f0d-44eb-8bff-357892bdab06" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/experimental_data_processing/processing_utils.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/experimental_data_processing/reading_experimental_data.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/model_with_izhikevich_neurons.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/exp_data_processing.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/experimental_data_processing/exp_data_processing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/Phi_on_shift.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/T0_on_shift.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/T1_on_shift.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/Theta_on_shift.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/Ti_0_on_shift.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/simulation_pictures.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/test_0_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/test_0_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/test_1_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/test_1_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/experimental_data_processing/.ipynb_checkpoints/Processing and plots-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/experimental_data_processing/.ipynb_checkpoints/Processing and plots-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/experimental_data_processing/Processing and plots.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/experimental_data_processing/Processing and plots.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/params_gen.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/params_gen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/plot_signals.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/plot_signals.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/rCPG_swCPG.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/rCPG_swCPG.json" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -37,36 +45,23 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="67" />
-    <option name="y" value="27" />
-    <option name="width" value="907" />
-    <option name="height" value="789" />
-  </component>
   <component name="ProjectId" id="1SUrqu14JCZJd50455rI6y7DtCX" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Hopfield_Nets" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/experimental_data_processing" />
     </key>
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
-  </component>
-  <component name="RunManager" selected="Python.reading_experimental_data">
-    <configuration name="Picture_generator" type="PythonConfigurationType" factoryName="Python" temporary="true">
+  <component name="RunManager" selected="Python.plot_signals">
+    <configuration name="model" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="rCPG_swCPG" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -78,7 +73,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/Picture_generator.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/model.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -87,7 +82,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="detect_features" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="model_with_izhikevich_neurons" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="rCPG_swCPG" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -99,7 +94,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/detect_features_long_impulse.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/model_with_izhikevich_neurons.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -108,7 +103,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="get_features_short_impulse" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="params_gen" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="rCPG_swCPG" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -120,7 +115,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/get_features_short_impulse.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/params_gen.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -129,7 +124,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="plot_signals" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="plot_signals" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="rCPG_swCPG" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -173,13 +168,25 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.reading_experimental_data" />
-        <item itemvalue="Python.Picture_generator" />
-        <item itemvalue="Python.get_features_short_impulse" />
         <item itemvalue="Python.plot_signals" />
-        <item itemvalue="Python.detect_features" />
+        <item itemvalue="Python.params_gen" />
+        <item itemvalue="Python.model_with_izhikevich_neurons" />
+        <item itemvalue="Python.model" />
+        <item itemvalue="Python.reading_experimental_data" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -207,6 +214,48 @@
       </map>
     </option>
   </component>
+  <component name="WindowStateProjectService">
+    <state x="860" y="164" width="924" height="916" key="#xdebugger.evaluate" timestamp="1579522761220">
+      <screen x="70" y="27" width="1850" height="1053" />
+    </state>
+    <state x="860" y="164" width="924" height="916" key="#xdebugger.evaluate/70.27.1850.1053@70.27.1850.1053" timestamp="1579522761220" />
+    <state width="1827" height="274" key="GridCell.Tab.0.bottom" timestamp="1579571692693">
+      <screen x="70" y="27" width="1850" height="1053" />
+    </state>
+    <state width="1827" height="274" key="GridCell.Tab.0.bottom/70.27.1850.1053@70.27.1850.1053" timestamp="1579571692693" />
+    <state width="1827" height="274" key="GridCell.Tab.0.center" timestamp="1579571692693">
+      <screen x="70" y="27" width="1850" height="1053" />
+    </state>
+    <state width="1827" height="274" key="GridCell.Tab.0.center/70.27.1850.1053@70.27.1850.1053" timestamp="1579571692693" />
+    <state width="1827" height="274" key="GridCell.Tab.0.left" timestamp="1579571692692">
+      <screen x="70" y="27" width="1850" height="1053" />
+    </state>
+    <state width="1827" height="274" key="GridCell.Tab.0.left/70.27.1850.1053@70.27.1850.1053" timestamp="1579571692692" />
+    <state width="1827" height="274" key="GridCell.Tab.0.right" timestamp="1579571692693">
+      <screen x="70" y="27" width="1850" height="1053" />
+    </state>
+    <state width="1827" height="274" key="GridCell.Tab.0.right/70.27.1850.1053@70.27.1850.1053" timestamp="1579571692693" />
+    <state width="1827" height="340" key="GridCell.Tab.1.bottom" timestamp="1579522763714">
+      <screen x="70" y="27" width="1850" height="1053" />
+    </state>
+    <state width="1827" height="340" key="GridCell.Tab.1.bottom/70.27.1850.1053@70.27.1850.1053" timestamp="1579522763714" />
+    <state width="1827" height="340" key="GridCell.Tab.1.center" timestamp="1579522763713">
+      <screen x="70" y="27" width="1850" height="1053" />
+    </state>
+    <state width="1827" height="340" key="GridCell.Tab.1.center/70.27.1850.1053@70.27.1850.1053" timestamp="1579522763713" />
+    <state width="1827" height="340" key="GridCell.Tab.1.left" timestamp="1579522763712">
+      <screen x="70" y="27" width="1850" height="1053" />
+    </state>
+    <state width="1827" height="340" key="GridCell.Tab.1.left/70.27.1850.1053@70.27.1850.1053" timestamp="1579522763712" />
+    <state width="1827" height="340" key="GridCell.Tab.1.right" timestamp="1579522763714">
+      <screen x="70" y="27" width="1850" height="1053" />
+    </state>
+    <state width="1827" height="340" key="GridCell.Tab.1.right/70.27.1850.1053@70.27.1850.1053" timestamp="1579522763714" />
+    <state x="651" y="381" key="com.intellij.ide.util.TipDialog" timestamp="1579521715959">
+      <screen x="70" y="27" width="1850" height="1053" />
+    </state>
+    <state x="651" y="381" key="com.intellij.ide.util.TipDialog/70.27.1850.1053@70.27.1850.1053" timestamp="1579521715959" />
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
@@ -220,56 +269,17 @@
           <line>92</line>
           <option name="timeStamp" value="25" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/model_with_izhikevich_neurons.py</url>
+          <line>194</line>
+          <option name="timeStamp" value="33" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/model_with_izhikevich_neurons.py</url>
+          <line>192</line>
+          <option name="timeStamp" value="34" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
-  </component>
-  <component name="debuggerHistoryManager">
-    <expressions id="evaluateExpression">
-      <expression>
-        <expression-string>t[1]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>t[0]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>PreI_begins</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>res[0]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>len(res[0])</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>len(res)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>res</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>np.array([T*i/3 for i in range(3)])*(t[-1])/len(t)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>np.array([T*i/3 for i in range(3)])</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-    </expressions>
   </component>
 </project>

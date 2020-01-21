@@ -1,0 +1,36 @@
+objects.o: objects.cpp objects.h synapses_classes.h brianlib/spikequeue.h \
+ brianlib/stdint_compat.h brianlib/clocks.h brianlib/stdint_compat.h \
+ brianlib/dynamic_array.h brianlib/stdint_compat.h network.h \
+ brianlib/randomkit/randomkit.h
+main.o: main.cpp objects.h synapses_classes.h brianlib/spikequeue.h \
+ brianlib/stdint_compat.h brianlib/clocks.h brianlib/stdint_compat.h \
+ brianlib/dynamic_array.h brianlib/stdint_compat.h network.h \
+ brianlib/randomkit/randomkit.h run.h brianlib/common_math.h \
+ code_objects/synapses_1_synapses_create_generator_codeobject.h objects.h \
+ code_objects/synapses_synapses_create_generator_codeobject.h
+synapses_synapses_create_generator_codeobject.o: \
+ code_objects/synapses_synapses_create_generator_codeobject.cpp objects.h \
+ synapses_classes.h brianlib/spikequeue.h brianlib/stdint_compat.h \
+ brianlib/clocks.h brianlib/stdint_compat.h brianlib/dynamic_array.h \
+ brianlib/stdint_compat.h network.h brianlib/randomkit/randomkit.h \
+ code_objects/synapses_synapses_create_generator_codeobject.h \
+ brianlib/common_math.h synapses_classes.h
+synapses_1_synapses_create_generator_codeobject.o: \
+ code_objects/synapses_1_synapses_create_generator_codeobject.cpp \
+ objects.h synapses_classes.h brianlib/spikequeue.h \
+ brianlib/stdint_compat.h brianlib/clocks.h brianlib/stdint_compat.h \
+ brianlib/dynamic_array.h brianlib/stdint_compat.h network.h \
+ brianlib/randomkit/randomkit.h \
+ code_objects/synapses_1_synapses_create_generator_codeobject.h \
+ brianlib/common_math.h synapses_classes.h
+network.o: network.cpp network.h brianlib/clocks.h \
+ brianlib/stdint_compat.h
+synapses_classes.o: synapses_classes.cpp
+run.o: run.cpp objects.h synapses_classes.h brianlib/spikequeue.h \
+ brianlib/stdint_compat.h brianlib/clocks.h brianlib/stdint_compat.h \
+ brianlib/dynamic_array.h brianlib/stdint_compat.h network.h \
+ brianlib/randomkit/randomkit.h \
+ code_objects/synapses_1_synapses_create_generator_codeobject.h objects.h \
+ code_objects/synapses_synapses_create_generator_codeobject.h
+randomkit.o: brianlib/randomkit/randomkit.c \
+ brianlib/randomkit/randomkit.h
