@@ -43,7 +43,7 @@ def plot_signals(t, signals, labels, starttime,stoptime, filename):
                 axs[k][i].set_xticklabels([])
             axs[k][i].tick_params(labelsize=25)
 
-        figs[k].savefig("../img/Model_21_01_2020/" + filename + "_" + str(k+1))
+        figs[k].savefig("../img/Model_22_01_2020/" + filename + "_" + str(k+1))
         figs[k].show()
 #test
 if __name__ == '__main__':
@@ -59,6 +59,6 @@ if __name__ == '__main__':
     stoptime = 65000
     signals, t = model(b, c, vectorfield, t1, t2, amp, stoptime)
 
-    labels = ["PreI","EarlyI", "PostI", "AugE", "RampI", "Relay", "NTS1", "NTS2", "NTS3", "KF","Motor_HN", "Motor_PN", "Motor_VN","KF_inh", "NTS_inh"]
+    labels = ["PreI","EarlyI", "PostI", "AugE", "RampI", "Relay", "NTS1", "NTS2", "NTS3", "KF", "Motor_HN", "Motor_PN", "Motor_VN","KF_inh", "NTS_inh"]
     filename = "inh_NTS"
     plot_signals(t, signals, labels, starttime, stoptime, filename)
