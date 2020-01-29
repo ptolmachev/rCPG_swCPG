@@ -92,13 +92,11 @@ def model(b, c, vectorfield, t1, t2, amp, stoptime):
     vhalf = -30
     kv = 4
     tad = 2000*np.ones(num_nrns)
-    tad[2] = 6000 #PostI
-    tad[6] = 6000 #Sw1
-    tad[7] = 6000 #Sw2
+    # tad[2] = 6000 #PostI
+    # tad[6] = 6000 #Sw1
+    # tad[7] = 6000 #Sw2
     tad[0] = 0.0
     kad = 0.9*np.ones(num_nrns)
-    kad[0] = 0.0
-    # kad[2] = 0.75
     tnapmax = 6000
     d = np.ones(num_drives)
     # x1 and x2 are the initial displacements; y1 and y2 are the initial velocities
