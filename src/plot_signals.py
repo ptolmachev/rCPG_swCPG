@@ -59,5 +59,5 @@ if __name__ == '__main__':
     signals, t = model(b, c, vectorfield, t1, t2, amp, stoptime)
 
     labels = ["PreI","EarlyI", "PostI", "AugE", "RampI", "Relay", "NTS1", "NTS2", "NTS3", "KF", "Motor_HN", "Motor_PN", "Motor_VN","KF_inh", "NTS_inh"]
-    filename = "in_KF"
+    filename = "inh_KF"
     plot_signals(t, signals, labels, starttime, stoptime, filename)
