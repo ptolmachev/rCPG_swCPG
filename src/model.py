@@ -8,7 +8,7 @@ def calc_synaptic_currents(gsynE, gsynI, EsynE, EsynI, vhalf, kv, V, b, c, d):
     pos = np.maximum(b, 0)
     neg = np.maximum(-b, 0)
     IsynE = I_tonicE + gsynE*np.array([(V - EsynE)])*np.dot(fun(V, vhalf, kv),pos)
-    IsynI = gsynI*np.array([V - EsynI])*np.dot(fun(V, vhalf, kv),neg)
+    IsynI = gsynI * np.array([V - EsynI])*np.dot(fun(V, vhalf, kv),neg)
     return IsynE.squeeze(), IsynI.squeeze()
 
 def fun(v, vhalf, kv):
@@ -92,11 +92,11 @@ def model(b, c, vectorfield, t1, t2, amp, stoptime):
     vhalf = -30
     kv = 4
     tad = 2000*np.ones(num_nrns)
-    # tad[2] = 6000 #PostI
-    # tad[6] = 6000 #Sw1
-    # tad[7] = 6000 #Sw2
     tad[0] = 0.0
     kad = 0.9*np.ones(num_nrns)
+    kad[10] = 0
+    kad[11] = 0
+    kad[12] = 0
     tnapmax = 6000
     d = np.ones(num_drives)
     # x1 and x2 are the initial displacements; y1 and y2 are the initial velocities
