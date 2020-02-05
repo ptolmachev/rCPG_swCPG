@@ -152,7 +152,8 @@ if __name__ == '__main__':
     PostI = Neural_node(type='both', name='PostI', pos=(-2*r, -3*r), r=r)
     AugE = Neural_node(type='inhibitory', name='AugE', pos=(-2*r, -7*r), r=r)
     RampI  = Neural_node(type='excitatory', name='RampI', pos=(5*r, -5*r), r=r)
-    KF = Neural_node(type='both', name='KF', pos=(-6 * r, -3 * r), r=r)
+    KFi = Neural_node(type='inhibitory', name='KFi', pos=(-6 * r, -2 * r), r=r)
+    KFe = Neural_node(type='excitatory', name='KFe', pos=(-6 * r, -4.5 * r), r=r)
     HN  = Neural_node(type='motor', name='HN', pos=(6 * r, -1*r), r=r)
     PN = Neural_node(type='motor', name='PN', pos=(8 * r, -5 * r), r=r)
     VN = Neural_node(type='motor', name='VN', pos=(6 * r, -9 * r), r=r)
@@ -167,7 +168,8 @@ if __name__ == '__main__':
     PostI.draw(t)
     AugE.draw(t)
     RampI.draw(t)
-    KF.draw(t)
+    KFi.draw(t)
+    KFe.draw(t)
     HN.draw(t)
     PN.draw(t)
     VN.draw(t)
@@ -179,13 +181,14 @@ if __name__ == '__main__':
     b = np.array(params["b"])
     c = np.array(params["c"])
 
-    ## 0- PreI   # 1 - EarlyI  # 2 - PostI
+    # 0- PreI   # 1 - EarlyI  # 2 - PostI
     # 3 - AugE  # 4 - RampI   # 5 - Relay
     # 6 - NTS1  # 7 - NTS2    # 8 - NTS3
-    # 9 - KF    # 10 - M_HN    # 11- M_PN
-    # 12 - M_VN # 13 - KF_inh # 14 - NTS_inh
+    # 9 - KFi   # 10 - KFe    # 11 - M_HN
+    # 12- M_PN  # 13 - M_VN   # 14 - KF_inh
+    # 15 - NTS_inh
     # write table of correpondance of nodes to numbers
-    table = ["PreI", "EarlyI", "PostI", "AugE", "RampI", "Relay", "Sw1", "Sw2", "Sw3", "KF", "HN", "PN", "VN"]
+    table = ["PreI", "EarlyI", "PostI", "AugE", "RampI", "Relay", "Sw1", "Sw2", "Sw3", "KFi", "KFe", "HN", "PN", "VN"]
     for i in range(len(table)):
         for j in range(len(table)):
             if b[i, j] != 0:
