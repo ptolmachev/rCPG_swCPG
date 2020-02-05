@@ -58,6 +58,6 @@ if __name__ == '__main__':
     stoptime = 65000
     signals, t = model(b, c, vectorfield, t1, t2, amp, stoptime)
 
-    labels = ["PreI","EarlyI", "PostI", "AugE", "RampI", "Relay", "NTS1", "NTS2", "NTS3", "KF", "Motor_HN", "Motor_PN", "Motor_VN","KF_inh", "NTS_inh"]
-    filename = ["intact", "inh_KF", "inh_NTS"][2]
+    labels = ["PreI","EarlyI", "PostI", "AugE", "RampI", "Relay", "Sw1", "Sw2", "Sw3", "KFi", "KFe", "Motor_HN", "Motor_PN", "Motor_VN","KF_inh", "NTS_inh"]
+    filename = ["intact", "inh_KF", "inh_NTS"][1]
     plot_signals(t, signals, labels, starttime, stoptime, filename)
