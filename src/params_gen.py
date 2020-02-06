@@ -57,8 +57,8 @@ b[2,6] = -0.005  #PostI -> NTS1
 b[2,7] = -0.005  #PostI -> NTS2
 
 b[3,4] = -0.25  #AugE -> RampI
-b[3,0] = -0.6   #AugE -> PreI
-b[3,1] = -0.47  #AugE -> EarlyI
+b[3,0] = -0.56   #AugE -> PreI
+b[3,1] = -0.46  #AugE -> EarlyI
 b[3,2] = -0.04  #AugE -> PostI
 b[3,6] = -0.0   #AugE -> NTS1
 b[3,7] = -0.0   #AugE -> NTS2
@@ -73,7 +73,8 @@ b[6,0] = -0.4 #NTS1 -> PreI
 b[6,7] = -0.3*x #NTS1 -> NTS2
 b[7,6] = -0.33*x #NTS2 -> NTS1
 
-
+b[9,0] = -0.04 #KFi -> PreI
+b[9,1] = -0.04 #KFi -> EarlyI
 b[9,6] = -0.025 #KFi -> NTS1
 b[9,7] = -0.018 #KFi -> NTS2
 
@@ -86,10 +87,10 @@ b[15,8] = -0.2*x #NTS_inh -> NTS2
 
 c = np.zeros((num_drives, num_nrns))
 # other
-c[0,0] = 0.25 #To PreI
-c[0,1] = 0.34  #To EarlyI
-c[0,2] = 0.04  #To PostI
-c[0,3] = 0.41  #To AugE
+c[0,0] = 0.25+0.04 #To PreI
+c[0,1] = 0.34+0.03  #To EarlyI
+c[0,2] = 0.03  #To PostI
+c[0,3] = 0.39  #To AugE
 c[0,4] = 0.3  #To RampI
 c[0,6] = 0.58 #To NTS1
 c[0,7] = 0.7  #To NTS2
