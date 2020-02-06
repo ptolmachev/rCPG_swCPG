@@ -43,7 +43,7 @@ def plot_signals(t, signals, labels, starttime, stoptime, filename):
                 axs[k][i].set_xticklabels([])
             axs[k][i].tick_params(labelsize=25)
 
-        figs[k].savefig("../img/Model_05_02_2020/" + filename + "_" + str(k+1))
+        figs[k].savefig("../img/Model_06_02_2020/" + filename + "_" + str(k+1))
         figs[k].show()
 #test
 if __name__ == '__main__':
