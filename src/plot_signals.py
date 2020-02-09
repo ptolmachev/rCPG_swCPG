@@ -34,7 +34,7 @@ def plot_signals(t, signals, labels, starttime, stoptime, filename):
     for k in range(len(indices)):
         for i in range(len(indices[k])):
             j = indices[k][i]
-            axs[k][i].plot(t, signals[j], colors[i],label=labels[j], linewidth = 3)
+            axs[k][i].plot(t, signals[j], colors[i], label=labels[j], linewidth = 3)
             axs[k][i].legend(loc = 1,fontsize = 25)
             axs[k][i].grid(True)
             ylim = 1 #(max(signals[i][xlim[0]:xlim[1]]) if max(signals[i])>0.1 else 1)
@@ -42,7 +42,6 @@ def plot_signals(t, signals, labels, starttime, stoptime, filename):
             if i != len(indices[k])-1:
                 axs[k][i].set_xticklabels([])
             axs[k][i].tick_params(labelsize=25)
-
         figs[k].savefig("../img/Model_07_02_2020/" + filename + "_" + str(k+1))
         figs[k].show()
 #test
