@@ -1,60 +1,35 @@
 import numpy as np
-from plot_signals import plot_signals
-from model import *
+# from plot_signals import plot_signals
+from Model import *
+from utils import *
 import json
 from scipy import signal
 from scipy.integrate import odeint
 import scipy
 from matplotlib import pyplot as plt
-from scipy.signal import savgol_filter as sg
 import pickle
 
-def get_period(signals):
-    # for i in range(len(signals)):
-    PreI_change = change(signals[0])
 
-    begins = find_relevant_peaks(PreI_change, 0.1)
-    T = (np.median([begins[i+1] - begins[i] for i in range(len(begins)-1)] ) )
-    std  = (np.std([begins[i+1] - begins[i] for i in range(len(begins)-1)] ) )
-    return T, std
-
-
-def nice_plot(series):
-    fig = plt.figure(figsize = (16,4))
-    plt.grid(True)
-    plt.plot(series, 'r-',linewidth = 2, alpha = 0.7)
-    plt.show()
-
-def change(signal):
-    return np.array([(signal[i+1] - signal[i]) for i in range(len(signal)-1)])
-
-def last_lesser_than(alist, element):
-    #sorted list
-    for i in range(len(alist)):
-        if alist[i] >= element:
-            if i - 1 < 0:
-                raise ValueError("The index can't be negative.")
-            else:
-                return alist[i - 1], i-1
-
-def first_greater_than(alist, element):
-    for i in range(len(alist)):
-        if alist[i] <= element:
-            pass
-        else:
-            return alist[i], i
-    return None
-
-def find_relevant_peaks(signal, threshold):
-    peaks = scipy.signal.find_peaks(signal)[0]
-    return np.array([peaks[i] for i in range(len(peaks)) if abs(signal[peaks[i]]) > threshold])
-
-def get_features_short_impulse(signals,t):
-
+def get_features_short_impulse(signals, t):
     #first one has to cut the relevant signal:
-    labels = ["PreI", "EarlyI", "PostI", "AugE", "RampI", "Relay", "NTS1", "NTS2", "NTS3", "KF", "Motor_HN", "Motor_PN",
-              "Motor_VN", "KF_inh", "NTS_inh"]
-    needed_labels = ["PreI", "PostI", "AugE", "NTS1"]
+    labels = ['PreI',  # 0
+              'EarlyI',  # 1
+              "PostI",  # 2
+              "AugE",  # 3
+              "RampI",  # 4
+              "Relay",  # 5
+              "Sw1",  # 6
+              "Sw2",  # 7
+              "Sw3",  # 8
+              "KF_t",  # 9
+              "KF_p",  # 10
+              "KF_relay",  # 11
+              "HN",  # 12
+              "PN",  # 13
+              "VN",  # 14
+              "KF_inh",  # 15
+              "NTS_inh"]  # 16
+    needed_labels = ["PreI", "PostI", "AugE", "Sw1"]
     signals_relevant = [signals[i] for i in range(len(signals)) if labels[i] in needed_labels]
     filename = "test"
 
@@ -108,7 +83,6 @@ if __name__ == '__main__':
     b = np.array(params["b"])
     c = np.array(params["c"])
 
-
     t1 = 0
     t2 = 0
     stoptime = 20000
@@ -119,9 +93,10 @@ if __name__ == '__main__':
 
 
     amp = 450
+
     t1_s = [(11500+T)+ i*T*(t[-1]/len(t)) for i in range(9)]
+
     shifts = np.array([T*i/100 for i in range(100)])*(t[-1])/len(t)
-    # shifts = np.array([2500, 3000])
     Ti_0s = np.empty((len(shifts), len(t1_s)), dtype = float)
     T0s = np.empty((len(shifts), len(t1_s)), dtype = float)
     T1s = np.empty((len(shifts), len(t1_s)), dtype = float)
@@ -129,6 +104,7 @@ if __name__ == '__main__':
     Thetas = np.empty((len(shifts), len(t1_s)), dtype = float)
     Ti_1s = np.empty((len(shifts), len(t1_s)), dtype = float)
     Ti_2s = np.empty((len(shifts), len(t1_s)), dtype = float)
+
     for i in range(len(shifts)):
         for j in range(len(t1_s)):
             shift = shifts[i]
@@ -136,9 +112,25 @@ if __name__ == '__main__':
             print("Shift: {}, Impulse at time : {}".format(shift, t1))
             t2 = t1 + 100
             stoptime = 60000
+            #create and run a model
             signals, t = model(b, c, vectorfield, t1, t2, amp, stoptime)
-            labels = ["PreI","EarlyI", "PostI", "AugE", "RampI", "Relay", "NTS1", "NTS2", "NTS3", "KF","Motor_HN", "Motor_PN", "Motor_VN","KF_inh", "NTS_inh"]
-            # if (i !=10):
+            labels = ['PreI',  # 0
+                    'EarlyI',  # 1
+                    "PostI",  # 2
+                    "AugE",  # 3
+                    "RampI",  # 4
+                    "Relay",  # 5
+                    "Sw1",  # 6
+                    "Sw2",  # 7
+                    "Sw3",  # 8
+                    "KF_t",  # 9
+                    "KF_p",  # 10
+                    "KF_relay",  # 11
+                    "HN",  # 12
+                    "PN",  # 13
+                    "VN",  # 14
+                    "KF_inh",  # 15
+                    "NTS_inh"]  # 16
             #     plot_signals(t, signals, labels, 0, t[-1], 'test_'+str(i))
             Ti_0, T0, T1, Phi, Theta, Ti_1, Ti_2 = get_features_short_impulse(signals, t)
             Ti_0s[i,j] = Ti_0
