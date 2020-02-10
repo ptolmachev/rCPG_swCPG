@@ -81,7 +81,7 @@ def draw_line(t, pos1, pos2, style_params):
     color = style_params['color']
     cap = style_params['cap']
 
-    t.pen(pencolor=color, pensize=np.exp(2.5 * (np.abs(size) - 0.4)))
+    t.pen(pencolor=color, pensize=np.exp(1.5 * (np.abs(size) - np.median(np.abs(b)))))
     t.penup()
     t.setposition(pos1)
     a = t.towards(pos2)
@@ -152,8 +152,9 @@ if __name__ == '__main__':
     PostI = Neural_node(type='both', name='PostI', pos=(-2*r, -3*r), r=r)
     AugE = Neural_node(type='inhibitory', name='AugE', pos=(-2*r, -7*r), r=r)
     RampI  = Neural_node(type='excitatory', name='RampI', pos=(5*r, -5*r), r=r)
-    KFi = Neural_node(type='inhibitory', name='KFi', pos=(-6 * r, -2 * r), r=r)
-    KFe = Neural_node(type='excitatory', name='KFe', pos=(-6 * r, -4.5 * r), r=r)
+    KF_t = Neural_node(type='excitatory', name='KF_t', pos=(-6 * r, -2 * r), r=r)
+    KF_p = Neural_node(type='excitatory', name='KF_p', pos=(-6 * r, -4.5 * r), r=r)
+    KF_r = Neural_node(type='inhibitory', name='KF_r', pos=(-3.5 * r, 0.5 * r), r=r)
     HN  = Neural_node(type='motor', name='HN', pos=(6 * r, -1*r), r=r)
     PN = Neural_node(type='motor', name='PN', pos=(8 * r, -5 * r), r=r)
     VN = Neural_node(type='motor', name='VN', pos=(6 * r, -9 * r), r=r)
@@ -168,8 +169,9 @@ if __name__ == '__main__':
     PostI.draw(t)
     AugE.draw(t)
     RampI.draw(t)
-    KFi.draw(t)
-    KFe.draw(t)
+    KF_t.draw(t)
+    KF_p.draw(t)
+    KF_r.draw(t)
     HN.draw(t)
     PN.draw(t)
     VN.draw(t)
@@ -184,11 +186,11 @@ if __name__ == '__main__':
     # 0- PreI   # 1 - EarlyI  # 2 - PostI
     # 3 - AugE  # 4 - RampI   # 5 - Relay
     # 6 - NTS1  # 7 - NTS2    # 8 - NTS3
-    # 9 - KFi   # 10 - KFe    # 11 - M_HN
+    # 9 - KF_t   # 10 - KF_p    # 11 - M_HN
     # 12- M_PN  # 13 - M_VN   # 14 - KF_inh
     # 15 - NTS_inh
     # write table of correpondance of nodes to numbers
-    table = ["PreI", "EarlyI", "PostI", "AugE", "RampI", "Relay", "Sw1", "Sw2", "Sw3", "KFi", "KFe", "HN", "PN", "VN"]
+    table = ["PreI", "EarlyI", "PostI", "AugE", "RampI", "Relay", "Sw1", "Sw2", "Sw3", "KF_t", "KF_p", "KF_r", "HN", "PN", "VN"]
     for i in range(len(table)):
         for j in range(len(table)):
             if b[i, j] != 0:
