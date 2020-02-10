@@ -199,4 +199,4 @@ if __name__ == '__main__':
     draw_connection(SensoryInp, Relay, 0.4)
 
     ts = turtle.getscreen()
-    ts.getcanvas().postscript(file="../img/Model_07_02_2020/connections.eps")
+    ts.getcanvas().postscript(file="../img/Model_10_02_2020/connections.eps")
