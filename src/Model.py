@@ -9,25 +9,9 @@ from utils import *
 class NeuralPopulation():
     def __init__(self, name, params):
         self.name = name
-        self.C = params['C']
-        self.g_NaP = params['g_NaP']
-        self.g_K = params['g_K']
-        self.g_ad = params['g_ad']
-        self.g_l = params['g_l']
-        self.g_synE = params['g_synE']
-        self.g_synI = params['g_synI']
-        self.E_Na = params['E_Na']
-        self.E_K = params['E_K']
-        self.E_l = params['E_l']
-        self.E_ad = params['E_ad']
-        self.E_synE = params['E_synE']
-        self.E_synI = params['E_synI']
-        self.V_half = params['V_half']
-        self.slope = params['slope']
-        self.K_ad = params['K_ad']
-        self.tau_ad = params['tau_ad']
-        self.tau_NaP_max = params['tau_NaP_max']
-
+        #sets all the internal variables
+        for p_name in list(params.keys()):
+            exec(f"self.{p_name} = params[\"{p_name}\"]")
 
 class Network():
     def __init__(self, populations, synaptic_weights, drives, dt, history_len):
@@ -39,8 +23,6 @@ class Network():
         self.W_neg = np.maximum(-self.W, 0)
         self.W_pos = np.maximum(self.W, 0)
         self.drives = drives
-        # connect all the populations with connections
-        # set all the drives
         self.dt = dt
         self.v = -100*np.random.rand(self.N)
         self.h_NaP = 0.4 + 0.1 * np.random.rand(self.N)
@@ -48,49 +30,21 @@ class Network():
 
         self.input_cur = np.zeros(self.N)
         self.names = []
-        self.C = np.zeros(self.N)
-        self.g_NaP = np.zeros(self.N)
-        self.g_K = np.zeros(self.N)
-        self.g_ad = np.zeros(self.N)
-        self.g_l = np.zeros(self.N)
-        self.g_synE = np.zeros(self.N)
-        self.g_synI = np.zeros(self.N)
-        self.E_Na = np.zeros(self.N)
-        self.E_K = np.zeros(self.N)
-        self.E_l = np.zeros(self.N)
-        self.E_ad = np.zeros(self.N)
-        self.E_synE = np.zeros(self.N)
-        self.E_synI = np.zeros(self.N)
-        self.V_half = np.zeros(self.N)
-        self.slope = np.zeros(self.N)
-        self.K_ad = np.zeros(self.N)
-        self.tau_ad = np.zeros(self.N)
-        self.tau_NaP_max = np.zeros(self.N)
+        self.C, self.g_NaP, self.g_K, self.g_ad, self.g_l, self.g_synE, self.g_synI, self.E_Na, self.E_K, self.E_l,\
+        self.E_ad, self.E_synE, self.E_synI, self.V_half, self.slope, self.K_ad, self.tau_ad, self.tau_NaP_max = \
+        [np.zeros(self.N) for i in range(18)]
         self.v_history = deque(maxlen=self.history_len)
         self.t = deque(maxlen=self.history_len)
         self.v_history.append(self.v)
         self.t.append(0)
 
+        #load neural parameters into the internal variables: "self.C[i] = population[i].C"
         for i, (name, population) in enumerate(populations.items()):
             self.names.append(name)
-            self.C[i] = population.C
-            self.g_NaP[i] = population.g_NaP
-            self.g_K[i] = population.g_K
-            self.g_ad[i] = population.g_ad
-            self.g_l[i] = population.g_l
-            self.g_synE[i] = population.g_synE
-            self.g_synI[i] = population.g_synI
-            self.E_Na[i] = population.E_Na
-            self.E_K[i] = population.E_K
-            self.E_l[i] = population.E_l
-            self.E_ad[i] = population.E_ad
-            self.E_synE[i] = population.E_synE
-            self.E_synI[i] = population.E_synI
-            self.V_half[i] = population.V_half
-            self.slope[i] = population.slope
-            self.K_ad[i] = population.K_ad
-            self.tau_ad[i] = population.tau_ad
-            self.tau_NaP_max[i] = population.tau_NaP_max
+            params_list = ["C", "g_NaP", "g_K", "g_ad", "g_l", "g_synE", "g_synI", "E_Na", "E_K", "E_l", \
+                        "E_ad", "E_synE", "E_synI", "V_half", "slope", "K_ad", "tau_ad", "tau_NaP_max"]
+            for p_name in params_list:
+                exec(f'self.{p_name}[i] = population.{p_name}')
 
     def set_input_current(self, new_input_current):
         self.input_cur = deepcopy(new_input_current)
@@ -165,6 +119,7 @@ class Network():
                 - self.I_SynE(v) - self.I_SynI(v) + self.input_cur)
 
     def step(self):
+        #Runge-Kutta 4th order update
         k_v1 = self.dt * self.rhs_v(self.v, self.m_ad, self.h_NaP)
         k_m1 = self.dt * self.rhs_m_ad(self.v, self.m_ad)
         k_h1 = self.dt * self.rhs_h_NaP(self.v, self.h_NaP)
@@ -256,24 +211,11 @@ if __name__ == '__main__':
              "PN",      # 12
              "VN",      # 13
              "KF_inh",  # 14
-             "NTS_inh"] # 015
+             "NTS_inh"] # 15
 
-    PreI = NeuralPopulation('PreI', default_neural_params)
-    EarlyI = NeuralPopulation('EarlyI', default_neural_params)
-    PostI = NeuralPopulation('PostI', default_neural_params)
-    AugE = NeuralPopulation('AugE', default_neural_params)
-    RampI = NeuralPopulation('RampI', default_neural_params)
-    Relay = NeuralPopulation('Relay', default_neural_params)
-    Sw1 = NeuralPopulation('Sw1', default_neural_params)
-    Sw2 = NeuralPopulation('Sw2', default_neural_params)
-    Sw3 = NeuralPopulation('Sw3', default_neural_params)
-    KFi = NeuralPopulation('KFi', default_neural_params)
-    KFe = NeuralPopulation('KFe', default_neural_params)
-    HN = NeuralPopulation('HN', default_neural_params)
-    PN = NeuralPopulation('PN', default_neural_params)
-    VN = NeuralPopulation('VN', default_neural_params)
-    KF_inh = NeuralPopulation('KF_inh', default_neural_params)
-    NTS_inh = NeuralPopulation('NTS_inh', default_neural_params)
+    #create populations
+    for name in names:
+        exec(f"{name} = NeuralPopulation(\'{name}\', default_neural_params)")
 
     #modifications:
     PreI.g_NaP = 5.0
@@ -312,7 +254,7 @@ if __name__ == '__main__':
     net.set_input_current(np.zeros(net.N))
     # run for 15 more seconds
     net.run(int(15000/dt))
-    net.visualise(f"../img/Model_09_02_2020/{get_postfix(inh_NTS, inh_KF)}.png")
+    net.plot(show = True, save_to = f"../img/Model_10_02_2020/{get_postfix(inh_NTS, inh_KF)}.png")
 
 
 

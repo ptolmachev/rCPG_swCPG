@@ -28,7 +28,7 @@ default_neural_params = {
     'K_ad': 0.9,
     'tau_NaP_max': 6000}
 
-names = ['PreI',  # 0
+population_names = ['PreI',    # 0
          'EarlyI',  # 1
          "PostI",  # 2
          "AugE",  # 3
@@ -43,40 +43,20 @@ names = ['PreI',  # 0
          "PN",  # 12
          "VN",  # 13
          "KF_inh",  # 14
-         "NTS_inh"]  # 015
+         "NTS_inh"]  # 15
 
-PreI = NeuralPopulation('PreI', default_neural_params)
-EarlyI = NeuralPopulation('EarlyI', default_neural_params)
-PostI = NeuralPopulation('PostI', default_neural_params)
-AugE = NeuralPopulation('AugE', default_neural_params)
-RampI = NeuralPopulation('RampI', default_neural_params)
-Relay = NeuralPopulation('Relay', default_neural_params)
-Sw1 = NeuralPopulation('Sw1', default_neural_params)
-Sw2 = NeuralPopulation('Sw2', default_neural_params)
-Sw3 = NeuralPopulation('Sw3', default_neural_params)
-KFi = NeuralPopulation('KFi', default_neural_params)
-KFe = NeuralPopulation('KFe', default_neural_params)
-HN = NeuralPopulation('HN', default_neural_params)
-PN = NeuralPopulation('PN', default_neural_params)
-VN = NeuralPopulation('VN', default_neural_params)
-KF_inh = NeuralPopulation('KF_inh', default_neural_params)
-NTS_inh = NeuralPopulation('NTS_inh', default_neural_params)
+#define populations
+for name in population_names:
+    exec(f"{name} = NeuralPopulation(\'{name}\', default_neural_params)")
 
 # modifications:
 PreI.g_NaP = 5.0
-PreI.g_ad = 0.0
-HN.g_NaP = 0.0
-HN.g_ad = 0.0
-PN.g_NaP = 0.0
-PN.g_ad = 0.0
-VN.g_NaP = 0.0
-VN.g_ad = 0.0
+PreI.g_ad = HN.g_NaP = HN.g_ad = PN.g_NaP = PN.g_ad = VN.g_NaP = VN.g_ad = 0.0
 
 # populations dictionary
 populations = dict()
-for name in names:
+for name in population_names:
     populations[name] = eval(name)
-
 
 for inh_NTS in [0, 1, 2]:
     for inh_KF in [0, 1, 2]:
@@ -100,4 +80,4 @@ for inh_NTS in [0, 1, 2]:
         net.set_input_current(np.zeros(net.N))
         # run for 15 more seconds
         net.run(int(15000 / dt))
-        net.plot(show=False, save_to=f"../img/Model_09_02_2020/{get_postfix(inh_NTS, inh_KF)}.png")
+        net.plot(show=False, save_to=f"../img/Model_10_02_2020/{get_postfix(inh_NTS, inh_KF)}.png")
