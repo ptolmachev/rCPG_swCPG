@@ -27,7 +27,7 @@ default_neural_params = {
     'K_ad': 0.9,
     'tau_NaP_max': 6000}
 
-population_names = ['PreI',    # 0
+population_names = ['PreI',  # 0
          'EarlyI',  # 1
          "PostI",  # 2
          "AugE",  # 3
@@ -36,13 +36,14 @@ population_names = ['PreI',    # 0
          "Sw1",  # 6
          "Sw2",  # 7
          "Sw3",  # 8
-         "KFi",  # 9
-         "KFe",  # 10
-         "HN",  # 11
-         "PN",  # 12
-         "VN",  # 13
-         "KF_inh",  # 14
-         "NTS_inh"]  # 15
+         "KF_t",  # 9
+         "KF_p",  # 10
+         "KF_relay",  # 11
+         "HN",  # 12
+         "PN",  # 13
+         "VN",  # 14
+         "KF_inh",  # 15
+         "NTS_inh"]  # 16
 
 #define populations
 for name in population_names:
@@ -81,3 +82,5 @@ for inh_NTS, inh_KF in [(1,1), (1,2), (2,1)]:
     # run for 15 more seconds
     net.run(int(15000 / dt))
     net.plot(show=False, save_to=f"../img/Model_10_02_2020/{get_postfix(inh_NTS, inh_KF)}.png")
+
+generate_params(1, 1)

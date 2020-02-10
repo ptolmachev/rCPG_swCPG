@@ -196,25 +196,26 @@ if __name__ == '__main__':
     'K_ad' : 0.9,
     'tau_NaP_max' : 6000}
 
-    names = ['PreI',    # 0
-             'EarlyI',  # 1
-             "PostI",   # 2
-             "AugE",    # 3
-             "RampI",   # 4
-             "Relay",   # 5
-             "Sw1",     # 6
-             "Sw2",     # 7
-             "Sw3",     # 8
-             "KFi",     # 9
-             "KFe",     # 10
-             "HN",      # 11
-             "PN",      # 12
-             "VN",      # 13
-             "KF_inh",  # 14
-             "NTS_inh"] # 15
+    population_names = ['PreI',  # 0
+                        'EarlyI',  # 1
+                        "PostI",  # 2
+                        "AugE",  # 3
+                        "RampI",  # 4
+                        "Relay",  # 5
+                        "Sw1",  # 6
+                        "Sw2",  # 7
+                        "Sw3",  # 8
+                        "KF_t",  # 9
+                        "KF_p",  # 10
+                        "KF_relay",  # 11
+                        "HN",  # 12
+                        "PN",  # 13
+                        "VN",  # 14
+                        "KF_inh",  # 15
+                        "NTS_inh"]  # 16
 
     #create populations
-    for name in names:
+    for name in population_names:
         exec(f"{name} = NeuralPopulation(\'{name}\', default_neural_params)")
 
     #modifications:
@@ -229,7 +230,7 @@ if __name__ == '__main__':
 
     # populations dictionary
     populations = dict()
-    for name in names:
+    for name in population_names:
         populations[name] = eval(name)
 
     inh_NTS = 1
