@@ -46,8 +46,8 @@ def generate_params(inh_NTS, inh_KF):
     # negative weights
     b[1,2] = -0.3   #EarlyI -> PostI
     b[1,3] = -0.4  #EarlyI -> AugE
-    b[1,6] = -0.00005  #EarlyI -> Sw1
-    b[1,7] = -0.00005  #EarlyI -> Sw2
+    b[1,6] = -0.1  #EarlyI -> Sw1
+    b[1,7] = -0.0  #EarlyI -> Sw2
     b[1,4] = -0.08  #EarlyI1 -> RampI
     b[1,10] = -0.3  #EarlyI1 -> KFe
 
@@ -55,18 +55,18 @@ def generate_params(inh_NTS, inh_KF):
     b[2,1] = -0.28   #PostI -> EarlyI
     b[2,3] = -0.35   #PostI -> AugE
     b[2,4] = -0.2    #PostI -> RampI
-    b[2,6] = -0.01  #PostI -> Sw1
-    b[2,7] = -0.01  #PostI -> Sw2
+    b[2,6] = -0.04  #PostI -> Sw1
+    b[2,7] = -0.04  #PostI -> Sw2
 
     b[3,4] = -0.25  #AugE -> RampI
     b[3,0] = -0.56   #AugE -> PreI
     b[3,1] = -0.46  #AugE -> EarlyI
     b[3,2] = -0.04  #AugE -> PostI
-    b[3,6] = -0.05 #AugE -> Sw1
-    b[3,7] = -0.05 #AugE -> Sw2
+    b[3,6] = -0.01 #AugE -> Sw1
+    b[3,7] = -0.02 #AugE -> Sw2
     b[3,9] = -0.01  #AugE -> KFi
     b[3,10] = -0.01 #AugE -> KFe
-    b[3,13] = -0.1  #AugE -> M_VN
+    # b[3,13] = -0.04  #AugE -> M_VN
 
     b[5,0] = -0.2 # Relay -> PreI
     b[5,1] = -0.2 # Relay -> EarlyI
@@ -94,7 +94,7 @@ def generate_params(inh_NTS, inh_KF):
     c[0,2] = 0.03  #To PostI
     c[0,3] = 0.39  #To AugE
     c[0,4] = 0.3  #To RampI
-    c[0,6] = 0.595 #To Sw1
+    c[0,6] = 0.6 #To Sw1
     c[0,7] = 0.7  #To Sw2
     c[0,8] = 0.8  #To Sw3
     c[0,9] = 0.8  #To KFi
@@ -116,3 +116,7 @@ def generate_params(inh_NTS, inh_KF):
 
     json.dump(params, open('rCPG_swCPG.json', 'w', encoding='utf-8'), separators=(',', ':'), sort_keys=True, indent=4)
     return None
+
+if __name__ == '__main__':
+    #NTS, KF
+    generate_params(1, 2)

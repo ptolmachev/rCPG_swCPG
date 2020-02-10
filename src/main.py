@@ -7,7 +7,6 @@ from rCPG_swCPG.src.Model import NeuralPopulation, Network
 from rCPG_swCPG.src.params_gen import generate_params
 from rCPG_swCPG.src.utils import get_postfix
 
-
 default_neural_params = {
     'C': 20,
     'g_NaP': 0.0,
@@ -51,33 +50,34 @@ for name in population_names:
 
 # modifications:
 PreI.g_NaP = 5.0
-PreI.g_ad = HN.g_NaP = HN.g_ad = PN.g_NaP = PN.g_ad = VN.g_NaP = VN.g_ad = 0.0
-
+PreI.g_ad = HN.g_ad = PN.g_ad = VN.g_ad = 0.0
+HN.g_NaP = PN.g_NaP = VN.g_NaP = 0.0
+Relay.tau_ad = 8000.0
 # populations dictionary
 populations = dict()
 for name in population_names:
     populations[name] = eval(name)
 
-for inh_NTS in [0, 1, 2]:
-    for inh_KF in [0, 1, 2]:
-        generate_params(inh_NTS, inh_KF)
-        file = open("rCPG_swCPG.json", "rb+")
-        params = json.load(file)
-        W = np.array(params["b"])
-        drives = np.array(params["c"])
-        dt = 1.0
-        net = Network(populations, W, drives, dt, history_len=int(40000 / dt))
-        # get rid of all transients
-        net.run(int(15000 / dt))  # runs for 15 seconds
-        # run for 15 more seconds
-        net.run(int(15000 / dt))
-        # set input to Relay neurons
-        inp = np.zeros(net.N)
-        inp[5] = 370
-        net.set_input_current(inp)
-        # run for 10 more seconds
-        net.run(int(10000 / dt))
-        net.set_input_current(np.zeros(net.N))
-        # run for 15 more seconds
-        net.run(int(15000 / dt))
-        net.plot(show=False, save_to=f"../img/Model_10_02_2020/{get_postfix(inh_NTS, inh_KF)}.png")
+
+for inh_NTS, inh_KF in [(1,1), (1,2), (2,1)]:
+    generate_params(inh_NTS, inh_KF)
+    file = open("rCPG_swCPG.json", "rb+")
+    params = json.load(file)
+    W = np.array(params["b"])
+    drives = np.array(params["c"])
+    dt = 1.0
+    net = Network(populations, W, drives, dt, history_len=int(40000 / dt))
+    # get rid of all transients
+    net.run(int(15000 / dt))  # runs for 15 seconds
+    # run for 15 more seconds
+    net.run(int(15000 / dt))
+    # set input to Relay neurons
+    inp = np.zeros(net.N)
+    inp[5] = 370
+    net.set_input_current(inp)
+    # run for 10 more seconds
+    net.run(int(10000 / dt))
+    net.set_input_current(np.zeros(net.N))
+    # run for 15 more seconds
+    net.run(int(15000 / dt))
+    net.plot(show=False, save_to=f"../img/Model_10_02_2020/{get_postfix(inh_NTS, inh_KF)}.png")

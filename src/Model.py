@@ -233,7 +233,7 @@ if __name__ == '__main__':
         populations[name] = eval(name)
 
     inh_NTS = 1
-    inh_KF = 1
+    inh_KF = 2
     generate_params(inh_NTS, inh_KF)
     file = open("rCPG_swCPG.json", "rb+")
     params = json.load(file)
