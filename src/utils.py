@@ -1,12 +1,18 @@
+import pickle
 import numpy as np
 import scipy
 from matplotlib import pyplot as plt
 from scipy.signal import savgol_filter as sg
 import json
+from Model import *
+from params_gen import *
 
-from rCPG_swCPG.src.Model import Network, NeuralPopulation
-from rCPG_swCPG.src.params_gen import generate_params
-
+def nice_plot(series):
+    fig = plt.figure(figsize = (16,4))
+    plt.grid(True)
+    plt.plot(series, 'r-',linewidth = 2, alpha = 0.7)
+    plt.show()
+    plt.close()
 
 def get_postfix(inh_NTS, inh_KF):
     if inh_NTS == 1 and inh_KF == 1:
@@ -34,15 +40,9 @@ def get_period(signals):
     PreI_change = change(signals[0])
     begins = find_relevant_peaks(PreI_change, 0.1)
     T = (np.median([begins[i+1] - begins[i] for i in range(len(begins)-1)] ) )
-    std  = (np.std([begins[i+1] - begins[i] for i in range(len(begins)-1)] ) )
+    std = (np.std([begins[i+1] - begins[i] for i in range(len(begins)-1)] ) )
     return T, std
 
-
-def nice_plot(series):
-    fig = plt.figure(figsize = (16,4))
-    plt.grid(True)
-    plt.plot(series, 'r-',linewidth = 2, alpha = 0.7)
-    plt.show()
 
 def change(signal):
     return np.array([(signal[i+1] - signal[i]) for i in range(len(signal)-1)])
@@ -73,98 +73,121 @@ def nice_plot(series):
     plt.grid(True)
     plt.plot(series, 'r-',linewidth = 2, alpha = 0.7)
     plt.show()
+    plt.close()
 
-def get_features_long_impulse(signals,t, t1, t2):
+def get_number_of_breakthroughs(signal, min_span):
+    signal_filtered = sg(signal, 121, 1)
+    signal_binary = np.zeros_like(signal_filtered)
+    # for correctness check
+    # plt.plot(signal_filtered)
+    # plt.plot(np.quantile(signal_filtered, 0.7) * np.ones_like(signal_filtered))
+    signal_binary[np.where(signal > np.quantile(signal_filtered, 0.9))] = 1.0
+    signal_binary[np.where(signal <= np.quantile(signal_filtered, 0.9))] = 0.0
+    # identify gaps:
+    signal_change = np.abs(signal_binary[1:] - signal_binary[:-1])
+    # get the indices of jumps
+    signal_change_inds  = np.nonzero(signal_change)[0]
+    if len(signal_change_inds) == 0:
+        num_breaks = 0
+    elif len(signal_change_inds) == 1:
+        num_breaks = 0.5
+    else:
+        # if these jumps are too close - discard
+        num_breaks = (np.sum(1.0 * (signal_change_inds[1:] - signal_change_inds[:-1] > min_span)) + 1) / 2
+    return num_breaks
+
+def get_features_long_impulse(signals, t, t_stim_start, t_stim_finish):
     #first one has to cut the relevant signal:
-    labels = ["PreI", "EarlyI", "PostI", "AugE", "RampI", "Relay", "Sw1", "Sw2", "Sw3", "KF", "Motor_HN", "Motor_PN",
-              "Motor_VN", "KF_inh", "NTS_inh"]
-    needed_labels = ["PreI", "PostI", "AugE", "Sw1"]
-    ind1 = np.where(np.array(t) <= t1)[0][-1]
-    ind2 = np.where(np.array(t) <= t2)[0][-1]
-    t = np.array(t[ind1:ind2]) - t[ind1]
-    signals_relevant = [signals[i][ind1:ind2] for i in range(len(signals)) if labels[i] in needed_labels]
+    labels = ["PreI", "EarlyI", "PostI", "AugE", "RampI", "Relay", "Sw1", "Sw2", "Sw3", "KF_t", "KF_p", "KF_r",
+              "Motor_HN", "Motor_PN", "Motor_VN", "KF_inh", "NTS_inh"]
 
-    NTS1 = signals_relevant[needed_labels.index("NTS1")]
+    needed_labels = ["PreI", "AugE", "Sw1"]
+    ind_stim_start = np.where(np.array(t) <= t_stim_start)[0][-1]
+    ind_stim_finish = np.where(np.array(t) <= t_stim_finish)[0][-1]
+    t = np.array(t[ind_stim_start:ind_stim_finish]) - t[ind_stim_start]
+    signals_relevant = [signals[i][ind_stim_start:ind_stim_finish] for i in range(len(signals)) if labels[i] in needed_labels]
+
+    Sw1 = signals_relevant[needed_labels.index("Sw1")]
     PreI = signals_relevant[needed_labels.index("PreI")]
-    PostI = signals_relevant[needed_labels.index("PostI")]
     AugE = signals_relevant[needed_labels.index("AugE")]
 
     #identifying instantaneous frequency:
-    corr = sg(scipy.signal.correlate(NTS1, NTS1,'same'),121,1)
+    corr = sg(scipy.signal.correlate(Sw1, Sw1,'same'), 121, 1)
     peaks = scipy.signal.find_peaks(corr)[0]
 
     if len(peaks) >= 3:
-        period = np.mean([peaks[i] - peaks[i-1] for i in range(1,len(peaks))])*(t2-t1)/len(t)
-        period_std = np.std([peaks[i] - peaks[i-1] for i in range(1,len(peaks))])*(t2-t1)/len(t)
+        period = np.mean([peaks[i] - peaks[i - 1] for i in range(1, len(peaks))]) * (t_stim_finish - t_stim_start) / len(t)
+        period_std = np.std([peaks[i] - peaks[i - 1] for i in range(1, len(peaks))]) * (t_stim_finish - t_stim_start) / len(t)
     else:
         period = np.inf
         period_std = 0
 
-    # print("period: {} +- {}".format(period, period_std))
-
-    #identifying the number of swallows in total
-    swallows = [swallow_id for swallow_id in (scipy.signal.find_peaks(NTS1)[0]) if (NTS1[swallow_id] > 0.15) and (swallow_id > 50)]
-    num_swallows = len(swallows)
-    # print("num_swallows: {}".format(num_swallows))
-
-    #identifying the number of PreI breakthroughs:
-    breakthroughs_PreI = [breakthrough_id for breakthrough_id in (scipy.signal.find_peaks(PreI)[0]) if PreI[breakthrough_id] > 0.15]
-    num_breakthroughs_PreI  = len(breakthroughs_PreI)
-    # print("num_breakthroughs_PreI: {}".format(num_breakthroughs_PreI))
-
-    #identifying the number of AugE breakthroughs:
-    breakthroughs_AugE = [breakthrough_id for breakthrough_id in (scipy.signal.find_peaks(AugE)[0]) if AugE[breakthrough_id] > 0.15]
-    num_breakthroughs_AugE  = len(breakthroughs_AugE)
-    # print("num_breakthroughs_Aug: {}".format(num_breakthroughs_AugE))
+    #identifying the number of breakthroughs
+    num_swallows = get_number_of_breakthroughs(Sw1, 50)
+    num_breakthroughs_PreI  = get_number_of_breakthroughs(PreI, 50)
+    num_breakthroughs_AugE  = get_number_of_breakthroughs(AugE, 50)
 
     #Rough period estimation:
     if num_swallows != 0:
-        period_rough = (t2 - t1) / num_swallows
+        period_rough = (t_stim_finish - t_stim_start) / num_swallows
     else:
         period_rough = np.inf
-    # print("Rough period estimation: {}".format(period_rough))
-
-    # plot_signals(t, signals_relevant, needed_labels, 0, t[-1], filename)
     return period, period_std, period_rough, num_swallows, num_breakthroughs_PreI, num_breakthroughs_AugE
+
+
+def get_features_short_impulse(signals, t, t_stim_finish, t_stim_start):
+    #first one has to cut the relevant signal:
+    labels = ['PreI', 'EarlyI', "PostI", "AugE", "RampI", "Relay", "Sw1", "Sw2",
+              "Sw3", "KF_t", "KF_p", "KF_relay", "HN", "PN", "VN", "KF_inh", "NTS_inh"]
+    needed_labels = ["PreI", "PostI"]
+    signals_relevant = [signals[i] for i in range(len(signals)) if labels[i] in needed_labels]
+    PreI = signals_relevant[needed_labels.index("PreI")]
+    PostI = signals_relevant[needed_labels.index("PostI")]
+
+    #get the stimulation time_id
+    # stim_id = [peak_id for peak_id in scipy.signal.find_peaks(PostI)[0] if PostI[peak_id] > 0.5][0]
+    stim_id = t.tolist().index(t_stim_start)
+
+    PreI_change = change(PreI)
+    #TODO check if it really works
+    PreI_begins = find_relevant_peaks(signal=PreI_change, threshold=0.1)
+    PreI_ends = find_relevant_peaks(signal=-1.0*PreI_change, threshold=0.025)
+
+    _, i = last_lesser_than(PreI_begins, stim_id)
+    begin_id = i - 1 # cause we need one more breathing cycle at the start
+    starttime_id = PreI_begins[begin_id]
+
+    stop_peak_id = i + 3
+    stoptime_id = PreI_ends[stop_peak_id]
+
+    #discard unnessessary information
+    for i in range(len(signals_relevant)):
+        signals_relevant[i] = signals_relevant[i][starttime_id:stoptime_id]
+
+    PreI_begins = PreI_begins[begin_id:stop_peak_id]
+    PreI_ends = PreI_ends[begin_id:stop_peak_id]
+    t = np.array(t[starttime_id:stoptime_id]) - t[starttime_id]
+    t_coef = t[1]
+
+    #identifying Ti_0, T0, T1, Phi, Theta (Phi + Theta + delta = T1), Ti_1, Ti_2:
+    Ti_0 = (PreI_ends[0] - PreI_begins[0])*t_coef
+    T0 = (PreI_begins[1] - PreI_begins[0])*t_coef
+    print("T0:", T0)
+    Phi = (stim_id - last_lesser_than(PreI_begins, stim_id)[0])*t_coef
+    Theta = (first_greater_than(PreI_begins, stim_id)[0] - stim_id)*t_coef
+    T1 = Phi + Theta
+    Ti_1 = (PreI_ends[-2] - PreI_begins[-2])*t_coef
+    Ti_2 = (PreI_ends[-1] - PreI_begins[-1])*t_coef
+    return Ti_0, T0, T1, Phi, Theta, Ti_1, Ti_2
 
 def run_model(t_start, t_end, amp, stoptime, folder_save_to):
     default_neural_params = {
-        'C': 20,
-        'g_NaP': 0.0,
-        'g_K': 5.0,
-        'g_ad': 10.0,
-        'g_l': 2.8,
-        'g_synE': 10,
-        'g_synI': 60,
-        'E_Na': 50,
-        'E_K': -85,
-        'E_ad': -85,
-        'E_l': -60,
-        'E_synE': 0,
-        'E_synI': -75,
-        'V_half': -30,
-        'slope': 4,
-        'tau_ad': 2000,
-        'K_ad': 0.9,
-        'tau_NaP_max': 6000}
+        'C': 20, 'g_NaP': 0.0, 'g_K': 5.0, 'g_ad': 10.0, 'g_l': 2.8, 'g_synE': 10, 'g_synI': 60, 'E_Na': 50,
+        'E_K': -85, 'E_ad': -85, 'E_l': -60, 'E_synE': 0, 'E_synI': -75, 'V_half': -30, 'slope': 4, 'tau_ad': 2000,
+        'K_ad': 0.9, 'tau_NaP_max': 6000}
 
-    population_names = ['PreI',  # 0
-                        'EarlyI',  # 1
-                        "PostI",  # 2
-                        "AugE",  # 3
-                        "RampI",  # 4
-                        "Relay",  # 5
-                        "Sw1",  # 6
-                        "Sw2",  # 7
-                        "Sw3",  # 8
-                        "KF_t",  # 9
-                        "KF_p",  # 10
-                        "KF_relay",  # 11
-                        "HN",  # 12
-                        "PN",  # 13
-                        "VN",  # 14
-                        "KF_inh",  # 15
-                        "NTS_inh"]  # 16
+    population_names = ["PreI", "EarlyI", "PostI", "AugE", "RampI", "Relay", "Sw1", "Sw2", "Sw3", "KF_t", "KF_p",
+                        "KF_r", "HN", "PN", "VN", "KF_inh", "NTS_inh"]
 
     # create populations
     # for name in population_names:
@@ -180,7 +203,7 @@ def run_model(t_start, t_end, amp, stoptime, folder_save_to):
     Sw3 = NeuralPopulation("Sw3", default_neural_params)
     KF_t = NeuralPopulation("KF_t", default_neural_params)
     KF_p = NeuralPopulation("KF_p", default_neural_params)
-    KF_relay = NeuralPopulation("KF_relay", default_neural_params)
+    KF_r= NeuralPopulation("KF_r", default_neural_params)
     HN = NeuralPopulation("HN", default_neural_params)
     PN = NeuralPopulation("PN", default_neural_params)
     VN = NeuralPopulation("VN", default_neural_params)
@@ -189,13 +212,9 @@ def run_model(t_start, t_end, amp, stoptime, folder_save_to):
 
     # modifications:
     PreI.g_NaP = 5.0
-    PreI.g_ad = 0.0
-    HN.g_NaP = 0.0
-    HN.g_ad = 0.0
-    PN.g_NaP = 0.0
-    PN.g_ad = 0.0
-    VN.g_NaP = 0.0
-    VN.g_ad = 0.0
+    PreI.g_ad = HN.g_ad = PN.g_ad = VN.g_ad = 0.0
+    HN.g_NaP = PN.g_NaP = VN.g_NaP = 0.0
+    Relay.tau_ad = 8000.0
 
     # populations dictionary
     populations = dict()
@@ -209,7 +228,7 @@ def run_model(t_start, t_end, amp, stoptime, folder_save_to):
     params = json.load(file)
     W = np.array(params["b"])
     drives = np.array(params["c"])
-    dt = 1.0
+    dt = 0.75
     net = Network(populations, W, drives, dt, history_len=int(stoptime / dt))
     net.run(int(t_start / dt))
     # set input to Relay neurons
@@ -221,11 +240,10 @@ def run_model(t_start, t_end, amp, stoptime, folder_save_to):
     net.set_input_current(np.zeros(net.N))
     # run til 60 seconds
     net.run(int((stoptime - (t_end - t_start) - t_start) / dt))
-
     net.plot(show=False, save_to=f"../img/{folder_save_to}/{amp}.png")
     V_array = net.v_history
     t = np.array(net.t)
-    signals = net.firing_rate(V_array, net.V_half, net.slope)
+    signals = net.firing_rate(V_array, net.V_half, net.slope).T
     return signals, t
 
 if __name__ == '__main__':
@@ -234,4 +252,5 @@ if __name__ == '__main__':
     stoptime = 60000
     amp = 0
     folder_save_to = '10_sec_stim_diff_amp'
-    run_model(t_start, t_end, amp, stoptime, folder_save_to)
+    signals, t = run_model(t_start, t_end, amp, stoptime, folder_save_to)
+    pickle.dump((signals, t), open('../data/signals_intact_model.pkl', 'wb+'))
