@@ -54,6 +54,7 @@ PreI.g_NaP = 5.0
 PreI.g_ad = HN.g_ad = PN.g_ad = VN.g_ad = 0.0
 HN.g_NaP = PN.g_NaP = VN.g_NaP = 0.0
 Relay.tau_ad = 8000.0
+
 # populations dictionary
 populations = dict()
 for name in population_names:

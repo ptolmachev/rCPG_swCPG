@@ -1,30 +1,16 @@
-# this script contains count of swallowing peaks, instantaneous frequency, breakthrough delay and the respiratory delay for various amplitude signals
 import numpy as np
-from plot_signals import plot_signals
-from Model import *
 from utils import *
 from params_gen import *
-import json
-from scipy import signal
-from scipy.integrate import odeint
-import scipy
-from matplotlib import pyplot as plt
-from scipy.signal import savgol_filter as sg
 import pickle
-
-from rCPG_swCPG.src.utils import run_model
-
-
-
-
+import json
 
 if __name__ == '__main__':
     file = open("rCPG_swCPG.json", "rb+")
     params = json.load(file)
     b = np.array(params["b"])
     c = np.array(params["c"])
-    t1_s = [10000, 14000, 18000, 22000, 25000, 29000, 33000, 37000, 40000, 44000, 48000]
-    amps = [0 + i*3 for i in range(200)]
+    t1_s = [10000, 14000, 18000] # 22000, 25000, 29000, 33000, 37000, 40000, 44000, 48000
+    amps = [0 + i*3 for i in range(200)][::-1]
     periods = np.empty((len(amps), len(t1_s)), dtype = float)
     period_stds = np.empty((len(amps), len(t1_s)), dtype = float)
     rough_periods = np.empty((len(amps), len(t1_s)), dtype = float)
@@ -39,8 +25,9 @@ if __name__ == '__main__':
             t2 = t1 + 10000
             stoptime = 60000
             signals, t = run_model(t1, t2, amp, stoptime, '10_sec_stim_diff_amp')
+            # signals, t = pickle.load(open("../data/signals_intact_model.pkl", "rb+"))
             period, period_std, rough_period, num_swallows, num_breakthroughs_PreI, num_breakthroughs_AugE = \
-                get_features_long_impulse(signals,t, t1, t2)
+                get_features_long_impulse(signals, t, t1, t2)
             periods[i,j] = period
             period_stds[i,j] = period_std
             rough_periods[i,j] = rough_period
@@ -65,6 +52,7 @@ if __name__ == '__main__':
     num_breakthroughs_AugE_s_avg = np.nanmean(num_breakthroughs_AugE_s, axis=1)
     num_breakthroughs_PreI_s_avg = np.nanmean(num_breakthroughs_PreI_s, axis=1)
 
+    pickle.dump(info, open('features_var_amp.pkl', 'wb+'))
     nice_plot(periods_avg)
     nice_plot(period_std_avg)
     nice_plot(rough_periods_avg)
@@ -72,6 +60,5 @@ if __name__ == '__main__':
     nice_plot(num_breakthroughs_AugE_s_avg)
     nice_plot(num_breakthroughs_PreI_s_avg)
 
-    pickle.dump(info, open('features_var_amp.pkl', 'wb+'))
 
 

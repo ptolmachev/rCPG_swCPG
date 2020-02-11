@@ -25,7 +25,7 @@ def generate_params(inh_NTS, inh_KF):
     b[0,12] = 0.4 # PreI -> M_HN
     b[2,14] = 0.3 # PostI -> M_VN
     b[4,13] = 0.6 # RampI -> M_HN
-    b[4,13] = 0.6 # RampI -> M_PN
+    b[4,13] = 0.95 # RampI -> M_PN
     b[4,14] = 0.7 # RampI -> M_VN
     b[5,2] = 0.4 # Relay -> PostI
     b[5,6] = 0.75 # Relay -> Sw1
