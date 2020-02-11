@@ -1,11 +1,11 @@
 import json
 import numpy as np
-# from Model import *
-# from utils import *
-# from params_gen import *
-from rCPG_swCPG.src.Model import NeuralPopulation, Network
-from rCPG_swCPG.src.params_gen import generate_params
-from rCPG_swCPG.src.utils import get_postfix
+from Model import *
+from utils import *
+from params_gen import *
+# from rCPG_swCPG.src.Model import Network
+# from rCPG_swCPG.src.params_gen import generate_params
+# from rCPG_swCPG.src.utils import get_postfix
 
 default_neural_params = {
     'C': 20,
@@ -81,6 +81,6 @@ for inh_NTS, inh_KF in [(1,1), (1,2), (2,1)]:
     net.set_input_current(np.zeros(net.N))
     # run for 15 more seconds
     net.run(int(15000 / dt))
-    net.plot(show=False, save_to=f"../img/Model_10_02_2020/{get_postfix(inh_NTS, inh_KF)}.png")
+    net.plot(show=False, save_to=f"../img/Model_11_02_2020/{get_postfix(inh_NTS, inh_KF)}.png")
 
 generate_params(1, 1)
