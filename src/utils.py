@@ -68,6 +68,64 @@ def find_relevant_peaks(signal, threshold):
     peaks = scipy.signal.find_peaks(signal)[0]
     return np.array([peaks[i] for i in range(len(peaks)) if abs(signal[peaks[i]]) > threshold])
 
+def nice_plot(series):
+    fig = plt.figure(figsize = (16,4))
+    plt.grid(True)
+    plt.plot(series, 'r-',linewidth = 2, alpha = 0.7)
+    plt.show()
+
+def get_features_long_impulse(signals,t, t1, t2):
+    #first one has to cut the relevant signal:
+    labels = ["PreI", "EarlyI", "PostI", "AugE", "RampI", "Relay", "Sw1", "Sw2", "Sw3", "KF", "Motor_HN", "Motor_PN",
+              "Motor_VN", "KF_inh", "NTS_inh"]
+    needed_labels = ["PreI", "PostI", "AugE", "Sw1"]
+    ind1 = np.where(np.array(t) <= t1)[0][-1]
+    ind2 = np.where(np.array(t) <= t2)[0][-1]
+    t = np.array(t[ind1:ind2]) - t[ind1]
+    signals_relevant = [signals[i][ind1:ind2] for i in range(len(signals)) if labels[i] in needed_labels]
+
+    NTS1 = signals_relevant[needed_labels.index("NTS1")]
+    PreI = signals_relevant[needed_labels.index("PreI")]
+    PostI = signals_relevant[needed_labels.index("PostI")]
+    AugE = signals_relevant[needed_labels.index("AugE")]
+
+    #identifying instantaneous frequency:
+    corr = sg(scipy.signal.correlate(NTS1, NTS1,'same'),121,1)
+    peaks = scipy.signal.find_peaks(corr)[0]
+
+    if len(peaks) >= 3:
+        period = np.mean([peaks[i] - peaks[i-1] for i in range(1,len(peaks))])*(t2-t1)/len(t)
+        period_std = np.std([peaks[i] - peaks[i-1] for i in range(1,len(peaks))])*(t2-t1)/len(t)
+    else:
+        period = np.inf
+        period_std = 0
+
+    # print("period: {} +- {}".format(period, period_std))
+
+    #identifying the number of swallows in total
+    swallows = [swallow_id for swallow_id in (scipy.signal.find_peaks(NTS1)[0]) if (NTS1[swallow_id] > 0.15) and (swallow_id > 50)]
+    num_swallows = len(swallows)
+    # print("num_swallows: {}".format(num_swallows))
+
+    #identifying the number of PreI breakthroughs:
+    breakthroughs_PreI = [breakthrough_id for breakthrough_id in (scipy.signal.find_peaks(PreI)[0]) if PreI[breakthrough_id] > 0.15]
+    num_breakthroughs_PreI  = len(breakthroughs_PreI)
+    # print("num_breakthroughs_PreI: {}".format(num_breakthroughs_PreI))
+
+    #identifying the number of AugE breakthroughs:
+    breakthroughs_AugE = [breakthrough_id for breakthrough_id in (scipy.signal.find_peaks(AugE)[0]) if AugE[breakthrough_id] > 0.15]
+    num_breakthroughs_AugE  = len(breakthroughs_AugE)
+    # print("num_breakthroughs_Aug: {}".format(num_breakthroughs_AugE))
+
+    #Rough period estimation:
+    if num_swallows != 0:
+        period_rough = (t2 - t1) / num_swallows
+    else:
+        period_rough = np.inf
+    # print("Rough period estimation: {}".format(period_rough))
+
+    # plot_signals(t, signals_relevant, needed_labels, 0, t[-1], filename)
+    return period, period_std, period_rough, num_swallows, num_breakthroughs_PreI, num_breakthroughs_AugE
 
 def run_model(t_start, t_end, amp, stoptime, folder_save_to):
     default_neural_params = {

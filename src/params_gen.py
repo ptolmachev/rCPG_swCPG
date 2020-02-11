@@ -21,11 +21,11 @@ def generate_params(inh_NTS, inh_KF):
     b[0,0] = 0.00  #PreI -> PreI
     b[0,1] = 0.3  #PreI -> EarlyI
     b[0,4] = 0.6  #PreI -> RampI
-    b[0,13] = 0.4 # PreI -> M_PN
+    b[0,13] = 0.2 # PreI -> M_PN
     b[0,12] = 0.4 # PreI -> M_HN
     b[2,14] = 0.3 # PostI -> M_VN
     b[4,13] = 0.6 # RampI -> M_HN
-    b[4,13] = 0.4 # RampI -> M_PN
+    b[4,13] = 0.6 # RampI -> M_PN
     b[4,14] = 0.7 # RampI -> M_VN
     b[5,2] = 0.4 # Relay -> PostI
     b[5,6] = 0.75 # Relay -> Sw1
@@ -45,6 +45,7 @@ def generate_params(inh_NTS, inh_KF):
     b[9, 11] = 1.4  # KF_t -> KF_relay
 
     # negative weights
+    b[1, 0] = -0.02  # EarlyI -> PreI
     b[1,2] = -0.3   #EarlyI -> PostI
     b[1,3] = -0.4  #EarlyI -> AugE
     b[1,6] = -0.1  #EarlyI -> Sw1
@@ -56,7 +57,7 @@ def generate_params(inh_NTS, inh_KF):
     b[2,1] = -0.28   #PostI -> EarlyI
     b[2,3] = -0.35   #PostI -> AugE
     b[2,4] = -0.55    #PostI -> RampI
-    b[2,6] = -0.04  #PostI -> Sw1
+    b[2,6] = -0.03  #PostI -> Sw1
     b[2,7] = -0.04  #PostI -> Sw2
 
     b[3,4] = -0.55  #AugE -> RampI
@@ -74,12 +75,7 @@ def generate_params(inh_NTS, inh_KF):
 
     # b[6,0] = -0.4 #Sw1 -> PreI
     b[6,7] = -0.3*x #Sw1 -> Sw2
-    b[7,6] = -0.34*x #Sw2 -> Sw1
-
-    # b[9,0] = -0.04 #KF_t -> PreI
-    # b[9,1] = -0.04 #KF_t -> EarlyI
-    # b[9,6] = -0.025 #KF_t -> Sw1
-    # b[9,7] = -0.018 #KF_t -> Sw2
+    b[7,6] = -0.35*x #Sw2 -> Sw1
 
     b[11,0] = -0.07 #KF_relay -> PreI
     b[11,1] = -0.06 #KF_relay -> EarlyI
