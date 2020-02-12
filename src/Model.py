@@ -24,9 +24,9 @@ class Network():
         self.W_pos = np.maximum(self.W, 0)
         self.drives = drives
         self.dt = dt
-        self.v = -100*np.random.rand(self.N)
-        self.h_NaP = 0.4 + 0.1 * np.random.rand(self.N)
-        self.m_ad = 0.4 + 0.1 * np.random.rand(self.N)
+        self.v = np.ones(self.N) #-100*np.random.rand(self.N)
+        self.h_NaP = 0.4 + 0.0 * np.random.rand(self.N)
+        self.m_ad = 0.4 + 0.0 * np.random.rand(self.N)
 
         self.input_cur = np.zeros(self.N)
         self.names = []

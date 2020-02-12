@@ -200,5 +200,6 @@ if __name__ == '__main__':
                 draw_connection(eval(name_A), eval(name_B), strength)
     draw_connection(SensoryInp, Relay, 0.4)
 
+    turtle.hideturtle()
     ts = turtle.getscreen()
     ts.getcanvas().postscript(file="../img/Model_11_02_2020/connections.eps")
