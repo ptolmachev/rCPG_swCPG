@@ -3,9 +3,6 @@ import numpy as np
 from Model import *
 from utils import *
 from params_gen import *
-# from rCPG_swCPG.src.Model import Network
-# from rCPG_swCPG.src.params_gen import generate_params
-# from rCPG_swCPG.src.utils import get_postfix
 
 default_neural_params = {
     'C': 20,
@@ -27,23 +24,9 @@ default_neural_params = {
     'K_ad': 0.9,
     'tau_NaP_max': 6000}
 
-population_names = ['PreI',  # 0
-         'EarlyI',  # 1
-         "PostI",  # 2
-         "AugE",  # 3
-         "RampI",  # 4
-         "Relay",  # 5
-         "Sw1",  # 6
-         "Sw2",  # 7
-         "Sw3",  # 8
-         "KF_t",  # 9
-         "KF_p",  # 10
-         "KF_relay",  # 11
-         "HN",  # 12
-         "PN",  # 13
-         "VN",  # 14
-         "KF_inh",  # 15
-         "NTS_inh"]  # 16
+population_names = ['PreI', 'EarlyI', "PostI",  "AugE", "RampI", "Relay",
+                    "Sw1", "Sw2", "Sw3", "KF_t",  "KF_p",  "KF_relay",
+                    "HN",  "PN", "VN", "KF_inh",  "NTS_inh"]
 
 #define populations
 for name in population_names:

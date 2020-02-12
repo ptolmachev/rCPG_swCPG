@@ -1,15 +1,12 @@
 import json
 import numpy as np
 
-
 def generate_params(inh_NTS, inh_KF):
     params = dict()
-
     num_nrns = 17
     num_drives = 3
     x = [0.1, 1.0, 10][inh_NTS] # Disinh-inh of NTS
     y = [0.1, 1.0, 10][inh_KF] # Disinh-inh of KF
-
     # 0- PreI   # 1 - EarlyI  # 2 - PostI
     # 3 - AugE  # 4 - RampI   # 5 - Relay
     # 6 - Sw 1  # 7 - Sw2     # 8 - Sw3
@@ -60,15 +57,14 @@ def generate_params(inh_NTS, inh_KF):
     b[2,6] = -0.03  #PostI -> Sw1
     b[2,7] = -0.04  #PostI -> Sw2
 
-    b[3,4] = -0.55  #AugE -> RampI
     b[3,0] = -0.56   #AugE -> PreI
     b[3,1] = -0.46  #AugE -> EarlyI
     b[3,2] = -0.04  #AugE -> PostI
+    b[3,4] = -0.55  #AugE -> RampI
     b[3,6] = -0.01 #AugE -> Sw1
     b[3,7] = -0.02 #AugE -> Sw2
     b[3,9] = -0.01  #AugE -> KF_t
     b[3,10] = -0.01 #AugE -> KF_p
-    # b[3,13] = -0.04  #AugE -> M_VN
 
     b[5,0] = -0.2 # Relay -> PreI
     b[5,1] = -0.2 # Relay -> EarlyI

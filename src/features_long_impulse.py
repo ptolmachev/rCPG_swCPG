@@ -9,8 +9,8 @@ if __name__ == '__main__':
     params = json.load(file)
     b = np.array(params["b"])
     c = np.array(params["c"])
-    t1_s = [10000, 14000, 18000] # 22000, 25000, 29000, 33000, 37000, 40000, 44000, 48000
-    amps = [0 + i*3 for i in range(200)][::-1]
+    t1_s = [10000, 14000, 18000, 22000, 25000, 29000, 33000, 37000, 40000, 44000, 48000]
+    amps = [100 + i*3 for i in range(101)][::-1]
     periods = np.empty((len(amps), len(t1_s)), dtype = float)
     period_stds = np.empty((len(amps), len(t1_s)), dtype = float)
     rough_periods = np.empty((len(amps), len(t1_s)), dtype = float)

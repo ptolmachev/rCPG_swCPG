@@ -35,17 +35,37 @@ def get_postfix(inh_NTS, inh_KF):
         postfix = 'inh_NTS_disinh_KF'
     return postfix
 
+def get_beginning_of_insp_phase(signals):
+    signal_filtered = sg(signals[0], 121, 1)
+    threshold = np.quantile(signal_filtered, 0.75)
+    signal_binary = binarise_signal(signal_filtered, threshold)
+    signal_change = change(signal_binary)
+    begins = find_relevant_peaks(signal_change, 0.5)
+    return begins[0]
+
 def get_period(signals):
     # for i in range(len(signals)):
-    PreI_change = change(signals[0])
-    begins = find_relevant_peaks(PreI_change, 0.1)
-    T = (np.median([begins[i+1] - begins[i] for i in range(len(begins)-1)] ) )
-    std = (np.std([begins[i+1] - begins[i] for i in range(len(begins)-1)] ) )
+    signal_filtered = sg(signals[0], 121, 1)
+    threshold = np.quantile(signal_filtered, 0.75)
+    signal_binary = binarise_signal(signal_filtered, threshold)
+    # for correctness check
+    # plt.plot(signal_filtered)
+    # plt.plot(threshold * np.ones_like(signal_filtered))
+    signal_change = change(signal_binary)
+    begins = find_relevant_peaks(signal_change, 0.5)
+    ends = find_relevant_peaks(-signal_change, 0.5)
+    T = np.median(np.hstack([change(begins), change(ends)]))
+    std = np.std(np.hstack([change(begins), change(ends)]))
     return T, std
 
+def binarise_signal(signal, threshold):
+    res = np.zeros_like(signal)
+    res[np.where(signal > threshold)] = 1.0
+    res[np.where(signal <= threshold)] = 0
+    return res
 
 def change(signal):
-    return np.array([(signal[i+1] - signal[i]) for i in range(len(signal)-1)])
+    return np.array(signal[1:]) - np.array(signal[:-1])
 
 def last_lesser_than(alist, element):
     #sorted list
@@ -77,23 +97,22 @@ def nice_plot(series):
 
 def get_number_of_breakthroughs(signal, min_span):
     signal_filtered = sg(signal, 121, 1)
-    signal_binary = np.zeros_like(signal_filtered)
+    threshold = np.quantile(signal_filtered[1000:], 0.9)
+    signal_binary = binarise_signal(signal_filtered, threshold)
     # for correctness check
     # plt.plot(signal_filtered)
-    # plt.plot(np.quantile(signal_filtered, 0.7) * np.ones_like(signal_filtered))
-    signal_binary[np.where(signal > np.quantile(signal_filtered, 0.9))] = 1.0
-    signal_binary[np.where(signal <= np.quantile(signal_filtered, 0.9))] = 0.0
+    # plt.plot(threshold * np.ones_like(signal_filtered))
     # identify gaps:
-    signal_change = np.abs(signal_binary[1:] - signal_binary[:-1])
+    signal_change = np.abs(change(signal_binary))
     # get the indices of jumps
-    signal_change_inds  = np.nonzero(signal_change)[0]
+    signal_change_inds = np.nonzero(signal_change)[0]
     if len(signal_change_inds) == 0:
         num_breaks = 0
     elif len(signal_change_inds) == 1:
         num_breaks = 0.5
     else:
         # if these jumps are too close - discard
-        num_breaks = (np.sum(1.0 * (signal_change_inds[1:] - signal_change_inds[:-1] > min_span)) + 1) / 2
+        num_breaks = (np.sum(1.0 * (change(signal_change_inds) > min_span)) + 1) / 2
     return num_breaks
 
 def get_features_long_impulse(signals, t, t_stim_start, t_stim_finish):
@@ -144,30 +163,44 @@ def get_features_short_impulse(signals, t, t_stim_finish, t_stim_start):
     PreI = signals_relevant[needed_labels.index("PreI")]
     PostI = signals_relevant[needed_labels.index("PostI")]
 
+    PreI_filtered = sg(PreI, 121, 1)
+    PostI_filtered = sg(PostI, 121, 1)
+
+    threshold = np.quantile(PreI_filtered[20000: ], 0.75)
+    PreI_binary = binarise_signal(PreI_filtered, threshold)
+    threshold = np.quantile(PostI_filtered[20000: ], 0.75)
+    PostI_binary = binarise_signal(PostI_filtered, threshold)
+
     #get the stimulation time_id
     # stim_id = [peak_id for peak_id in scipy.signal.find_peaks(PostI)[0] if PostI[peak_id] > 0.5][0]
-    stim_id = t.tolist().index(t_stim_start)
+    stim_id = np.sum(t < t_stim_start)
 
-    PreI_change = change(PreI)
+    PreI_change = change(PreI_binary)
     #TODO check if it really works
-    PreI_begins = find_relevant_peaks(signal=PreI_change, threshold=0.1)
-    PreI_ends = find_relevant_peaks(signal=-1.0*PreI_change, threshold=0.025)
+    PreI_begins = find_relevant_peaks(signal=PreI_change, threshold=0.5)
+    PreI_ends = find_relevant_peaks(signal=-1.0*PreI_change, threshold=0.5)
 
     _, i = last_lesser_than(PreI_begins, stim_id)
     begin_id = i - 1 # cause we need one more breathing cycle at the start
-    starttime_id = PreI_begins[begin_id]
+    #some margin
+    starttime_id = PreI_begins[begin_id] - 500
 
     stop_peak_id = i + 3
-    stoptime_id = PreI_ends[stop_peak_id]
+    stoptime_id = PreI_ends[stop_peak_id] + 500
 
     #discard unnessessary information
     for i in range(len(signals_relevant)):
         signals_relevant[i] = signals_relevant[i][starttime_id:stoptime_id]
-
-    PreI_begins = PreI_begins[begin_id:stop_peak_id]
-    PreI_ends = PreI_ends[begin_id:stop_peak_id]
+    PreI = signals_relevant[needed_labels.index("PreI")]
+    PreI_filtered = sg(PreI, 121, 1)
+    threshold = np.quantile(PreI_filtered, 0.75)
+    PreI_binary = binarise_signal(PreI_filtered, threshold )
+    PreI_change = change(PreI_binary)
+    PreI_begins = find_relevant_peaks(signal=PreI_change, threshold=0.5)
+    PreI_ends = find_relevant_peaks(signal=-PreI_change, threshold=0.5)
     t = np.array(t[starttime_id:stoptime_id]) - t[starttime_id]
     t_coef = t[1]
+    stim_id = stim_id - starttime_id
 
     #identifying Ti_0, T0, T1, Phi, Theta (Phi + Theta + delta = T1), Ti_1, Ti_2:
     Ti_0 = (PreI_ends[0] - PreI_begins[0])*t_coef
@@ -230,6 +263,7 @@ def run_model(t_start, t_end, amp, stoptime, folder_save_to):
     drives = np.array(params["c"])
     dt = 0.75
     net = Network(populations, W, drives, dt, history_len=int(stoptime / dt))
+    # if for some reason the running has failed try once again
     net.run(int(t_start / dt))
     # set input to Relay neurons
     inp = np.zeros(net.N)
@@ -240,6 +274,8 @@ def run_model(t_start, t_end, amp, stoptime, folder_save_to):
     net.set_input_current(np.zeros(net.N))
     # run til 60 seconds
     net.run(int((stoptime - (t_end - t_start) - t_start) / dt))
+
+
     net.plot(show=False, save_to=f"../img/{folder_save_to}/{amp}.png")
     V_array = net.v_history
     t = np.array(net.t)
