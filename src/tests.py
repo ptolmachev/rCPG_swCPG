@@ -4,7 +4,7 @@ import numpy as np
 from utils import *
 from tqdm.auto import tqdm
 
-file = open("rCPG_swCPG.json", "rb+")
+file = open("../data/rCPG_swCPG.json", "rb+")
 params = json.load(file)
 b = np.array(params["b"])
 c = np.array(params["c"])

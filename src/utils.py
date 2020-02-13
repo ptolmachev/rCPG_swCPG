@@ -43,9 +43,9 @@ def get_insp_starts(signals):
     begins_inds = find_relevant_peaks(signal_change, 0.5)
     return begins_inds
 
-def get_period(signals):
+def get_period(signal):
     # for i in range(len(signals)):
-    signal_filtered = sg(signals[0], 121, 1)
+    signal_filtered = sg(signal, 121, 1)
     threshold = np.quantile(signal_filtered, 0.75)
     signal_binary = binarise_signal(signal_filtered, threshold)
     # for correctness check
@@ -95,35 +95,37 @@ def nice_plot(series):
     plt.show()
     plt.close()
 
-def get_number_of_breakthroughs(signal, min_span):
-    signal_filtered = sg(signal, 121, 1)
-    threshold = np.quantile(signal_filtered[1000:], 0.9)
+def get_number_of_breakthroughs(signal, min_amp):
+    signal_filtered = sg(signal, 121, 1)[300:]
+    threshold = (min_amp)
     signal_binary = binarise_signal(signal_filtered, threshold)
     # for correctness check
     # plt.plot(signal_filtered)
     # plt.plot(threshold * np.ones_like(signal_filtered))
     # identify gaps:
-    signal_change = np.abs(change(signal_binary))
+    signal_change = (change(signal_binary))
+    signal_begins = np.maximum(0, signal_change)
+    signal_ends = np.minimum(0, signal_change)
     # get the indices of jumps
-    signal_change_inds = np.nonzero(signal_change)[0]
-    if len(signal_change_inds) == 0:
-        num_breaks = 0
-    elif len(signal_change_inds) == 1:
-        num_breaks = 0.5
-    else:
-        # if these jumps are too close - discard
-        num_breaks = (np.sum(1.0 * (change(signal_change_inds) > min_span)) + 1) / 2
+    signal_begins_inds = np.nonzero(signal_begins)[0]
+    signal_ends_inds = np.nonzero(signal_ends)[0]
+    num_breaks = (len(signal_begins_inds) + len(signal_ends_inds)) / 2
+
     return num_breaks
 
-def get_features_long_impulse(signals, t, t_stim_start, t_stim_finish):
+def get_features_long_impulse(signals, dt, t_stim_start, t_stim_finish):
     #first one has to cut the relevant signal:
     labels = ["PreI", "EarlyI", "PostI", "AugE", "RampI", "Relay", "Sw1", "Sw2", "Sw3", "KF_t", "KF_p", "KF_r",
               "Motor_HN", "Motor_PN", "Motor_VN", "KF_inh", "NTS_inh"]
 
     needed_labels = ["PreI", "AugE", "Sw1"]
-    ind_stim_start = np.where(np.array(t) <= t_stim_start)[0][-1]
-    ind_stim_finish = np.where(np.array(t) <= t_stim_finish)[0][-1]
-    t = np.array(t[ind_stim_start:ind_stim_finish]) - t[ind_stim_start]
+    #get_usual values of signals
+    mean_val_AugE = np.mean(signals[labels.index("AugE")])
+    mean_val_PreI = np.mean(signals[labels.index("PreI")])
+    mean_val_Sw1 = np.mean(signals[labels.index("Sw1")])
+
+    ind_stim_start = int(t_stim_start / dt) + 10 # +10 for transients
+    ind_stim_finish = int(t_stim_finish / dt)
     signals_relevant = [signals[i][ind_stim_start:ind_stim_finish] for i in range(len(signals)) if labels[i] in needed_labels]
 
     Sw1 = signals_relevant[needed_labels.index("Sw1")]
@@ -131,26 +133,26 @@ def get_features_long_impulse(signals, t, t_stim_start, t_stim_finish):
     AugE = signals_relevant[needed_labels.index("AugE")]
 
     #identifying instantaneous frequency:
-    corr = sg(scipy.signal.correlate(Sw1, Sw1,'same'), 121, 1)
-    peaks = scipy.signal.find_peaks(corr)[0]
-
-    if len(peaks) >= 3:
-        period = np.mean([peaks[i] - peaks[i - 1] for i in range(1, len(peaks))]) * (t_stim_finish - t_stim_start) / len(t)
-        period_std = np.std([peaks[i] - peaks[i - 1] for i in range(1, len(peaks))]) * (t_stim_finish - t_stim_start) / len(t)
-    else:
-        period = np.inf
-        period_std = 0
+    # corr = sg(scipy.signal.correlate(Sw1, Sw1,'same'), 121, 1)
+    # peaks = scipy.signal.find_peaks(corr)[0]
+    # if len(peaks) >= 3:
+    #     period = np.mean([peaks[i] - peaks[i - 1] for i in range(1, len(peaks))]) * (t_stim_finish - t_stim_start) / len(t)
+    #     period_std = np.std([peaks[i] - peaks[i - 1] for i in range(1, len(peaks))]) * (t_stim_finish - t_stim_start) / len(t)
+    # else:
+    #     period = np.inf
+    #     period_std = 0
+    period, period_std = get_period(Sw1)
 
     #identifying the number of breakthroughs
-    num_swallows = get_number_of_breakthroughs(Sw1, 50)
-    num_breakthroughs_PreI  = get_number_of_breakthroughs(PreI, 50)
-    num_breakthroughs_AugE  = get_number_of_breakthroughs(AugE, 50)
+    num_swallows = get_number_of_breakthroughs(Sw1, min_amp=0.3)
+    num_breakthroughs_PreI = get_number_of_breakthroughs(PreI, min_amp=0.4)
+    num_breakthroughs_AugE = get_number_of_breakthroughs(AugE, min_amp=0.1)
 
     #Rough period estimation:
     if num_swallows != 0:
         period_rough = (t_stim_finish - t_stim_start) / num_swallows
     else:
-        period_rough = np.inf
+        period_rough = np.nan
     return period, period_std, period_rough, num_swallows, num_breakthroughs_PreI, num_breakthroughs_AugE
 
 
@@ -256,7 +258,7 @@ def run_model(t_start, t_end, amp, stoptime, folder_save_to):
     inh_NTS = 1
     inh_KF = 1
     generate_params(inh_NTS, inh_KF)
-    file = open("rCPG_swCPG.json", "rb+")
+    file = open("../data/rCPG_swCPG.json", "rb+")
     params = json.load(file)
     W = np.array(params["b"])
     drives = np.array(params["c"])

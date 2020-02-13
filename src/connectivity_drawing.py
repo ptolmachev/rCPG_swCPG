@@ -202,4 +202,4 @@ if __name__ == '__main__':
 
     turtle.hideturtle()
     ts = turtle.getscreen()
-    ts.getcanvas().postscript(file="../img/Model_11_02_2020/connections.eps")
+    ts.getcanvas().postscript(file="../img/Model_15_02_2020/connections.eps")
