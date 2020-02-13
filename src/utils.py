@@ -35,13 +35,13 @@ def get_postfix(inh_NTS, inh_KF):
         postfix = 'inh_NTS_disinh_KF'
     return postfix
 
-def get_beginning_of_insp_phase(signals):
+def get_insp_starts(signals):
     signal_filtered = sg(signals[0], 121, 1)
     threshold = np.quantile(signal_filtered, 0.75)
     signal_binary = binarise_signal(signal_filtered, threshold)
     signal_change = change(signal_binary)
-    begins = find_relevant_peaks(signal_change, 0.5)
-    return begins[0]
+    begins_inds = find_relevant_peaks(signal_change, 0.5)
+    return begins_inds
 
 def get_period(signals):
     # for i in range(len(signals)):
@@ -154,7 +154,7 @@ def get_features_long_impulse(signals, t, t_stim_start, t_stim_finish):
     return period, period_std, period_rough, num_swallows, num_breakthroughs_PreI, num_breakthroughs_AugE
 
 
-def get_features_short_impulse(signals, t, t_stim_finish, t_stim_start):
+def get_features_short_impulse(signals, t, t_stim_start, t_stim_finish):
     #first one has to cut the relevant signal:
     labels = ['PreI', 'EarlyI', "PostI", "AugE", "RampI", "Relay", "Sw1", "Sw2",
               "Sw3", "KF_t", "KF_p", "KF_relay", "HN", "PN", "VN", "KF_inh", "NTS_inh"]
@@ -176,16 +176,16 @@ def get_features_short_impulse(signals, t, t_stim_finish, t_stim_start):
     stim_id = np.sum(t < t_stim_start)
 
     PreI_change = change(PreI_binary)
-    #TODO check if it really works
     PreI_begins = find_relevant_peaks(signal=PreI_change, threshold=0.5)
     PreI_ends = find_relevant_peaks(signal=-1.0*PreI_change, threshold=0.5)
 
     _, i = last_lesser_than(PreI_begins, stim_id)
     begin_id = i - 1 # cause we need one more breathing cycle at the start
     #some margin
-    starttime_id = PreI_begins[begin_id] - 500
+    starttime_id = np.maximum(PreI_begins[begin_id] - 500, 0)
 
-    stop_peak_id = i + 3
+    stop_peak_id = np.minimum(i + 3, len(PreI_ends))
+
     stoptime_id = PreI_ends[stop_peak_id] + 500
 
     #discard unnessessary information
@@ -205,9 +205,8 @@ def get_features_short_impulse(signals, t, t_stim_finish, t_stim_start):
     #identifying Ti_0, T0, T1, Phi, Theta (Phi + Theta + delta = T1), Ti_1, Ti_2:
     Ti_0 = (PreI_ends[0] - PreI_begins[0])*t_coef
     T0 = (PreI_begins[1] - PreI_begins[0])*t_coef
-    print("T0:", T0)
-    Phi = (stim_id - last_lesser_than(PreI_begins, stim_id)[0])*t_coef
-    Theta = (first_greater_than(PreI_begins, stim_id)[0] - stim_id)*t_coef
+    Phi = (stim_id - last_lesser_than(PreI_begins, stim_id)[0]) * t_coef
+    Theta = (first_greater_than(PreI_begins, stim_id)[0] - stim_id) * t_coef
     T1 = Phi + Theta
     Ti_1 = (PreI_ends[-2] - PreI_begins[-2])*t_coef
     Ti_2 = (PreI_ends[-1] - PreI_begins[-1])*t_coef
