@@ -34,7 +34,7 @@ for name in population_names:
 
 # modifications:
 PreI.g_NaP = 5.0
-PreI.g_ad = HN.g_ad = PN.g_ad = VN.g_ad = 0.0
+PreI.g_ad = HN.g_ad = PN.g_ad = VN.g_ad = RampI.g_ad = 0.0
 HN.g_NaP = PN.g_NaP = VN.g_NaP = 0.0
 Relay.tau_ad = 8000.0
 
@@ -50,7 +50,7 @@ for inh_NTS, inh_KF in [(1,1), (1,2), (2,1)]:
     params = json.load(file)
     W = np.array(params["b"])
     drives = np.array(params["c"])
-    dt = 1.0
+    dt = 0.75
     net = Network(populations, W, drives, dt, history_len=int(40000 / dt))
     # get rid of all transients
     net.run(int(15000 / dt))  # runs for 15 seconds
@@ -65,6 +65,6 @@ for inh_NTS, inh_KF in [(1,1), (1,2), (2,1)]:
     net.set_input_current(np.zeros(net.N))
     # run for 15 more seconds
     net.run(int(15000 / dt))
-    net.plot(show=False, save_to=f"../img/Model_11_02_2020/{get_postfix(inh_NTS, inh_KF)}.png")
+    net.plot(show=False, save_to=f"../img/Model_18_02_2020/{get_postfix(inh_NTS, inh_KF)}.png")
 
 generate_params(1, 1)

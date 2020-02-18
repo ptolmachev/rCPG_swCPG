@@ -154,20 +154,20 @@ class Network():
     def plot(self, show, save_to):
         V_array = np.array(self.v_history).T
         t_array = np.array(self.t)
-        fig, axes = plt.subplots(self.N - 2, 1, figsize=(20, 20))
+        fig, axes = plt.subplots(self.N - 2, 1, figsize=(25, 15))
         if type(axes) != np.ndarray: axes = [axes]
         fr = self.firing_rate(V_array.T, self.V_half, self.slope).T
         for i in range(self.N - 2): # we dont need inhibitor populations
-            if i == 0: axes[i].set_title('Firing Rates')
-            axes[i].plot(t_array, fr[i, :], 'k', linewidth=2, label=str(self.names[i]), alpha=0.9)
-            axes[i].legend(loc = 1,fontsize=15)
-            axes[i].set_ylim([-0.1, 1.1])
+            if i == 0: axes[i].set_title('Firing Rates', fontdict={"size" : 25})
+            axes[i].plot(t_array, fr[i, :], 'k', linewidth=3, label=str(self.names[i]), alpha=0.9)
+            axes[i].legend(loc = 1, fontsize=25)
+            axes[i].set_ylim([-0.0, 1.0])
             axes[i].set_yticks([])
             axes[i].set_yticklabels([])
             if i != len(axes) - 1:
                 axes[i].set_xticks([])
                 axes[i].set_xticklabels([])
-            axes[i].set_xlabel('t, ms')
+            axes[i].set_xlabel('t, ms', fontdict={"size" : 25})
         plt.subplots_adjust(wspace=0.01, hspace=0)
         fig.savefig(save_to)
         if show:

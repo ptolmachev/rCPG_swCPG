@@ -142,22 +142,24 @@ if __name__ == '__main__':
     t.speed(0.0)
     t.penup()
 
-    SensoryInp = Neural_node(type='motor', name='SensoryInp', pos=(-6*r, 4 * r), r=r)
-    Relay = Neural_node(type='both', name='Relay', pos=(-2 * r, 4 * r), r=r)
-    Sw1 = Neural_node(type='both', name='Sw1', pos=(3.5*r, 2*r), r=r)
-    Sw2 = Neural_node(type='inhibitory', name='Sw2', pos=(0.5*r, 2*r), r=r)
-    Sw3 = Neural_node(type='excitatory', name='Sw3', pos=(1.75*r, -0.25*r), r=r)
-    PreI = Neural_node(type='excitatory', name='PreI', pos=(2*r, -3*r), r=r)
-    EarlyI = Neural_node(type='both', name='EarlyI', pos=(2*r, -7*r), r=r)
-    PostI = Neural_node(type='both', name='PostI', pos=(-2*r, -3*r), r=r)
-    AugE = Neural_node(type='inhibitory', name='AugE', pos=(-2*r, -7*r), r=r)
-    RampI  = Neural_node(type='excitatory', name='RampI', pos=(5*r, -5*r), r=r)
-    KF_t = Neural_node(type='excitatory', name='KF_t', pos=(-6 * r, -2 * r), r=r)
-    KF_p = Neural_node(type='excitatory', name='KF_p', pos=(-6 * r, -4.5 * r), r=r)
-    KF_r = Neural_node(type='inhibitory', name='KF_r', pos=(-3.5 * r, 0.5 * r), r=r)
-    HN  = Neural_node(type='motor', name='HN', pos=(6 * r, -1*r), r=r)
-    PN = Neural_node(type='motor', name='PN', pos=(8 * r, -5 * r), r=r)
-    VN = Neural_node(type='motor', name='VN', pos=(6 * r, -9 * r), r=r)
+
+    x = "r * 0.5 * np.random.rand() - r"
+    SensoryInp = Neural_node(type='motor', name='SensoryInp', pos=(-6*(r) + eval(x), 4 *(r)+ eval(x)), r=r)
+    Relay = Neural_node(type='both', name='Relay', pos=(-2 *(r)+ eval(x), 4 * (r) + eval(x)), r=r)
+    Sw1 = Neural_node(type='both', name='Sw1', pos=(3.5*(r)+ eval(x), 2*(r)+ eval(x)), r=r)
+    Sw2 = Neural_node(type='inhibitory', name='Sw2', pos=(0.5*(r)+ eval(x), 2*(r)+ eval(x)), r=r)
+    Sw3 = Neural_node(type='excitatory', name='Sw3', pos=(1.75*(r)+ eval(x), -0.25*(r)+ eval(x)), r=r)
+    PreI = Neural_node(type='excitatory', name='PreI', pos=(2*(r)+ eval(x), -3*(r)+ eval(x)), r=r)
+    EarlyI = Neural_node(type='both', name='EarlyI', pos=(2*(r)+ eval(x), -7*(r)+ eval(x)), r=r)
+    PostI = Neural_node(type='both', name='PostI', pos=(-2*(r)+ eval(x), -3*(r)+ eval(x)), r=r)
+    AugE = Neural_node(type='inhibitory', name='AugE', pos=(-2*(r)+ eval(x), -7*(r)+ eval(x)), r=r)
+    RampI  = Neural_node(type='excitatory', name='RampI', pos=(5*(r)+ eval(x), -5*(r)+ eval(x)), r=r)
+    KF_t = Neural_node(type='excitatory', name='KF_t', pos=(-6 *(r)+ eval(x), -2 *(r)+ eval(x)), r=r)
+    KF_p = Neural_node(type='excitatory', name='KF_p', pos=(-6*(r)+ eval(x), -4.5*(r)+ eval(x)), r=r)
+    KF_r = Neural_node(type='inhibitory', name='KF_r', pos=(-3.5*(r)+ eval(x), 0.5*(r)+ eval(x)), r=r)
+    HN  = Neural_node(type='motor', name='HN', pos=(6 * r + eval(x), -1*r + eval(x)), r=r)
+    PN = Neural_node(type='motor', name='PN', pos=(8 * r + eval(x) , -5 * r + eval(x)), r=r)
+    VN = Neural_node(type='motor', name='VN', pos=(6 * r + eval(x), -9 * r + eval(x)), r=r)
 
     SensoryInp.draw(t)
     Relay.draw(t)
@@ -202,4 +204,29 @@ if __name__ == '__main__':
 
     turtle.hideturtle()
     ts = turtle.getscreen()
-    ts.getcanvas().postscript(file="../img/Model_15_02_2020/connections.eps")
+    file_name = "../img/Model_18_02_2020/connections.eps"
+    ts.getcanvas().postscript(file=file_name)
+
+    from PIL import Image
+    TARGET_BOUNDS = (1024, 1024)
+
+    # Load the EPS at 10 times whatever size Pillow thinks it should be
+    # (Experimentaton suggests that scale=1 means 72 DPI but that would
+    #  make 600 DPI scale=8⅓ and Pillow requires an integer)
+    pic = Image.open(file_name)
+    pic.load(scale=10)
+
+    # Ensure scaling can anti-alias by converting 1-bit or paletted images
+    if pic.mode in ('P', '1'):
+        pic = pic.convert("RGB")
+
+    # Calculate the new size, preserving the aspect ratio
+    ratio = min(TARGET_BOUNDS[0] / pic.size[0],
+                TARGET_BOUNDS[1] / pic.size[1])
+    new_size = (int(pic.size[0] * ratio), int(pic.size[1] * ratio))
+
+    # Resize to fit the target size
+    pic = pic.resize(new_size, Image.ANTIALIAS)
+
+    # Save to PNG
+    pic.save(file_name.split(".eps")[0] + ".png")
