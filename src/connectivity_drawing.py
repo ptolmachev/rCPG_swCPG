@@ -204,7 +204,7 @@ if __name__ == '__main__':
 
     turtle.hideturtle()
     ts = turtle.getscreen()
-    file_name = "../img/Model_18_02_2020/connections.eps"
+    file_name = "../img/Model_20_02_2020/connections.eps"
     ts.getcanvas().postscript(file=file_name)
 
     from PIL import Image
