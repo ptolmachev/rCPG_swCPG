@@ -65,6 +65,6 @@ for inh_NTS, inh_KF in [(1,1), (1,2), (2,1)]:
     net.set_input_current(np.zeros(net.N))
     # run for 15 more seconds
     net.run(int(15000 / dt))
-    net.plot(show=False, save_to=f"../img/Model_18_02_2020/{get_postfix(inh_NTS, inh_KF)}.png")
+    net.plot(show=False, save_to=f"../img/Model_20_02_2020/{get_postfix(inh_NTS, inh_KF)}.png")
 
 generate_params(1, 1)
