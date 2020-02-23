@@ -17,7 +17,6 @@ def generate_params(inh_NTS, inh_KF):
     # positive weights
     b[0,1] = 0.3  #PreI -> EarlyI
     b[0,4] = 0.6  #PreI -> RampI
-    # b[0,13] = 0.2 # PreI -> M_PN
     b[0,12] = 0.4 # PreI -> M_HN
     b[2,14] = 0.25 # PostI -> M_VN
     b[4,13] = 0.6 # RampI -> M_HN
@@ -34,8 +33,6 @@ def generate_params(inh_NTS, inh_KF):
     b[8,1] = 0.2 # Sw3 -> EarlyI
     b[8,2] = 0.4 # Sw3 -> PostI
     b[10,2] = 0.85 # KF_p -> PostI
-    # b[9,6] = 0.2 #KF_t -> Sw1
-    # b[9,7] = 0.2 #KF_t -> Sw2
     b[10,8] = 0.5 # KF_p -> Sw3
     b[10,14] = 0.38 # KF_p -> M_VN
     b[9, 11] = 1.4  # KF_t -> KF_relay
@@ -61,13 +58,10 @@ def generate_params(inh_NTS, inh_KF):
     b[3,4] = -0.67  #AugE -> RampI
     b[3,6] = -0.01 #AugE -> Sw1
     b[3,7] = -0.02 #AugE -> Sw2
-    b[3,9] = -0.01  #AugE -> KF_t
-    b[3,10] = -0.01 #AugE -> KF_p
 
     b[5,0] = -0.2 # Relay -> PreI
     b[5,1] = -0.2 # Relay -> EarlyI
 
-    # b[6,0] = -0.4 #Sw1 -> PreI
     b[6,7] = -0.3*x #Sw1 -> Sw2
     b[7,6] = -0.35*x #Sw2 -> Sw1
 
@@ -85,7 +79,7 @@ def generate_params(inh_NTS, inh_KF):
 
     c = np.zeros((num_drives, num_nrns))
     # other
-    c[0,0] = 0.24 #To PreI
+    c[0,0] = 0.265 #To PreI
     c[0,1] = 0.38  #To EarlyI
     c[0,2] = 0.03  #To PostI
     c[0,3] = 0.39  #To AugE
@@ -95,12 +89,8 @@ def generate_params(inh_NTS, inh_KF):
     c[0,8] = 0.8  #To Sw3
     c[0,9] = 0.8  #To KF_t
     c[0,10] = 0.8  #To KF_p
-    c[0, 11] = 0.0  # To KF_relay
     c[0,15] = 0.3 #To KF_inh
     c[0,16] = 0.3 #To NTS_inh
-
-    #PreBotC
-    c[2,0] = 0.025 #To PreI
 
     b = b.tolist()
     c = c.tolist()

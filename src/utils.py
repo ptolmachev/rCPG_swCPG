@@ -46,7 +46,7 @@ def get_insp_starts(signals):
 def get_period(signal):
     # for i in range(len(signals)):
     signal_filtered = sg(signal, 121, 1)
-    threshold = np.quantile(signal_filtered, 0.75)
+    threshold = np.quantile(signal_filtered, 0.65)
     signal_binary = binarise_signal(signal_filtered, threshold)
     # for correctness check
     # plt.plot(signal_filtered)
@@ -119,11 +119,6 @@ def get_features_long_impulse(signals, dt, t_stim_start, t_stim_finish):
               "Motor_HN", "Motor_PN", "Motor_VN", "KF_inh", "NTS_inh"]
 
     needed_labels = ["PreI", "AugE", "Sw1"]
-    #get_usual values of signals
-    mean_val_AugE = np.mean(signals[labels.index("AugE")])
-    mean_val_PreI = np.mean(signals[labels.index("PreI")])
-    mean_val_Sw1 = np.mean(signals[labels.index("Sw1")])
-
     ind_stim_start = int(t_stim_start / dt) + 10 # +10 for transients
     ind_stim_finish = int(t_stim_finish / dt)
     signals_relevant = [signals[i][ind_stim_start:ind_stim_finish] for i in range(len(signals)) if labels[i] in needed_labels]
@@ -132,19 +127,10 @@ def get_features_long_impulse(signals, dt, t_stim_start, t_stim_finish):
     PreI = signals_relevant[needed_labels.index("PreI")]
     AugE = signals_relevant[needed_labels.index("AugE")]
 
-    #identifying instantaneous frequency:
-    # corr = sg(scipy.signal.correlate(Sw1, Sw1,'same'), 121, 1)
-    # peaks = scipy.signal.find_peaks(corr)[0]
-    # if len(peaks) >= 3:
-    #     period = np.mean([peaks[i] - peaks[i - 1] for i in range(1, len(peaks))]) * (t_stim_finish - t_stim_start) / len(t)
-    #     period_std = np.std([peaks[i] - peaks[i - 1] for i in range(1, len(peaks))]) * (t_stim_finish - t_stim_start) / len(t)
-    # else:
-    #     period = np.inf
-    #     period_std = 0
     period, period_std = get_period(Sw1)
 
     #identifying the number of breakthroughs
-    num_swallows = get_number_of_breakthroughs(Sw1, min_amp=0.3)
+    num_swallows = get_number_of_breakthroughs(Sw1, min_amp=0.2)
     num_breakthroughs_PreI = get_number_of_breakthroughs(PreI, min_amp=0.4)
     num_breakthroughs_AugE = get_number_of_breakthroughs(AugE, min_amp=0.1)
 
@@ -160,18 +146,12 @@ def get_features_short_impulse(signals, t, t_stim_start, t_stim_finish):
     #first one has to cut the relevant signal:
     labels = ['PreI', 'EarlyI', "PostI", "AugE", "RampI", "Relay", "Sw1", "Sw2",
               "Sw3", "KF_t", "KF_p", "KF_relay", "HN", "PN", "VN", "KF_inh", "NTS_inh"]
-    needed_labels = ["PreI", "PostI"]
+    needed_labels = ["PreI"]
     signals_relevant = [signals[i] for i in range(len(signals)) if labels[i] in needed_labels]
     PreI = signals_relevant[needed_labels.index("PreI")]
-    PostI = signals_relevant[needed_labels.index("PostI")]
-
     PreI_filtered = sg(PreI, 121, 1)
-    PostI_filtered = sg(PostI, 121, 1)
-
-    threshold = np.quantile(PreI_filtered[20000: ], 0.75)
+    threshold = 0.4 #np.quantile(PreI_filtered[20000: ], 0.65)
     PreI_binary = binarise_signal(PreI_filtered, threshold)
-    threshold = np.quantile(PostI_filtered[20000: ], 0.75)
-    PostI_binary = binarise_signal(PostI_filtered, threshold)
 
     #get the stimulation time_id
     # stim_id = [peak_id for peak_id in scipy.signal.find_peaks(PostI)[0] if PostI[peak_id] > 0.5][0]
