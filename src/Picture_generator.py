@@ -35,7 +35,7 @@ def nice_error_bar_scatter(x,y,error, title, xlabel,ylabel, save_to = None):
         fig.savefig("../img/" + save_to)
 
 #
-info_amp = pickle.load(open("../data/features_var_amp_16_02_2020.pkl",'rb+'))
+info_amp = pickle.load(open("../data/features_var_amp_22_02_2020.pkl",'rb+'))
 amps = info_amp['amps']
 
 periods = info_amp['periods']
