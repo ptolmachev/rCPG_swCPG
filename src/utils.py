@@ -37,7 +37,7 @@ def get_postfix(inh_NTS, inh_KF):
 
 def get_insp_starts(signals):
     signal_filtered = sg(signals[0], 121, 1)
-    threshold = np.quantile(signal_filtered, 0.75)
+    threshold = 0.4
     signal_binary = binarise_signal(signal_filtered, threshold)
     signal_change = change(signal_binary)
     begins_inds = find_relevant_peaks(signal_change, 0.5)
@@ -75,6 +75,7 @@ def last_lesser_than(alist, element):
                 raise ValueError("The index can't be negative.")
             else:
                 return alist[i - 1], i-1
+    return [np.nan]
 
 def first_greater_than(alist, element):
     for i in range(len(alist)):
@@ -82,7 +83,7 @@ def first_greater_than(alist, element):
             pass
         else:
             return alist[i], i
-    return None
+    return [np.nan]
 
 def find_relevant_peaks(signal, threshold):
     peaks = scipy.signal.find_peaks(signal)[0]
@@ -142,7 +143,7 @@ def get_features_long_impulse(signals, dt, t_stim_start, t_stim_finish):
     return period, period_std, period_rough, num_swallows, num_breakthroughs_PreI, num_breakthroughs_AugE
 
 
-def get_features_short_impulse(signals, t, t_stim_start, t_stim_finish):
+def get_features_short_impulse(signals, dt, t_stim_start, t_stim_finish):
     #first one has to cut the relevant signal:
     labels = ['PreI', 'EarlyI', "PostI", "AugE", "RampI", "Relay", "Sw1", "Sw2",
               "Sw3", "KF_t", "KF_p", "KF_relay", "HN", "PN", "VN", "KF_inh", "NTS_inh"]
@@ -155,7 +156,7 @@ def get_features_short_impulse(signals, t, t_stim_start, t_stim_finish):
 
     #get the stimulation time_id
     # stim_id = [peak_id for peak_id in scipy.signal.find_peaks(PostI)[0] if PostI[peak_id] > 0.5][0]
-    stim_id = np.sum(t < t_stim_start)
+    stim_id = int(t_stim_start / dt)
 
     PreI_change = change(PreI_binary)
     PreI_begins = find_relevant_peaks(signal=PreI_change, threshold=0.5)
@@ -164,10 +165,9 @@ def get_features_short_impulse(signals, t, t_stim_start, t_stim_finish):
     _, i = last_lesser_than(PreI_begins, stim_id)
     begin_id = i - 1 # cause we need one more breathing cycle at the start
     #some margin
-    starttime_id = np.maximum(PreI_begins[begin_id] - 500, 0)
+    starttime_id = PreI_begins[begin_id] - 500
 
-    stop_peak_id = np.minimum(i + 3, len(PreI_ends))
-
+    stop_peak_id = i + 3
     stoptime_id = PreI_ends[stop_peak_id] + 500
 
     #discard unnessessary information
@@ -175,23 +175,41 @@ def get_features_short_impulse(signals, t, t_stim_start, t_stim_finish):
         signals_relevant[i] = signals_relevant[i][starttime_id:stoptime_id]
     PreI = signals_relevant[needed_labels.index("PreI")]
     PreI_filtered = sg(PreI, 121, 1)
-    threshold = np.quantile(PreI_filtered, 0.75)
+    threshold = 0.4
     PreI_binary = binarise_signal(PreI_filtered, threshold )
     PreI_change = change(PreI_binary)
     PreI_begins = find_relevant_peaks(signal=PreI_change, threshold=0.5)
     PreI_ends = find_relevant_peaks(signal=-PreI_change, threshold=0.5)
-    t = np.array(t[starttime_id:stoptime_id]) - t[starttime_id]
-    t_coef = t[1]
     stim_id = stim_id - starttime_id
 
+    ts2 = last_lesser_than(PreI_begins, stim_id)[0]
+    ts3 = first_greater_than(PreI_begins, stim_id)[0]
+    ts1 = last_lesser_than(PreI_begins, ts2)[0]
+    ts4 = first_greater_than(PreI_begins, ts3)[0]
+
+    te1 = first_greater_than(PreI_ends, ts1)[0]
+    te2 = first_greater_than(PreI_ends, ts2)[0]
+    te3 = first_greater_than(PreI_ends, ts3)[0]
+    te4 = first_greater_than(PreI_ends, ts4)[0]
+
+    # plt.plot(PreI_filtered)
+    # plt.axvline(ts1, color='k')
+    # plt.axvline(ts2, color='r')
+    # plt.axvline(ts3, color='g')
+    # plt.axvline(ts4, color='b')
+    # plt.axvline(te1, color='k')
+    # plt.axvline(te2, color='r')
+    # plt.axvline(te3, color='g')
+    # plt.axvline(te4, color='b')
+    # plt.axvline(stim_id, color='m')
     #identifying Ti_0, T0, T1, Phi, Theta (Phi + Theta + delta = T1), Ti_1, Ti_2:
-    Ti_0 = (PreI_ends[0] - PreI_begins[0])*t_coef
-    T0 = (PreI_begins[1] - PreI_begins[0])*t_coef
-    Phi = (stim_id - last_lesser_than(PreI_begins, stim_id)[0]) * t_coef
-    Theta = (first_greater_than(PreI_begins, stim_id)[0] - stim_id) * t_coef
-    T1 = Phi + Theta
-    Ti_1 = (PreI_ends[-2] - PreI_begins[-2])*t_coef
-    Ti_2 = (PreI_ends[-1] - PreI_begins[-1])*t_coef
+    Ti_0 = (te1 - ts1)*dt
+    T0 = (ts2-ts1)*dt
+    Phi = (stim_id - ts2) * dt
+    Theta = (ts3-stim_id) * dt
+    T1 = (ts3 - ts2) * dt
+    Ti_1 = (te3 - ts3) * dt
+    Ti_2 = (te4 - ts4) * dt
     return Ti_0, T0, T1, Phi, Theta, Ti_1, Ti_2
 
 def run_model(t_start, t_end, amp, stoptime, folder_save_to):
