@@ -34,167 +34,184 @@ def nice_error_bar_scatter(x,y,error, title, xlabel,ylabel, save_to = None):
     if save_to is not None:
         fig.savefig("../img/" + save_to)
 
-#
-info_amp = pickle.load(open("../data/features_var_amp_22_02_2020.pkl",'rb+'))
-amps = info_amp['amps']
 
-periods = info_amp['periods']
-periods[periods == np.inf] = 10000
-periods = np.mean(periods, axis=1)
+if __name__ == '__main__':
+    # start_idx = 0
+    # info = pickle.load(open('../data/info_var_amp.pkl', "rb+"))
+    # amps = list(info.keys())
+    # amps.sort()
+    # data = np.zeros((len(amps), 8))
+    # for i, amp in (enumerate(amps)):
+    #     data[i, 0] = np.nanmean(info[amp]["sw_period"])
+    #     data[i, 1] = np.nanmean(info[amp]["sw_period_std"])
+    #     data[i, 2] = np.nanmean(info[amp]["num_swallows"])
+    #     data[i, 3] = np.std(info[amp]["num_swallows"])
+    #     data[i, 4] = np.nanmean(info[amp]["num_breakthroughs_PreI"])
+    #     data[i, 5] = np.std(info[amp]["num_breakthroughs_PreI"])
+    #     data[i, 6] = np.nanmean(info[amp]["num_breakthroughs_AugE"])
+    #     data[i, 7] = np.std(info[amp]["num_breakthroughs_AugE"])
+    #
+    #
+    # periods = data[:, 0]
+    # period_stds = data[:, 1]
+    # num_swallows = data[:, 2]
+    # num_swallow_stds = data[:, 3]
+    # num_breakthroughs_PreI = data[:, 4]
+    # num_breakthroughs_PreI_stds = data[:, 5]
+    # num_breakthroughs_AugE = data[:, 6]
+    # num_breakthroughs_AugE_stds = data[:, 7]
+    #
+    # # PLOTTING PERIOD AND STD
+    # title = "Swallowing period and standard deviation"
+    # xlabel = "Amplitude of the impulse"
+    # ylabel = "Period of the swallowing"
+    #
+    # x = amps[start_idx:]
+    # y = periods[start_idx:]
+    # error = period_stds[start_idx:]
+    # nice_error_bar(x,y,error,title,xlabel,ylabel, title)
+    #
+    # #PLOTTNG NUMBER OF SWALLOWS
+    # title = "Dependence of number of swallows on amplitude"
+    # xlabel = "Amplitude of the impulse"
+    # ylabel = "Number of swallows"
+    # start_idx = 0
+    # x = amps[start_idx:]
+    # y = num_swallows[start_idx:]
+    # error = num_swallow_stds[start_idx:]
+    # nice_error_bar(x,y,error,title,xlabel,ylabel, title)
+    #
+    # # PLOTTNG NUMBER OF Breakthroughs
+    # title = "Dependence of number of breathing breakthroughs on amplitude"
+    # xlabel = "Amplitude of the impulse"
+    # ylabel = "Number of breakthroughs"
+    # start_idx = 0
+    # x = amps[start_idx:]
+    # y = num_breakthroughs_PreI[start_idx:]
+    # error = num_breakthroughs_PreI_stds[start_idx:]
+    # nice_error_bar(x,y,error,title,xlabel,ylabel, title)
+    #
+    #
+    # # PLOTTNG NUMBER OF Breakthroughs
+    # title = "Dependence of number of AugE breakthroughs on amplitude"
+    # xlabel = "Amplitude of the impulse"
+    # ylabel = "Number of breakthroughs"
+    # start_idx = 0
+    # x = amps[start_idx:]
+    # y = num_breakthroughs_AugE[start_idx:]
+    # error = num_breakthroughs_AugE_stds[start_idx:]
+    # nice_error_bar(x,y,error,title,xlabel,ylabel, title)
 
-period_stds = np.mean(info_amp['period_stds'], 1)
-period_stds[period_stds == np.inf] = 10000
-period_stds = period_stds
+    start_idx = 0
+    info = pickle.load(open('../data/info_var_phase.pkl', "rb+"))
+    phases = list(info.keys())
+    phases.sort()
+    data = np.zeros((len(phases), 12))
+    for i, phase in (enumerate(phases)):
+        data[i, 0] = np.nanmean(info[phase]["Ti0"])
+        data[i, 1] = np.std(info[phase]["Ti0"])
+        data[i, 2] = np.nanmean(info[phase]["T0"])
+        data[i, 3] = np.std(info[phase]["T0"])
+        data[i, 4] = np.nanmean(info[phase]["T1"])
+        data[i, 5] = np.std(info[phase]["T1"])
+        data[i, 6] = np.nanmean(info[phase]["Theta"])
+        data[i, 7] = np.std(info[phase]["Theta"])
+        data[i, 8] = np.nanmean(info[phase]["Ti1"])
+        data[i, 9] = np.std(info[phase]["Ti1"])
+        data[i, 10] = np.nanmean(info[phase]["Ti2"])
+        data[i, 11] = np.std(info[phase]["Ti2"])
 
-rough_periods = np.mean(info_amp['rough_periods'], axis=1)
-rough_period_stds = np.std(info_amp['rough_periods'], axis=1)
-
-num_swallows = np.mean(info_amp['num_swallows_s'], axis=1)
-num_swallow_stds = np.std(info_amp['num_swallows_s'], axis=1)
-
-num_breakthroughs_AugE = np.mean(info_amp['num_breakthroughs_AugE_s'], axis=1)
-num_breakthroughs_AugE_stds = np.std(info_amp['num_breakthroughs_AugE_s'], axis=1)
-
-num_breakthroughs_PreI = np.mean(info_amp['num_breakthroughs_PreI_s'], axis=1)
-num_breakthroughs_PreI_stds = np.std(info_amp['num_breakthroughs_PreI_s'], axis=1)
-
-# PLOTTING PERIOD AND STD
-title = "Swallowing period and standard deviation"
-xlabel = "Amplitude of the impulse"
-ylabel = "Period of the swallowing"
-start_idx = 0
-x = amps[start_idx:]
-y = periods[start_idx:]
-error = period_stds[start_idx:]
-nice_error_bar(x,y,error,title,xlabel,ylabel, title)
-
-# # PLOTTING ROUGH_PERIODS
-# title = "Swallowing period (roughly) and standard deviation"
-# xlabel = "Amplitude of the impulse"
-# ylabel = "Period of the swallowing"
-# start_idx = 0
-# x = amps[start_idx:]
-# y = rough_periods[start_idx:]
-# error = rough_period_stds[start_idx:]
-# nice_error_bar(x,y,error,title,xlabel,ylabel, title)
-
-#PLOTTNG NUMBER OF SWALLOWS
-title = "Dependence of number of swallows on amplitude"
-xlabel = "Amplitude of the impulse"
-ylabel = "Number of swallows"
-start_idx = 0
-x = amps[start_idx:]
-y = num_swallows[start_idx:]
-error = num_swallow_stds[start_idx:]
-nice_error_bar(x,y,error,title,xlabel,ylabel, title)
-
-# PLOTTNG NUMBER OF Breakthroughs
-title = "Dependence of number of breathing breakthroughs on amplitude"
-xlabel = "Amplitude of the impulse"
-ylabel = "Number of breakthroughs"
-start_idx = 0
-x = amps[start_idx:]
-y = num_breakthroughs_PreI[start_idx:]
-error = num_breakthroughs_PreI_stds[start_idx:]
-nice_error_bar(x,y,error,title,xlabel,ylabel, title)
+    Phis = np.array(phases)
+    Ti_0 = data[:, 0]
+    Ti_0_std = data[:, 1]
+    T0 = data[:, 2]
+    T0_std = data[:, 3]
+    T1 = data[:, 4]
+    T1_std = data[:, 5]
+    Theta = data[:, 6]
+    Theta_std = data[:, 7]
+    Ti1 = data[:, 8]
+    Ti1_std = data[:, 9]
+    Ti2 = data[:, 10]
+    Ti2_std = data[:, 11]
 
 
-# PLOTTNG NUMBER OF Breakthroughs
-title = "Dependence of number of AugE breakthroughs on amplitude"
-xlabel = "Amplitude of the impulse"
-ylabel = "Number of breakthroughs"
-start_idx = 0
-x = amps[start_idx:]
-y = num_breakthroughs_AugE[start_idx:]
-error = num_breakthroughs_AugE_stds[start_idx:]
-nice_error_bar(x,y,error,title,xlabel,ylabel, title)
+    # #PLOTTNG Ti_0 from shifts
+    # title = "Dependence of $Ti_0$ on shift"
+    # xlabel = "Shift, rad"
+    # ylabel = "$T_{i0}$"
+    # start_idx = 3
+    # x = Phis[start_idx:]
+    # y = Ti_0[start_idx:]
+    # error = Ti_0_std[start_idx:]
+    # nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
+    #
+    # # PLOTTNG Ti_0 from shifts
+    # title = "Dependence of $T_0$ on shift"
+    # xlabel = "Shift, rad"
+    # ylabel = "$T_0$"
+    # start_idx = 0
+    # x = Phis[start_idx:]
+    # y = T0[start_idx:]
+    # error = T0_std[start_idx:]
+    # nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
+    #
+    # #PLOTTNG T1 from shifts
+    # title = "Dependence of $T_1$ on shift"
+    # xlabel = "Shift, rad"
+    # ylabel = "$T_{1}$"
+    # start_idx = 0
+    # x = Phis[start_idx:]
+    # y = T1[start_idx:]
+    # error = T1_std[start_idx:]
+    # nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
 
-# info_phase = pickle.load(open("../data/features_var_phase_12022020.pkl",'rb+'))
-#
-# shifts = info_phase['shift']
-# Ti_0s = np.roll(info_phase['Ti_0s'], -3, axis=0)
-# T0s = np.roll(info_phase['T0s'], -3, axis=0)
-# T1s = np.roll(info_phase['T1s'], -3, axis=0)
-# Phis = ((info_phase['Phis']/T0s) % 1.0) * 2*np.pi
-# Thetas = np.roll(info_phase['Thetas'], -3, axis=0)
-# Ti_1s = np.roll(info_phase['Ti_1s'], -3, axis=0)
-# Ti_2s = np.roll(info_phase['Ti_2s'], -3, axis=0)
+    # # PLOTTNG Phis from shifts
+    # title = "Dependence of $\Phi$ on shift"
+    # xlabel = "Shift, rad"
+    # ylabel = "$\Phi$"
+    # start_idx = 0
+    # x = Phis[start_idx:]
+    # y = T0[start_idx:]
+    # error = T0_std[start_idx:]
+    # nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
 
-# #PLOTTNG Ti_0 from shifts
-# title = "Dependence of $Ti_0$ on shift"
-# xlabel = "Shift, rad"
-# ylabel = "$T_{i0}$"
-# start_idx = 3
-# x = np.mean(Phis, axis = 1)[start_idx:]
-# y = np.mean(Ti_0s, axis = 1)[start_idx:]
-# error = np.std(Ti_0s, axis = 1)[start_idx:]
-# nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
-#
-#PLOTTNG Ti_0 from shifts
-# title = "Dependence of $T_0$ on shift"
-# xlabel = "Shift, rad"
-# ylabel = "$T_0$"
-# start_idx = 0
-# x = np.mean(Phis, axis = 1)[start_idx:]
-# y = np.mean(T0s, axis = 1)[start_idx:]
-# error = np.std(T0s, axis = 1)[start_idx:]
-# nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
-#
-# #PLOTTNG T1 from shifts
-# title = "Dependence of $T_1$ on shift"
-# xlabel = "Shift, rad"
-# ylabel = "$T_{1}$"
-# start_idx = 0
-# x = np.mean(Phis, axis = 1)[start_idx:]
-# y = np.mean(T1s, axis = 1)[start_idx:]
-# error = np.std(T1s, axis = 1)[start_idx:]
-# nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
-#
-# # PLOTTNG Phis from shifts
-# title = "Dependence of $\Phi$ on shift"
-# xlabel = "Shift, rad"
-# ylabel = "$\Phi$"
-# start_idx = 0
-# x = np.mean(Phis, axis = 1)[start_idx:]
-# y = np.mean(Phis, axis = 1)[start_idx:]
-# error = np.std(Phis, axis = 1)[start_idx:]
-# nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
-#
-# # PLOTTNG Thetas from shifts
-# title = "Dependence of $\Theta$ on shift"
-# xlabel = "Shift, rad"
-# ylabel = "$\Theta$"
-# start_idx = 0
-# x = np.mean(Phis, axis = 1)[start_idx:]
-# y = np.mean(Thetas, axis = 1)[start_idx:]
-# error = np.std(Thetas, axis = 1)[start_idx:]
-# nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
-#
-# # PLOTTNG Thetas from shifts
-# title = "Dependence of $\Delta \Theta$ on \Phi"
-# xlabel = "Phis (in ms)"
-# ylabel = "$\Delta \Theta"
-# start_idx = 0
-# x = np.roll(np.mean(Phis, axis = 1),-2, axis=0)[start_idx:]
-# y = np.mean((T1s - T0s)/T0s, axis = 1)[start_idx:]
-# error = np.std((T1s - T0s)/T0s, axis = 1)[start_idx:]
-# nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
-#
-# title = "Dependence of $(Ti_0s T0s reatio) on \Phi"
-# xlabel = "Phis (in ms)"
-# ylabel = "$\Delta \Theta"
-# start_idx = 0
-# x = np.roll(np.mean(Phis, axis = 1), -2, axis=0)[start_idx:]
-# y = np.mean((Ti_0s/T0s), axis = 1)[start_idx:]
-# error = np.std((Ti_0s/T0s), axis = 1)[start_idx:]
-# nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
-#
-#
-# title = "PRC"
-# xlabel = "r${\Phi}, rad"
-# ylabel = "r$({T_1} - {T_0}) / {T_0}"
-# start_idx = 0
-# x = np.roll(np.mean(Phis, axis = 1), -2, axis=0)[start_idx:]
-# y = np.mean((T1s - T0s) / T0s, axis = 1)[start_idx:]
-# error = np.std(((T1s - T0s) / T0s), axis = 1)[start_idx:]
-# nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
+    # # PLOTTNG Thetas from shifts
+    # title = "Dependence of $\Theta$ on shift"
+    # xlabel = "Shift, rad"
+    # ylabel = "$\Theta$"
+    # start_idx = 0
+    # x = Phis[start_idx:]
+    # y = Theta[start_idx:]
+    # error = Theta_std[start_idx:]
+    # nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
+    #
+    # # PLOTTNG Thetas from shifts
+    # title = "PRC"
+    # xlabel = "Phis (in ms)"
+    # ylabel = "$\Delta \Theta"
+    # start_idx = 0
+    # x = Phis[start_idx:]
+    # y = (T1 - T0)/T0[start_idx:]
+    # error = np.zeros_like(y)
+    # nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
+    #
+    # title = "Dependence of $(T1s T0s ratio) on \Phi"
+    # xlabel = "Phis (in ms)"
+    # ylabel = "$\Delta \Theta"
+    # start_idx = 0
+    # x = Phis[start_idx:]
+    # y = (T1/T0)[start_idx:]
+    # error = np.zeros_like(y)
+    # nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
+
+    title = "Dependence of \Theta devided by T0"
+    xlabel = "Phis (in ms)"
+    ylabel = "$\Delta \Theta"
+    start_idx = 0
+    x = Phis[start_idx:]
+    y = (((Theta)/T0) * 2 * np.pi) [start_idx:]
+    error = np.zeros_like(y)
+    nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
+
+

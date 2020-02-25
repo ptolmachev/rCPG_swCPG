@@ -237,7 +237,7 @@ if __name__ == '__main__':
     inh_NTS = 1
     inh_KF = 2
     generate_params(inh_NTS, inh_KF)
-    file = open("rCPG_swCPG.json", "rb+")
+    file = open("../data/rCPG_swCPG.json", "rb+")
     params = json.load(file)
     W = np.array(params["b"])
     drives = np.array(params["c"])

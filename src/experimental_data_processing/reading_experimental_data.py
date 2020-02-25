@@ -492,15 +492,20 @@ def downsample_all(data_folder, downsampling_factor):
     return None
 
 if __name__ == '__main__':
-    # downsampling_factor = 1
-    # data_folder = '/home/pavel/Documents/0Research/Data_for_swallowing/sln_prc/'
-    # downsample_all(data_folder, downsampling_factor)
+    downsampling_factor = 100
+    #2019-09-03_15-01-54_prc
+    #2019-09-04_17-49-02_prc
+    #2019-09-05_12-26-14_prc
+    #2019-09-10_16-27-32_prc
+    folder_to_take = '../../data/sln_prc/2019-09-10_16-27-32_prc/'
+    folder_to_save = '../../data/sln_prc_preprocessed/2019-09-10_16-27-32_prc/'
+    downsample_files(folder_to_take, folder_to_save, downsampling_factor)
     # plot some data
-    fig = plt.figure(figsize = (40,20))
-    for suff in ['CH5', 'CH10', 'CH15', 'ADC1']:
-        data = pickle.load(open(f'../data/2019-09-04_t5_1/100_{suff}.pkl','rb+'))
-        plt.plot(data, 'r-', linewidth = 1, alpha = 0.95)
-        plt.title(f't5 {suff}')
-        plt.grid(True)
-        plt.savefig(f'../img/experimental/t2_{suff}')
+    # fig = plt.figure(figsize = (40,20))
+    # for suff in ['CH5', 'CH10', 'CH15', 'ADC1']:
+    #     data = pickle.load(open(f'../data/2019-09-04_t5_1/100_{suff}.pkl','rb+'))
+    #     plt.plot(data, 'r-', linewidth = 1, alpha = 0.95)
+    #     plt.title(f't5 {suff}')
+    #     plt.grid(True)
+    #     plt.savefig(f'../img/experimental/t2_{suff}')
     # plt.show()
