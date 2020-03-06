@@ -56,6 +56,9 @@ def get_period(signal):
     ends = find_relevant_peaks(-signal_change, 0.5)
     T = np.median(np.hstack([change(begins), change(ends)]))
     std = np.std(np.hstack([change(begins), change(ends)]))
+    #Ti =  ends - begins
+    # Te - begins - ends
+
     return T, std
 
 def binarise_signal(signal, threshold):
