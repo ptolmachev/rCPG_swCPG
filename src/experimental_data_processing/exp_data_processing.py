@@ -9,9 +9,10 @@ import pickle
 from scipy.signal import find_peaks
 from scipy.signal import savgol_filter
 from copy import deepcopy
-import scipy
 from scipy import signal
-import matplotlib.pyplot as plt
+import matplotlib.pylab as plt
+from matplotlib.pyplot import plot, ion, show, close
+ion()
 from scipy.signal import butter, lfilter, freqz
 from sklearn.covariance import EllipticEnvelope as EE
 from sklearn.neighbors import LocalOutlierFactor as LOF
@@ -283,19 +284,7 @@ def get_params(chunk):
     Ti_1 = (te3 - ts3)
     Ti_2 = (te4 - ts4)
 
-    # plt.plot(signal)
-    # plt.axvline(ts1, color='k')
-    # plt.axvline(ts2, color='r')
-    # plt.axvline(ts3, color='g')
-    # plt.axvline(ts4, color='b')
-    # plt.axvline(te1, color='k')
-    # plt.axvline(te2, color='r')
-    # plt.axvline(te3, color='g')
-    # plt.axvline(te4, color='b')
-    # plt.axvline(stim, color='m')
-
     return Phi, Ti_0, T0, T1, Theta, Ti_1, Ti_2, ts1, ts2, ts3, ts4, te1, te2, te3, te4
-
 
 def extract_data():
     # for all chunks in all recordings get an array of all these parameters:
@@ -318,61 +307,70 @@ def extract_data():
     pickle.dump(parameters_dict, open(f'../../data/parameters_prc.pkl', 'wb+'))
     return None
 
-def extract_data_human_in_the_loop():
+def plot_interact(signal, stim_start, stim_end):
+    pos = []
+    def onclick(event):
+        x = event.xdata
+        y = event.ydata
+        pos.append(event.xdata)
+        if len(pos) == 8:
+            fig.canvas.mpl_disconnect(cid)
+            close()
+        plt.plot(x, y, 'ro')
+        return None
+    fig= plt.figure(figsize=(10,4))
+    plot(signal, linewidth = 2, color='k')
+    plt.axvline(stim_start)
+    plt.axvline(stim_end)
+    plt.grid(True)
+    cid = fig.canvas.mpl_connect('button_press_event', onclick)
+    show(block=True)
+    close()
+    return pos
+
+def extract_data_human_in_the_loop(dataset_chunks, save_to):
     parameters_dict = {}
-    data = pickle.load(open(f'../../data/prc_data_chunked.pkl', 'rb+'))
-    print(f"The number of datasets: {len(list(data.keys()))}")
+    parameters_dict['count'] = 0
+    parameters_dict['data'] = []
+    print(f"The number of chunks of keys: {len(list(dataset_chunks.keys()))}")
+    for num in list(dataset_chunks.keys()):
+        print(f"chunk number: {num}")
+        if dataset_chunks[num] != {}:
+            chunk = dataset_chunks[num]
+            # try to get parameters automatically:
+            res_preliminary = get_params(chunk)
+            Phi, Ti_0, T0, T1, Theta, Ti_1, Ti_2, ts1, ts2, ts3, ts4, te1, te2, te3, te4 = res_preliminary
+            # prepare the chunk for data plot discarding unnecessary data
+            if (not np.isnan(ts1)) and (not np.isnan(te4)):
+                relevant_data_in_chunk = dict()
+                relevant_data_in_chunk['VNA'] = chunk['VNA'][ts1:te4]
+                relevant_data_in_chunk['PNA'] = chunk['PNA'][ts1:te4]
+                relevant_data_in_chunk['HNA'] = chunk['HNA'][ts1:te4]
+                relevant_data_in_chunk['T'] = chunk['T']
+                relevant_data_in_chunk['std_T'] = chunk['std_T']
+                relevant_data_in_chunk['stim'] = chunk['stim'] - ts1
+                stim = relevant_data_in_chunk['stim']
+                relevant_data_in_chunk['i_starts'] = (np.array(chunk['i_starts']) - ts1)[(np.array(chunk['i_starts']) >= ts1) * ((np.array(chunk['i_starts']) <= te4))]
+                relevant_data_in_chunk['i_ends'] = (np.array(chunk['i_ends']) - ts1)[(np.array(chunk['i_ends']) >= ts1) * (np.array(chunk['i_ends']) <= te4)]
 
-    for i, rec in enumerate(list(data.keys())):
-        print(rec)
-        if i in list(parameters_dict.keys()):
-            pass
-        else:
-            parameters_dict[i] = []
-        print(f"The number of chunks of keys: {len(list(data[rec].keys()))}")
-        num_interferences = 0
-        num_pass = 0
-        for num in list(data[rec].keys()):
-            print(f"chunk number: {num}")
-            if data[rec][num] != {}:
-                chunk = data[rec][num]
-                # try to get parameters automatically:
-                res = get_params(chunk)
-                Phi, Ti_0, T0, T1, Theta, Ti_1, Ti_2, ts1, ts2, ts3, ts4, te1, te2, te3, te4 = res
-
-                if (Phi < 1.2 * Ti_0): # if the stimulus happened near or close to inspiration
-                    # prepare the chunk for data plot discarding unnecessary data
-                    if (not np.isnan(ts1)) and (not np.isnan(te4)):
-                        relevant_data_in_chunk = dict()
-                        relevant_data_in_chunk['VNA'] = chunk['VNA'][ts1:te4]
-                        relevant_data_in_chunk['PNA'] = chunk['PNA'][ts1:te4]
-                        relevant_data_in_chunk['HNA'] = chunk['HNA'][ts1:te4]
-                        relevant_data_in_chunk['T'] = chunk['T']
-                        relevant_data_in_chunk['std_T'] = chunk['std_T']
-                        relevant_data_in_chunk['stim'] = chunk['stim'] - ts1
-
-                        relevant_data_in_chunk['i_starts'] = (np.array(chunk['i_starts']) - ts1)[(np.array(chunk['i_starts']) >= ts1) * ((np.array(chunk['i_starts']) <= te4))]
-                        relevant_data_in_chunk['i_ends'] = (np.array(chunk['i_ends']) - ts1)[(np.array(chunk['i_ends']) >= ts1) * (np.array(chunk['i_ends']) <= te4)]
-                        # superplot(relevant_data_in_chunk)
-                        # # and get the parameters:     Ti_0, T0, Phi, Theta, T1, Ti_1, Ti_2
-                        # print("Enter Ti_0, T0, Phi, Theta, T1, Ti_1, Ti_2: \n")
-                        # tuple = input()
-                        # res = eval(tuple)
-                        res = get_params(chunk)
-                        num_interferences += 1
-                    else:
-                        num_pass += 1
-                        pass
-                else:
-                    res = get_params(chunk)
-                    res = res[:6] #cause we need only Phi, Ti_0, T0, T1, Theta, Ti_1, Ti_2
-                if not res is None:
-                    parameters_dict[i].append(res)
-            # dump after every dataset
-            pickle.dump(parameters_dict, open(f'../../data/parameters_prc_human.pkl', 'wb+'))
-        print(f"Total number of human interferences required: {num_interferences}")
-        print(f"Total number of skipped chunks: {num_pass}")
-    pickle.dump(parameters_dict, open(f'../../data/parameters_prc_human.pkl', 'wb+'))
+                ts = plot_interact(relevant_data_in_chunk['PNA'], relevant_data_in_chunk['stim'], relevant_data_in_chunk['stim'] + 50)
+                if len(ts) == 8:
+                    ts1, te1, ts2, te2, ts3, te3, ts4, te4 = ts
+                    Ti_0 = (te1 - ts1)
+                    T0 = (ts2 - ts1)
+                    Phi = (stim - ts2)
+                    Theta = (ts3 - stim)
+                    T1 = (ts3 - ts2)
+                    Ti_1 = (te3 - ts3)
+                    Ti_2 = (te4 - ts4)
+                    res = (Phi, Ti_0, T0, T1, Theta, Ti_1, Ti_2)
+                    print(res)
+                    parameters_dict['data'].append(res)
+                # dump after every point
+                pickle.dump(parameters_dict, open(save_to, 'wb+'))
+                parameters_dict['count'] = parameters_dict['count'] + 1
+                print(parameters_dict['count'])
+    pickle.dump(parameters_dict, open(save_to, 'wb+'))
     return None
 
 def fill_nans(data):
@@ -394,50 +392,86 @@ if __name__ == '__main__':
     # combine_recordigs()
     # chunk_data()
     # extract_data()
-    extract_data_human_in_the_loop()
-    # data = pickle.load(open('../../data/parameters_prc.pkl','rb'))
-    # # in first recording stimulus didn't affect cycle
-    # # 2 seems rubbish
-    # i = 3
-    # data = data[i]
-    # data = np.array(data)
-    # data = fill_nans(data)
-    # data = get_rid_of_outliers(data)
-    # Phi = data[:, 0]
-    # Ti_0 = data[:, 1]
-    # T0 = data[:, 2]
-    # T1 = data[:, 3]
-    # Theta = data[:, 4]
-    # Ti_1 = data[:, 5]
-    # Ti_2 = data[:, 6]
-    # phase = 2 * np.pi * (Phi/T0)
-    # cophase = 2 * np.pi * (Theta/T0)
+    # num_rec = 3
+    # data = pickle.load(open(f'../../data/prc_data_chunked.pkl', 'rb+'))
+    # dataset_chunks = data[list(data.keys())[num_rec]]
+    # save_to = f'../../data/parameters_prc_08032020_{num_rec}.pkl'
+    # extract_data_human_in_the_loop(dataset_chunks, save_to)
+    # data = pickle.load(open('../../data/parameters_prc_allhuman.pkl','rb'))
 
+    for i in range(4):
+        num_rec = i
+        data_ = pickle.load(open(f'../../data/parameters_prc_08032020_{num_rec}.pkl','rb'))['data']
+        data_ = np.array(data_)
+        data_ = fill_nans(data_)
+        # data = get_rid_of_outliers(data)
+        Phi = data_[:, 0]
+        Ti_0 = data_[:, 1]
+        T0 = data_[:, 2]
+        T1 = data_[:, 3]
+        Theta = data_[:, 4]
+        Ti_1 = data_[:, 5]
+        # Ti_2 = data[:, 6]
+        phase = np.minimum(1, 1 * (Phi/T0))
+        cophase = np.minimum(1, 1 * (Theta/T0))
 
-    # fig1 = plt.figure()
-    # plt.scatter(phase, T0)
-    # plt.title("T0")
-    # plt.grid(True)
-    # plt.xlim([0, 2 * np.pi])
-    # plt.ylim([0, 1.1 * np.max(T0)])
-    # # plt.show()
-    # plt.savefig(open(f"../../img/experiments/dataset_{i}_T0.png", "wb+"))
-    #
-    # fig2 = plt.figure()
-    # plt.title("(T1-T0)/T0")
-    # y = (T1-T0)/T0
-    # plt.scatter(phase, y)
-    # plt.grid(True)
-    # plt.xlim([0, 2 * np.pi])
-    # plt.ylim([1.1 * np.min(y), 1.1 * np.max(y)])
-    # # plt.show()
-    # plt.savefig(f"../../img/experiments/dataset_{i}_period_change.png")
-    #
-    # fig3 = plt.figure()
-    # plt.title("phase-cophase")
-    # plt.scatter(phase, cophase)
-    # plt.grid(True)
-    # plt.xlim([0, 2 * np.pi])
-    # plt.ylim([0, 2 * np.pi])
-    # # plt.show()
-    # plt.savefig(f"../../img/experiments/dataset_{i}_phase_cophase.png")
+        fig1 = plt.figure()
+        plt.title("T1/T0")
+        y = T1/T0
+        plt.scatter(phase, y)
+        plt.grid(True)
+        plt.xlim([0, 1])
+        plt.ylim([1.1 * np.min(y-np.mean(y)) + np.mean(y), 1.1 * np.max(y-np.mean(y)) + np.mean(y)])
+        # plt.show()
+        plt.savefig(f"../../img/experiments/dataset_{num_rec + 1}_period_change.png")
+
+        fig2 = plt.figure()
+        plt.title("phase-cophase")
+        y = cophase
+        plt.scatter(phase, y)
+        plt.grid(True)
+        plt.xlim([0, 1])
+        plt.ylim([1.1 * np.min(y-np.mean(y)) + np.mean(y), 1.1 * np.max(y-np.mean(y)) + np.mean(y)])
+        # plt.show()
+        plt.savefig(f"../../img/experiments/dataset_{num_rec + 1}_phase_cophase.png")
+
+        fig3 = plt.figure()
+        y = T0
+        plt.scatter(phase, y)
+        plt.title("T0")
+        plt.grid(True)
+        plt.xlim([0, 1])
+        plt.ylim([1.1 * np.min(y-np.mean(y)) + np.mean(y), 1.1 * np.max(y-np.mean(y)) + np.mean(y)])
+        # plt.show()
+        plt.savefig(open(f"../../img/experiments/dataset_{num_rec + 1}_T0.png", "wb+"))
+
+        fig4 = plt.figure()
+        plt.title("T 1")
+        y = T1
+        plt.scatter(phase, y)
+        plt.grid(True)
+        plt.xlim([0, 1])
+        plt.ylim([1.1 * np.min(y-np.mean(y)) + np.mean(y), 1.1 * np.max(y-np.mean(y)) + np.mean(y)])
+        # plt.show()
+        plt.savefig(f"../../img/experiments/dataset_{num_rec + 1}_T1.png")
+
+        fig5 = plt.figure()
+        plt.title("Ti 0")
+        y = Ti_0
+        plt.scatter(phase, y)
+        plt.grid(True)
+        plt.xlim([0, 1])
+        plt.ylim([1.1 * np.min(y-np.mean(y)) + np.mean(y), 1.1 * np.max(y-np.mean(y)) + np.mean(y)])
+        # plt.show()
+        plt.savefig(f"../../img/experiments/dataset_{num_rec + 1}_Ti0.png")
+
+        fig6 = plt.figure()
+        plt.title("Ti 1")
+        y = Ti_1
+        plt.scatter(phase, y)
+        plt.grid(True)
+        plt.xlim([0, 1])
+        plt.ylim([1.1 * np.min(y-np.mean(y)) + np.mean(y), 1.1 * np.max(y-np.mean(y)) + np.mean(y)])
+        # plt.show()
+        plt.savefig(f"../../img/experiments/dataset_{num_rec + 1}_Ti1.png")
+
