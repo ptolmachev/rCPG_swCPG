@@ -4,6 +4,8 @@ import scipy
 from matplotlib import pyplot as plt
 from scipy.signal import savgol_filter as sg
 import json
+import pandas as pd
+from sklearn.ensemble import IsolationForest as IF
 from Model import *
 from params_gen import *
 
@@ -58,7 +60,6 @@ def get_period(signal):
     std = np.std(np.hstack([change(begins), change(ends)]))
     #Ti =  ends - begins
     # Te - begins - ends
-
     return T, std
 
 def binarise_signal(signal, threshold):
@@ -72,6 +73,8 @@ def change(signal):
 
 def last_lesser_than(alist, element):
     #sorted list
+    if np.isnan(element):
+        return [np.nan]
     for i in range(len(alist)):
         if alist[i] >= element:
             if i - 1 < 0:
@@ -81,6 +84,8 @@ def last_lesser_than(alist, element):
     return [np.nan]
 
 def first_greater_than(alist, element):
+    if np.isnan(element):
+        return [np.nan]
     for i in range(len(alist)):
         if alist[i] <= element:
             pass
@@ -98,6 +103,19 @@ def nice_plot(series):
     plt.plot(series, 'r-',linewidth = 2, alpha = 0.7)
     plt.show()
     plt.close()
+    return None
+
+def fill_nans(data):
+    df = pd.DataFrame(data)
+    data_new = df.fillna(df.mean()).values
+    return data_new
+
+def get_rid_of_outliers(data):
+    cov = IF(contamination=0.25).fit(data)
+    mask = (cov.fit_predict(data) + 1) // 2
+    inds = np.nonzero(mask)
+    data_filtered = data[inds,:].squeeze()
+    return data_filtered
 
 def get_number_of_breakthroughs(signal, min_amp):
     signal_filtered = sg(signal, 121, 1)[300:]

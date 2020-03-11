@@ -493,13 +493,14 @@ def downsample_all(data_folder, downsampling_factor):
 
 if __name__ == '__main__':
     downsampling_factor = 100
-    #2019-09-03_15-01-54_prc
-    #2019-09-04_17-49-02_prc
-    #2019-09-05_12-26-14_prc
-    #2019-09-10_16-27-32_prc
-    folder_to_take = '../../data/sln_prc/2019-09-10_16-27-32_prc/'
-    folder_to_save = '../../data/sln_prc_preprocessed/2019-09-10_16-27-32_prc/'
-    downsample_files(folder_to_take, folder_to_save, downsampling_factor)
+    # file_names
+    # 2019-09-03_15-01-54_prc
+    # 2019-09-04_17-49-02_prc
+    # 2019-09-05_12-26-14_prc
+    # 2019-09-10_16-27-32_prc
+    # folder_to_take = '../../data/sln_prc/2019-09-10_16-27-32_prc/'
+    # folder_to_save = '../../data/sln_prc_preprocessed/2019-09-10_16-27-32_prc/'
+    # downsample_files(folder_to_take, folder_to_save, downsampling_factor)
     # plot some data
     # fig = plt.figure(figsize = (40,20))
     # for suff in ['CH5', 'CH10', 'CH15', 'ADC1']:
