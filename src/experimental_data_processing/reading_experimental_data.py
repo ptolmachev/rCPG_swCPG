@@ -465,42 +465,16 @@ def _get_sorted_channels(folderpath, chprefix='CH', session='0', source='100'):
 
     return (Chs)
 
-def downsample_files(folder_to_take, folder_to_save, downsampling_factor):
-    files = os.listdir(folder_to_take)
-    for file in files:
-        if 'continuous' in file:
-            if ( ('CH5' in file) or ('CH10' in file) or ('CH15' in file) or ('ADC1' in file)):
-                data = load(folder_to_take + file, dtype = float)
-                res = pd.DataFrame(data['data']).rolling(window=downsampling_factor).mean().dropna().values.squeeze()
-                pickle.dump(res, open(folder_to_save + file.split('.continuous')[0]+ '.pkl','wb+'))
-            else:
-                os.remove(folder_to_take + file)
-    return None
-
-def downsample_all(data_folder, downsampling_factor):
-    subfolders = [f.path.split('/')[-1] for f in os.scandir(data_folder) if f.is_dir()]
-    for subfolder in subfolders:
-        folder_to_take = data_folder + subfolder + '/'
-        folder_to_save = '../data/' + folder_to_take.split('/')[-2].split('_')[0] + '_' + folder_to_take.split('/')[-2].split('_')[2] + f'_{downsampling_factor}/'
-        if os.path.isdir(folder_to_save):
-            shutil.rmtree(folder_to_save)
-        os.mkdir(folder_to_save)
-        try:
-            downsample_files(folder_to_take, folder_to_save, downsampling_factor)
-        except:
-            print(subfolder)
-    return None
 
 if __name__ == '__main__':
     downsampling_factor = 100
-    # file_names
-    # 2019-09-03_15-01-54_prc
-    # 2019-09-04_17-49-02_prc
-    # 2019-09-05_12-26-14_prc
-    # 2019-09-10_16-27-32_prc
-    # folder_to_take = '../../data/sln_prc/2019-09-10_16-27-32_prc/'
-    # folder_to_save = '../../data/sln_prc_preprocessed/2019-09-10_16-27-32_prc/'
-    # downsample_files(folder_to_take, folder_to_save, downsampling_factor)
+    data_files = ['2019-09-03_15-01-54_prc', '2019-09-04_17-49-02_prc',
+                  '2019-09-05_12-26-14_prc', '2019-09-10_16-27-32_prc']
+
+    for file in data_files:
+        folder_to_take = f'../../data/sln_prc/{file}/'
+        folder_to_save = f'../../data/sln_prc_preprocessed/{file}/'
+        downsample_files(folder_to_take, folder_to_save, downsampling_factor)
     # plot some data
     # fig = plt.figure(figsize = (40,20))
     # for suff in ['CH5', 'CH10', 'CH15', 'ADC1']:
