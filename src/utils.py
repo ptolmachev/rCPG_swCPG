@@ -47,8 +47,9 @@ def get_insp_starts(signals):
 
 def get_period(signal):
     # for i in range(len(signals)):
+    signal = signal - np.mean(signal)
     signal_filtered = sg(signal, 121, 1)
-    threshold = np.quantile(signal_filtered, 0.65)
+    threshold = np.quantile(signal_filtered, 0.8)
     signal_binary = binarise_signal(signal_filtered, threshold)
     # for correctness check
     # plt.plot(signal_filtered)
