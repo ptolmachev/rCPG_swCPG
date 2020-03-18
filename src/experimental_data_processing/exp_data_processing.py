@@ -1,34 +1,14 @@
 import sys
 sys.path.insert(0, "../")
-import signal
-import pandas as pd
 import numpy as np
-import os
-import re
 import pickle
-from scipy.signal import find_peaks
-from scipy.signal import savgol_filter
 from copy import deepcopy
-from scipy import signal
 import matplotlib.pylab as plt
 from matplotlib.pyplot import plot, ion, show, close
-from scipy.signal import butter, lfilter, freqz, decimate, convolve
 from utils import *
 from reading_experimental_data import *
+from scipy.signal import decimate, convolve
 ion()
-
-
-def butter_bandpass(lowcut, highcut, fs, order=5):
-    nyq = 0.5 * fs
-    low = lowcut / nyq
-    high = highcut / nyq
-    b, a = butter(order, [low, high], btype='bandpass')
-    return b, a
-#
-def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
-    b, a = butter_bandpass(lowcut, highcut, fs, order=order)
-    y = signal.filtfilt(b, a, data)
-    return y
 
 def filter_signal(signal,cutoff_fr_low, cutoff_fr_high, fr):
     processed_signal = signal - np.mean(signal)
@@ -37,8 +17,8 @@ def filter_signal(signal,cutoff_fr_low, cutoff_fr_high, fr):
 
 def smooth_signal(signal, window_len, sigma):
     signal = np.abs(signal)
-    x = np.exp(((-(np.arange(window_len) - window_len // 2) ^ 2) / (2 * sigma ** 2))) #gaussian kernel
-    kernel = x / (np.sum(x))
+    x = np.exp(((-(np.arange(window_len) - window_len // 2) ^ 2) / (2 * sigma ** 2))) # gaussian kernel
+    kernel = x / (np.sum(x)) #normalise window to add up to one
     signal = convolve(signal, kernel, 'same')
     return signal
 
@@ -47,7 +27,6 @@ def find_stim_spikes(stim, threshold=-4.95):
     inds_above_threshold = np.where(stim > threshold)[0]
     tmp_e = np.diff(inds_above_threshold)
     ends = np.array(inds_above_threshold[np.where(tmp_e > 1)]) + 1  #indices where the stimulus starts
-
     inds_below_threshold = np.where(stim < threshold)[0]
     tmp_s = np.diff(inds_below_threshold)
     starts = np.array(inds_below_threshold[np.where(tmp_s > 1)]) #indices where the stimulus ends
@@ -62,15 +41,6 @@ def remove_stim_spikes(rec, spikes_start, spikes_end, offset):
         filtered_data[t1:t2] = (filtered_data[t1] + filtered_data[t2])/2.0
     return filtered_data
 
-def get_folders(root_folder, pattern):
-    folders_all = os.listdir(root_folder + '/')
-    folders = []
-    for i, folder in enumerate(folders_all):
-        m = re.search(pattern, str(folder))
-        if m is not None:
-            folders.append(folder)
-    return folders
-
 def run_filtering(data_folder, folder_save_to):
     folders = get_folders(data_folder, "prc")
     suffixes = ['CH5', 'CH10', 'CH15'] #
@@ -80,7 +50,7 @@ def run_filtering(data_folder, folder_save_to):
     stim_spike_threshold = -4.95
     offset=100
     smoothing_window=1000
-    sigma=100
+    sigma=150
     downsampling_factor=10
     for folder in folders:
         print(folder)
@@ -89,7 +59,7 @@ def run_filtering(data_folder, folder_save_to):
 
         # cluster stim-related spikes into one stimulus
         stim_start = stim_spikes_start[np.array(np.where(np.diff(stim_spikes_start) > 2500)) - 5].squeeze() / downsampling_factor ** 2
-        stim_end = stim_spikes_end[np.where(np.diff(stim_spikes_end) > 2500)] / downsampling_factor ** 2
+        stim_end = stim_spikes_end[np.where(np.diff(stim_spikes_end) > 2500)].squeeze() / downsampling_factor ** 2
 
         for suffix in suffixes:
             rec = load(f'{data_folder}/{folder}/100_{suffix}.continuous', dtype=float)["data"]
@@ -109,7 +79,7 @@ def run_filtering(data_folder, folder_save_to):
             pickle.dump(data_to_save, open(f'{folder_save_to}/{folder}/100_{suffix}_processed.pkl', 'wb+'))
     return None
 
-def split_signal_into_chunks(signal, stim_starts):
+def split_signal_into_chunks(signal, stim_starts, stim_end):
     # for span between the two stims
     data_chunked = dict()
     for i in range(len(stim_starts) - 1):
@@ -124,10 +94,8 @@ def split_signal_into_chunks(signal, stim_starts):
         data_chunked[i]['signal'] = new_chunk
         data_chunked[i]['T'] = T
         data_chunked[i]['std_T'] = std_T
-        data_chunked[i]['stim'] = new_chunk.shape[-1] - int(4 * T)
-        # i_start, i_end = get_insp_phases(data_chunked[i]['signal'])
-        # data_chunked[i]['i_starts'] = i_start
-        # data_chunked[i]['i_ends'] = i_end
+        data_chunked[i]['stim_start'] = new_chunk.shape[-1] - int(4 * T)
+        data_chunked[i]['stim_end'] = new_chunk.shape[-1] + int((stim_end[i] - stim_starts[i])) - int(4 * T)
     return data_chunked
 
 def chunk_data(data_folder, save_to):
@@ -140,7 +108,7 @@ def chunk_data(data_folder, save_to):
         signal = data['signal']
         stim_start = data['stim_start']
         stim_end = data['stim_end']
-        data_chunked = split_signal_into_chunks(signal, stim_start)
+        data_chunked = split_signal_into_chunks(signal, stim_start, stim_end)
         pickle.dump(data_chunked, open(f'{save_to}/{folder}/100_{suffix}_chunked.pkl', 'wb+'))
     return None
 
@@ -180,14 +148,30 @@ def get_onsets_and_ends(signal_begins, signal_ends, stim):
     return ts1, ts2, ts3, ts4, te1, te2, te3, te4
 
 
-def get_inspiration_onsets_and_ends(signal, threshold):
+def get_inspiration_onsets_and_ends(signal, threshold, min_len):
     signal_binary = binarise_signal(signal, threshold)
-    signal_change = change(signal_binary)
-    signal_begins = find_relevant_peaks(signal=signal_change, threshold=0.5).tolist()
-    signal_ends = find_relevant_peaks(signal=-signal_change, threshold=0.5).tolist()
+    signal_change = np.diff(signal_binary)
+    signal_begins = find_relevant_peaks(signal=signal_change, threshold=0.5)
+    signal_ends = find_relevant_peaks(signal=-signal_change, threshold=0.5)
+
+    x = signal_ends[0] - signal_begins[0]
+    if x < 0:
+        signal_ends = signal_ends[1:]
+
+    if len(signal_ends) != len(signal_begins):
+        signal_begins = signal_begins[:np.minimum(len(signal_ends), len(signal_begins))]
+        signal_ends = signal_ends[:np.minimum(len(signal_ends), len(signal_begins))]
+
+    #filter signal_begins
+    irrelevant_inds_begins = np.array(signal_begins)[np.where(signal_ends - signal_begins < min_len)[0]]
+    irrelevant_inds_ends = np.array(signal_ends)[np.where(signal_ends - signal_begins < min_len)[0]]
+
+    signal_begins = [elem for elem in signal_begins if not elem in irrelevant_inds_begins]
+    signal_ends = [elem for elem in signal_ends if not elem in irrelevant_inds_ends]
+
     return signal_begins, signal_ends
 
-def get_timings(insp_begins, insp_ends, stim):
+def get_timings(insp_begins, insp_ends, stim, len_chunk):
     timings = {}
     timings['t_start'] = {}
     timings['t_end'] = {}
@@ -196,12 +180,15 @@ def get_timings(insp_begins, insp_ends, stim):
         timings['t_start'][-i] = insp_begins[ind_insp_0-i]
         timings['t_end'][-i] = insp_ends[np.searchsorted(insp_ends, timings['t_start'][-i])]
 
-    for i in range(len(insp_begins) - ind_insp_0):
+    for i in range( np.minimum(len(insp_begins), len(insp_ends)) - ind_insp_0):
         timings['t_start'][i] = insp_begins[ind_insp_0+i]
-        timings['t_end'][i] = insp_ends[np.searchsorted(insp_ends, timings['t_start'][i])]
+        ind = np.searchsorted(insp_ends, timings['t_start'][i])
+        timings['t_end'][i] = insp_ends[ind] if ind != len(insp_ends) else len_chunk - 1
     return timings
 
-def extract_data_auto(dataset_chunks, save_to):
+def extract_data_from_chunk(dataset_chunks, save_to):
+    threshold = 6.5 #value of signal at which the inspiration is detected
+    min_len = 50 # if len between start of insp and end of insp is lesser than min_len - discard
     parameters_dict = {}
     parameters_dict['count'] = 0
     parameters_dict['data'] = []
@@ -210,9 +197,12 @@ def extract_data_auto(dataset_chunks, save_to):
         print(f"chunk number: {num}")
         chunk = dataset_chunks[num]
         PNA = chunk['signal']
-        stim = chunk['stim']
-        insp_begins, insp_ends = get_inspiration_onsets_and_ends(PNA, threshold=7.5)
-        ts = get_timings(insp_begins, insp_ends, stim)
+        stim_start = chunk['stim_start']
+        stim_end = chunk['stim_end']
+        insp_begins, insp_ends = get_inspiration_onsets_and_ends(PNA, threshold, min_len)
+        len_chunk = len(PNA)
+        ts = get_timings(insp_begins, insp_ends, stim_start, len_chunk)
+
         ind_neg_starts = np.where(np.array(list((ts["t_start"].keys()))) < 0)[0]
         neg_starts = []
         for i in range(len(ind_neg_starts)):
@@ -225,20 +215,43 @@ def extract_data_auto(dataset_chunks, save_to):
             neg_ends.append(ts['t_end'][list(ts['t_end'].keys())[ind_neg_end[i]]])
         neg_ends = np.array(neg_ends)[::-1]
 
-        Phi = stim - ts["t_start"][0]
+        # plot for checking
+
+        # plt.figure(figsize=(15, 5))
+        # plt.plot(PNA, linewidth=2, color="k")
+        # plt.grid(True)
+        # plt.axvline(stim, color='r')
+        # plt.axvline(ts["t_start"][0], color='g')
+        # for i in range(len(neg_starts)):
+        #     plt.axvline(neg_starts[i], color='b')
+
+        Phi = stim_start - ts["t_start"][0]
         Ti_0 = np.mean(neg_ends-neg_starts)
+        Ti_0_std = np.std(neg_ends - neg_starts)
         T0 = np.mean(np.diff(neg_starts))
+        T0_std = np.std(np.diff(neg_starts))
         T1 = ts["t_start"][1] - ts["t_start"][0]
-        Theta = ts["t_start"][1] - stim
+        Theta = ts["t_start"][1] - stim_start
         Ti_1 = ts["t_end"][1] - ts["t_start"][1]
         Ti_2 = ts["t_end"][2] - ts["t_start"][2]
-        res = (Phi, Ti_0, T0, T1, Theta, Ti_1, Ti_2)
-        print(res)
-        parameters_dict['data'].append(res)
-        # dump after every point
-        parameters_dict['count'] = parameters_dict['count'] + 1
+        if T0_std <= 150:
+            res = (Phi, Ti_0, T0, T1, Theta, Ti_1, Ti_2)
+            print(res)
+            parameters_dict['data'].append(res)
+            parameters_dict['count'] = parameters_dict['count'] + 1
+            print(parameters_dict['count'])
         pickle.dump(parameters_dict, open(save_to, 'wb+'))
-        print(parameters_dict['count'])
+    return None
+
+def ectract_data(data_folder):
+    folders = get_folders(data_folder, "_prc")
+    for folder in folders:
+        suffixes = ['CH10']#['CH5', 'CH10', 'CH15']  #
+        for suffix in suffixes:
+            file = f'100_{suffix}_chunked.pkl'
+            data = pickle.load(open(f'{data_folder}/{folder}/{file}', 'rb+'))
+            save_to = f'../../data/parameters_prc_18032020_{folder}.pkl'
+            extract_data_from_chunk(data, save_to)
     return None
 
 def plot_interact(signal, stim_start, stim_end):
@@ -288,17 +301,18 @@ def extract_data_human_in_the_loop(dataset_chunks, save_to):
         print(f"chunk number: {num}")
         chunk = dataset_chunks[num]
         PNA = chunk['signal']
-        stim = chunk['stim']
+        stim_start = chunk['stim_start']
+        stim_end = chunk['stim_end']
         threshold = 0.1
         max_length = 50
-        ts = plot_interact(PNA, stim, stim + 50)
+        ts = plot_interact(PNA, stim_start, stim_end)
         if len(ts) == 8:
             ts1, te1, ts2, te2, ts3, te3, ts4, te4 = ts
             if (not np.isnan(ts1)) and (not np.isnan(te4)):
                 Ti_0 = (te1 - ts1)
                 T0 = (ts2 - ts1)
-                Phi = (stim - ts2)
-                Theta = (ts3 - stim)
+                Phi = (stim_start - ts2)
+                Theta = (ts3 - stim_start)
                 T1 = (ts3 - ts2)
                 Ti_1 = (te3 - ts3)
                 Ti_2 = (te4 - ts4)
@@ -312,115 +326,138 @@ def extract_data_human_in_the_loop(dataset_chunks, save_to):
     return None
 
 def plot_final_data(num_rec, file_load, dir_save_to):
+    from numpy.polynomial.polynomial import Polynomial
+    f = 10/3 # ms per one point
     data_ = pickle.load(open(file_load,'rb'))['data']
     data_ = np.array(data_)
-    data_ = fill_nans(data_)
     # data = get_rid_of_outliers(data)
-    Phi = data_[:, 0]
-    Ti_0 = data_[:, 1]
-    T0 = data_[:, 2]
-    T1 = data_[:, 3]
-    Theta = data_[:, 4]
-    Ti_1 = data_[:, 5]
-    Ti_2 = data_[:, 6]
-    phase = np.minimum(1, 1 * (Phi/T0))
-    cophase = np.minimum(1, 1 * (Theta/T0))
+    Phi = data_[:, 0] * f
+    Ti_0 = data_[:, 1] * f
+    T0 = data_[:, 2]* f
+    T1 = data_[:, 3]* f
+    Theta = data_[:, 4]* f
+    Ti_1 = data_[:, 5]* f
+    Ti_2 = data_[:, 6]* f
+    phase = (Phi/np.mean(T0))
+    cophase = (Theta/np.mean(T0))
+
+    phi_insp = np.mean(Ti_0)/np.mean(T0)
 
     fig1 = plt.figure()
-    plt.title("T1/T0")
-    y = T1/T0
+    plt.title("Phase-Cophase")
+    y = cophase
+    p = Polynomial.fit(phase, y,deg=6)
     plt.scatter(phase, y)
+    plt.plot(np.sort(phase), p(np.sort(phase)), color='r', linewidth=3)
+    plt.axvline(phi_insp, color = 'k', linestyle='--')
     plt.grid(True)
-    plt.xlim([0, 1])
-    plt.ylim([1.1 * np.min(y-np.mean(y)) + np.mean(y), 1.1 * np.max(y-np.mean(y)) + np.mean(y)])
-    # plt.show()
-    plt.savefig(f"{dir_save_to}dataset_{num_rec + 1}_period_change.png")
+    # plt.xlim([0, 1])
+    # plt.ylim([0, 1])
+    plt.xlabel("Phase")
+    plt.ylabel("Cophase")
+    plt.savefig(f"{dir_save_to}dataset_{num_rec}_phase_cophase.png")
 
     fig2 = plt.figure()
-    plt.title("phase-cophase")
-    y = cophase
+    plt.title("T1/T0")
+    y = T1/T0
+    p = Polynomial.fit(phase, y,deg=6)
     plt.scatter(phase, y)
+    plt.plot(np.sort(phase), p(np.sort(phase)), color='r', linewidth=3)
+    plt.axvline(phi_insp, color = 'k', linestyle='--')
     plt.grid(True)
-    plt.xlim([0, 1])
-    plt.ylim([0, 1])
-    # plt.show()
-    plt.savefig(f"{dir_save_to}dataset_{num_rec + 1}_phase_cophase.png")
+    # plt.xlim([0, 1])
+    # plt.ylim([1.1 * np.min(y-np.mean(y)) + np.mean(y), 1.1 * np.max(y-np.mean(y)) + np.mean(y)])
+    plt.ylim([0, 1.1 * np.max(y - np.mean(y)) + np.mean(y)])
+    plt.xlabel("Phase")
+    plt.savefig(f"{dir_save_to}dataset_{num_rec}_period_change.png")
 
     fig3 = plt.figure()
     y = T0
+    p = Polynomial.fit(phase, y,deg=0)
     plt.scatter(phase, y)
+    plt.plot(np.sort(phase), p(np.sort(phase)), color='r', linewidth=3)
     plt.title("T0")
+    plt.axvline(phi_insp, color = 'k', linestyle='--')
     plt.grid(True)
-    plt.xlim([0, 1])
-    plt.ylim([1.1 * np.min(y-np.mean(y)) + np.mean(y), 1.1 * np.max(y-np.mean(y)) + np.mean(y)])
-    # plt.show()
-    plt.savefig(open(f"{dir_save_to}dataset_{num_rec + 1}_T0.png", "wb+"))
+    # plt.xlim([0, 1])
+    # plt.ylim([1.1 * np.min(y-np.mean(y)) + np.mean(y), 1.1 * np.max(y-np.mean(y)) + np.mean(y)])
+    plt.ylim([0, 1500 * f])
+    plt.ylabel("T0, ms")
+    plt.xlabel("Phase")
+    plt.savefig(open(f"{dir_save_to}dataset_{num_rec}_T0.png", "wb+"))
 
     fig4 = plt.figure()
     plt.title("T 1")
     y = T1
+    p = Polynomial.fit(phase, y,deg=6)
     plt.scatter(phase, y)
+    plt.plot(np.sort(phase), p(np.sort(phase)), color='r', linewidth=3)
     plt.grid(True)
-    plt.xlim([0, 1])
-    plt.ylim([1.1 * np.min(y-np.mean(y)) + np.mean(y), 1.1 * np.max(y-np.mean(y)) + np.mean(y)])
-    # plt.show()
-    plt.savefig(f"{dir_save_to}dataset_{num_rec + 1}_T1.png")
+    plt.axvline(phi_insp, color = 'k', linestyle='--')
+    # plt.xlim([0, 1])
+    # plt.ylim([1.1 * np.min(y-np.mean(y)) + np.mean(y), 1.1 * np.max(y-np.mean(y)) + np.mean(y)])
+    plt.ylim([0, 1500 * f])
+    plt.ylabel("T1, ms")
+    plt.xlabel("Phase")
+    plt.savefig(f"{dir_save_to}dataset_{num_rec}_T1.png")
 
     fig5 = plt.figure()
     plt.title("Ti 0")
     y = Ti_0
+    p = Polynomial.fit(phase, y,deg=0)
     plt.scatter(phase, y)
+    plt.plot(np.sort(phase), p(np.sort(phase)), color='r', linewidth=3)
     plt.grid(True)
-    plt.xlim([0, 1])
-    plt.ylim([1.1 * np.min(y-np.mean(y)) + np.mean(y), 1.1 * np.max(y-np.mean(y)) + np.mean(y)])
-    # plt.show()
-    plt.savefig(f"{dir_save_to}dataset_{num_rec + 1}_Ti0.png")
+    plt.axvline(phi_insp, color = 'k', linestyle='--')
+    # plt.xlim([0, 1])
+    # plt.ylim([1.1 * np.min(y-np.mean(y)) + np.mean(y), 1.1 * np.max(y-np.mean(y)) + np.mean(y)])
+    plt.ylim([0, 300 * f])
+    plt.ylabel("Ti 0, ms")
+    plt.xlabel("Phase")
+    plt.savefig(f"{dir_save_to}dataset_{num_rec}_Ti0.png")
 
     fig6 = plt.figure()
     plt.title("Ti 1")
     y = Ti_1
+    p = Polynomial.fit(phase, y,deg=0)
     plt.scatter(phase, y)
+    plt.plot(np.sort(phase), p(np.sort(phase)), color='r', linewidth=3)
     plt.grid(True)
-    plt.xlim([0, 1])
-    plt.ylim([1.1 * np.min(y-np.mean(y)) + np.mean(y), 1.1 * np.max(y-np.mean(y)) + np.mean(y)])
-    # plt.show()
-    plt.savefig(f"{dir_save_to}dataset_{num_rec + 1}_Ti1.png")
+    plt.axvline(phi_insp, color = 'k', linestyle='--')
+    # plt.xlim([0, 1])
+    # plt.ylim([1.1 * np.min(y-np.mean(y)) + np.mean(y), 1.1 * np.max(y-np.mean(y)) + np.mean(y)])
+    plt.ylabel("Ti 1, ms")
+    plt.ylim([0, 300 * f])
+    plt.xlabel("Phase")
+    plt.savefig(f"{dir_save_to}dataset_{num_rec}_Ti1.png")
 
     fig7 = plt.figure()
     plt.title("Ti 2")
     y = Ti_2
+    p = Polynomial.fit(phase, y,deg=0)
     plt.scatter(phase, y)
+    plt.plot(np.sort(phase), p(np.sort(phase)), color='r', linewidth=3)
     plt.grid(True)
-    plt.xlim([0, 1])
-    plt.ylim([1.1 * np.min(y-np.mean(y)) + np.mean(y), 1.1 * np.max(y-np.mean(y)) + np.mean(y)])
-    # plt.show()
-    plt.savefig(f"{dir_save_to}dataset_{num_rec + 1}_Ti2.png")
+    plt.axvline(phi_insp, color = 'k', linestyle='--')
+    # plt.xlim([0, 1])
+    # plt.ylim([1.1 * np.min(y-np.mean(y)) + np.mean(y), 1.1 * np.max(y-np.mean(y)) + np.mean(y)])
+    plt.ylim([0, 300 * f])
+    plt.ylabel("Ti 2, ms")
+    plt.xlabel("Phase")
+    plt.savefig(f"{dir_save_to}dataset_{num_rec}_Ti2.png")
     return None
 
 def clarifying_plot(chunk, save_to):
-    PNA = chunk['PNA']
-    s = int(0.58 * len(PNA))
-    e = int(0.93 * len(PNA))
-    PNA = PNA[s:e]
+    PNA = chunk['signal']
+    s = int(0.4 * len(PNA))
+    e = int(0.8 * len(PNA))
     stim = chunk['stim'] - s
-    fig = plt.figure(figsize=(20, 6))
-    plt.plot(PNA, linewidth=3, color='k')
-
-    ts = get_times_auto(binarise_signal(PNA, 0.8), stim)
-    ts1, ts2, ts3, ts4, te1, te2, te3, te4 = ts
-
-    plt.axvline(stim, color='r', linestyle='-')
-    plt.axvline(stim + 50, color='r', linestyle='-')
-    plt.axvspan(stim, stim + 50, alpha=0.25, color='red')
-
-    plt.axvline(ts1, color='b', linestyle='--')
-    plt.axvline(ts2, color='b', linestyle='--')
-    plt.axvline(ts3, color='b', linestyle='--')
-    plt.axvline(ts4, color='b', linestyle='--')
-    plt.axvline(te1, color='b', linestyle='--')
-    plt.axvline(te2, color='b', linestyle='--')
-    plt.axvline(te3, color='b', linestyle='--')
-    plt.axvline(te4, color='b', linestyle='--')
+    PNA = (PNA[s:e])
+    threshold = 7.5
+    min_len = 50
+    insp_begins, insp_ends = get_inspiration_onsets_and_ends(PNA, threshold, min_len)
+    ts1, ts2, ts3, ts4, te1, te2, te3, te4 = get_onsets_and_ends(insp_begins, insp_ends, stim)
+    PNA = (PNA - np.min(PNA)) / (np.max(PNA) - np.min(PNA))
 
     class DoubleArrow():
         def __init__(self, pos1, pos2, level, margin):
@@ -440,56 +477,74 @@ def clarifying_plot(chunk, save_to):
                       length_includes_head =True, head_width=0.03,
                       head_length=20, fc='k', ec='k', head_starts_at_zero = True)
 
+
+    fig = plt.figure(figsize=(20, 6))
+    plt.plot(PNA, linewidth=2, color='k')
     margin = 5
-    ConvergingArrows(stim, stim+50, 1.65, margin)  # Stim
-    DoubleArrow(ts1, ts2, 1.55, margin) # T0
-    DoubleArrow(ts2, ts3, 1.55, margin)  # T1
-    DoubleArrow(ts1, te1, 0.3, margin)  # Ti_0
-    DoubleArrow(ts3, te3, 0.3, margin)  # Ti_1
-    DoubleArrow(ts4, te4, 0.3, margin)  # Ti_2
-    DoubleArrow(ts2, stim, 0.2, margin)  # Phi
-    DoubleArrow(stim+50, ts3, 0.2, margin)  # Theta
+    height0 = 0.9
+    height1 = 1.05
+    height2 = 0.00
+    height3 = -0.05
+    stim_duration = 75
+    ts1 = ts1-40
+    ts2 = ts2 - 20
+    ConvergingArrows(stim, stim+stim_duration, height0, margin)  # Stim
+    DoubleArrow(ts1, ts2, height1, margin) # T0
+    DoubleArrow(ts2, ts3, height1, margin)  # T1
+    DoubleArrow(ts1, te1, height2, margin)  # Ti_0
+    DoubleArrow(ts3, te3, height2, margin)  # Ti_1
+    DoubleArrow(ts4, te4, height2, margin)  # Ti_2
+    DoubleArrow(ts2, stim, height3, margin)  # Phi
+    DoubleArrow(stim+stim_duration, ts3, height3, margin)  # Theta
+
+    plt.axvline(stim, color='r', linestyle='--')
+    plt.axvline(stim + stim_duration, color='r', linestyle='--')
+    plt.axvspan(stim, stim + stim_duration, color='r', alpha=0.3)
+    plt.axvline(ts1, color='b', linestyle='--')
+    plt.axvline(ts2, color='b', linestyle='--')
+    plt.axvline(ts3, color='b', linestyle='--')
+    plt.axvline(ts4, color='b', linestyle='--')
+    plt.axvline(te1, color='b', linestyle='--')
+    plt.axvline(te2, color='b', linestyle='--')
+    plt.axvline(te3, color='b', linestyle='--')
+    plt.axvline(te4, color='b', linestyle='--')
 
     plt.title("Phrenic Nerve Activity", fontsize=30)
     plt.xticks([])
     plt.yticks([])
-    plt.ylim([0.15, 1.75])
+    plt.ylim([-0.1, 1.1])
     plt.tick_params(top='off', bottom='off', left='off', right='off', labelleft='off', labelbottom='on')
-    # fig.patch.set_visible(False)
-    # plt.show(block=True)
     plt.axis('off')
     plt.savefig(f"{save_to}")
     plt.close()
     return None
 
 if __name__ == '__main__':
-    # data_folder = '../../data/sln_prc'
-    # folder_save_to = '../../data/sln_prc_filtered'
-    # run_filtering(data_folder, folder_save_to)
+    data_folder = '../../data/sln_prc'
+    folder_save_to = '../../data/sln_prc_filtered'
+    run_filtering(data_folder, folder_save_to)
 
-    # # split data into chunks
-    # data_folder = f'../../data/sln_prc_filtered'
-    # save_to = f'../../data/sln_prc_chunked'
-    # chunk_data(data_folder, save_to)
+    # split data into chunks
+    data_folder = f'../../data/sln_prc_filtered'
+    save_to = f'../../data/sln_prc_chunked'
+    chunk_data(data_folder, save_to)
 
-    file = '100_CH10_chunked.pkl'
-    folder = '2019-08-22_16-18-36_prc'
     data_folder = f'../../data/sln_prc_chunked'
-    data = pickle.load(open(f'{data_folder}/{folder}/{file}', 'rb+'))
-    save_to = f'../../data/parameters_prc_17032020_{0}.pkl'
-    extract_data_auto(data, save_to)
+    ectract_data(data_folder)
 
-    # # plotting final data
-    # num_rec = 0
-    # file_load = f'../../data/parameters_prc_17032020_{num_rec}.pkl'
-    # dir_save_to = '../../img/experiments/'
-    # plot_final_data(num_rec, file_load, dir_save_to)
+    # plotting final data
+    for i in range(4):
+        num_rec = i
+        data_files = ['2019-09-03_15-01-54_prc', '2019-09-04_17-49-02_prc',
+                      '2019-09-05_12-26-14_prc', '2019-08-22_16-18-36_prc']
+        file_load = f'../../data/parameters_prc_18032020_{data_files[num_rec]}.pkl'
+        dir_save_to = '../../img/experiments/'
+        plot_final_data(data_files[num_rec], file_load, dir_save_to)
 
     # plotting parameter representation
     # num_rec = 3
     # num_chunk = 6
     # save_to = f'../../img/param_representation.png'
-    # data = pickle.load(open(f'../../data/prc_data_chunked.pkl', 'rb+'))
-    # dataset_chunks = data[list(data.keys())[num_rec]]
-    # chunk = dataset_chunks[num_chunk]
+    # data = pickle.load(open(f'../../data/sln_prc_chunked/2019-09-05_12-26-14_prc/100_CH10_chunked.pkl', 'rb+'))
+    # chunk = data[num_chunk]
     # clarifying_plot(chunk, save_to)

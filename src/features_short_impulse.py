@@ -1,5 +1,4 @@
 import numpy as np
-# from plot_signals import plot_signals
 from utils import *
 import json
 from scipy import signal
@@ -11,12 +10,11 @@ from tqdm.auto import tqdm
 from params_gen import generate_params
 import os
 
-
 def run_simulations():
     generate_params(1, 1)
     # first, find the preiod, then create a list of points with the same phase if there are no stimulation at all
     t1 = 0
-    t2 = 100
+    t2 = 250
     dt = 0.75
     stoptime = 75000
     amp = 0
@@ -31,7 +29,7 @@ def run_simulations():
     t1_s = t_start_insp[:9]
     # shifts in ms
     shifts = np.array([T * i / 100 for i in range(100)]) * dt
-    stim_duration = 100
+    stim_duration = 250
 
     for i in tqdm(range(len(shifts))):
         for j in range(len(t1_s)):
@@ -98,7 +96,7 @@ def extract_data(path):
 
 
 if __name__ == '__main__':
-    # run_simulations()
+    run_simulations()
     extract_data('../data/short_stim')
 
 
