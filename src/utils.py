@@ -8,6 +8,22 @@ import pandas as pd
 from sklearn.ensemble import IsolationForest as IF
 from Model import *
 from params_gen import *
+from scipy import signal
+from scipy.signal import butter
+import os
+import re
+
+def butter_bandpass(lowcut, highcut, fs, order=5):
+    nyq = 0.5 * fs
+    low = lowcut / nyq
+    high = highcut / nyq
+    b, a = butter(order, [low, high], btype='bandpass')
+    return b, a
+
+def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
+    b, a = butter_bandpass(lowcut, highcut, fs, order=order)
+    y = signal.filtfilt(b, a, data)
+    return y
 
 def nice_plot(series):
     fig = plt.figure(figsize = (16,4))
@@ -15,6 +31,15 @@ def nice_plot(series):
     plt.plot(series, 'r-',linewidth = 2, alpha = 0.7)
     plt.show()
     plt.close()
+
+def get_folders(root_folder, pattern):
+    folders_all = os.listdir(root_folder + '/')
+    folders = []
+    for i, folder in enumerate(folders_all):
+        m = re.search(pattern, str(folder))
+        if m is not None:
+            folders.append(folder)
+    return folders
 
 def get_postfix(inh_NTS, inh_KF):
     if inh_NTS == 1 and inh_KF == 1:
@@ -41,7 +66,7 @@ def get_insp_starts(signals):
     signal_filtered = sg(signals[0], 121, 1)
     threshold = 0.4
     signal_binary = binarise_signal(signal_filtered, threshold)
-    signal_change = change(signal_binary)
+    signal_change = np.diff(signal_binary)
     begins_inds = find_relevant_peaks(signal_change, 0.5)
     return begins_inds
 
@@ -54,11 +79,11 @@ def get_period(signal):
     # for correctness check
     # plt.plot(signal_filtered)
     # plt.plot(threshold * np.ones_like(signal_filtered))
-    signal_change = change(signal_binary)
+    signal_change = np.diff(signal_binary)
     begins = find_relevant_peaks(signal_change, 0.5)
     ends = find_relevant_peaks(-signal_change, 0.5)
-    T = np.median(np.hstack([change(begins), change(ends)]))
-    std = np.std(np.hstack([change(begins), change(ends)]))
+    T = np.median(np.hstack([np.diff(begins), np.diff(ends)]))
+    std = np.std(np.hstack([np.diff(begins), np.diff(ends)]))
     #Ti =  ends - begins
     # Te - begins - ends
     return T, std
@@ -68,9 +93,6 @@ def binarise_signal(signal, threshold):
     res[np.where(signal > threshold)] = 1.0
     res[np.where(signal <= threshold)] = 0
     return res
-
-def change(signal):
-    return np.array(signal[1:]) - np.array(signal[:-1])
 
 def last_lesser_than(alist, element):
     #sorted list
@@ -98,14 +120,6 @@ def find_relevant_peaks(signal, threshold):
     peaks = scipy.signal.find_peaks(signal)[0]
     return np.array([peaks[i] for i in range(len(peaks)) if abs(signal[peaks[i]]) > threshold])
 
-def nice_plot(series):
-    fig = plt.figure(figsize = (16,4))
-    plt.grid(True)
-    plt.plot(series, 'r-',linewidth = 2, alpha = 0.7)
-    plt.show()
-    plt.close()
-    return None
-
 def fill_nans(data):
     df = pd.DataFrame(data)
     data_new = df.fillna(df.mean()).values
@@ -126,14 +140,13 @@ def get_number_of_breakthroughs(signal, min_amp):
     # plt.plot(signal_filtered)
     # plt.plot(threshold * np.ones_like(signal_filtered))
     # identify gaps:
-    signal_change = (change(signal_binary))
+    signal_change = (np.diff(signal_binary))
     signal_begins = np.maximum(0, signal_change)
     signal_ends = np.minimum(0, signal_change)
     # get the indices of jumps
     signal_begins_inds = np.nonzero(signal_begins)[0]
     signal_ends_inds = np.nonzero(signal_ends)[0]
     num_breaks = (len(signal_begins_inds) + len(signal_ends_inds)) / 2
-
     return num_breaks
 
 def get_features_long_impulse(signals, dt, t_stim_start, t_stim_finish):
@@ -180,7 +193,7 @@ def get_features_short_impulse(signals, dt, t_stim_start, t_stim_finish):
     # stim_id = [peak_id for peak_id in scipy.signal.find_peaks(PostI)[0] if PostI[peak_id] > 0.5][0]
     stim_id = int(t_stim_start / dt)
 
-    PreI_change = change(PreI_binary)
+    PreI_change = np.diff(PreI_binary)
     PreI_begins = find_relevant_peaks(signal=PreI_change, threshold=0.5)
     PreI_ends = find_relevant_peaks(signal=-1.0*PreI_change, threshold=0.5)
 
@@ -199,7 +212,7 @@ def get_features_short_impulse(signals, dt, t_stim_start, t_stim_finish):
     PreI_filtered = sg(PreI, 121, 1)
     threshold = 0.4
     PreI_binary = binarise_signal(PreI_filtered, threshold )
-    PreI_change = change(PreI_binary)
+    PreI_change = np.diff(PreI_binary)
     PreI_begins = find_relevant_peaks(signal=PreI_change, threshold=0.5)
     PreI_ends = find_relevant_peaks(signal=-PreI_change, threshold=0.5)
     stim_id = stim_id - starttime_id

@@ -1,20 +1,9 @@
-import pyopenephys
-import numpy as np
-
-# file = pyopenephys.File("/home/pavel/Documents/0Research/Data_for_swallowing/sln_prc/2019-05-21_15-25-45")
-
 import os
 import numpy as np
 import scipy.signal
 import scipy.io
 import time
-import struct
-from copy import deepcopy
-import pickle
-import shutil
-import pandas as pd
-from scipy.signal import savgol_filter
-from matplotlib import pyplot as plt
+
 # constants
 NUM_HEADER_BYTES = 1024
 SAMPLES_PER_RECORD = 1024
@@ -275,7 +264,6 @@ def loadEvents(filepath):
     data['eventId'] = eventId[:index]
     data['recordingNumber'] = recordingNumber[:index]
     data['sampleNum'] = sampleNum[:index]
-
     return data
 
 
@@ -287,166 +275,9 @@ def readHeader(f):
             header[item.split(' = ')[0]] = item.split(' = ')[1]
     return header
 
-
 def downsample(trace, down):
     downsampled = scipy.signal.resample(trace, np.shape(trace)[0] / down)
     return downsampled
-
-
-def pack(folderpath, source='100', **kwargs):
-    # convert single channel open ephys channels to a .dat file for compatibility with the KlustaSuite, Neuroscope and Klusters
-    # should not be necessary for versions of open ephys which write data into HDF5 format.
-    # loads .continuous files in the specified folder and saves a .DAT in that folder
-    # optional arguments:
-    #   source: string name of the source that openephys uses as the prefix. is usually 100, if the headstage is the first source added, but can specify something different
-    #
-    #   data: pre-loaded data to be packed into a .DAT
-    #   dref: int specifying a channel # to use as a digital reference. is subtracted from all channels.
-    #   order: the order in which the .continuos files are packed into the .DAT. should be a list of .continious channel numbers. length must equal total channels.
-    #   suffix: appended to .DAT filename, which is openephys.DAT if no suffix provided.
-
-    # load the openephys data into memory
-    if 'data' not in kwargs.keys():
-        if 'channels' not in kwargs.keys():
-            data = loadFolder(folderpath, dtype=np.int16)
-        else:
-            data = loadFolder(folderpath, dtype=np.int16, channels=kwargs['channels'])
-    else:
-        data = kwargs['data']
-    # if specified, do the digital referencing
-    if 'dref' in kwargs.keys():
-        ref = load(os.path.join(folderpath, ''.join((source, '_CH', str(kwargs['dref']), '.continuous'))))
-        for i, channel in enumerate(data.keys()):
-            data[channel]['data'] = data[channel]['data'] - ref['data']
-    # specify the order the channels are written in
-    if 'order' in kwargs.keys():
-        order = kwargs['order']
-    else:
-        order = list(data)
-    # add a suffix, if one was specified
-    if 'suffix' in kwargs.keys():
-        suffix = kwargs['suffix']
-    else:
-        suffix = ''
-
-    # make a file to write the data back out into .dat format
-    outpath = os.path.join(folderpath, ''.join(('openephys', suffix, '.dat')))
-    out = open(outpath, 'wb')
-
-    # go through the data and write it out in the .dat format
-    # .dat format specified here: http://neuroscope.sourceforge.net/UserManual/data-files.html
-    channelOrder = []
-    print(''.join(('...saving .dat to ', outpath, '...')))
-    random_datakey = next(iter(data))
-    bar = ProgressBar(len(data[random_datakey]['data']))
-    for i in range(len(data[random_datakey]['data'])):
-        for j in range(len(order)):
-            if source in random_datakey:
-                ch = data[order[j]]['data']
-            else:
-                ch = data[''.join(('CH', str(order[j]).replace('CH', '')))]['data']
-            out.write(struct.pack('h', ch[i]))  # signed 16-bit integer
-            # figure out which order this thing packed the channels in. only do this once.
-            if i == 0:
-                channelOrder.append(order[j])
-        # update how mucb we have list
-        if i % (len(data[random_datakey]['data']) / 100) == 0:
-            bar.animate(i)
-    out.close()
-    print(''.join(('order: ', str(channelOrder))))
-    print(''.join(('.dat saved to ', outpath)))
-
-
-# **********************************************************
-# progress bar class used to show progress of pack()
-# stolen from some post on stack overflow
-import sys
-
-try:
-    from IPython.display import clear_output
-
-    have_ipython = True
-except ImportError:
-    have_ipython = False
-
-
-class ProgressBar:
-    def __init__(self, iterations):
-        self.iterations = iterations
-        self.prog_bar = '[]'
-        self.fill_char = '*'
-        self.width = 40
-        self.__update_amount(0)
-        if have_ipython:
-            self.animate = self.animate_ipython
-        else:
-            self.animate = self.animate_noipython
-
-    def animate_ipython(self, iter):
-        print('\r', self, )
-        sys.stdout.flush()
-        self.update_iteration(iter + 1)
-
-    def update_iteration(self, elapsed_iter):
-        self.__update_amount((elapsed_iter / float(self.iterations)) * 100.0)
-        self.prog_bar += '  %d of %s complete' % (elapsed_iter, self.iterations)
-
-    def __update_amount(self, new_amount):
-        percent_done = int(round((new_amount / 100.0) * 100.0))
-        all_full = self.width - 2
-        num_hashes = int(round((percent_done / 100.0) * all_full))
-        self.prog_bar = '[' + self.fill_char * num_hashes + ' ' * (all_full - num_hashes) + ']'
-        pct_place = (len(self.prog_bar) // 2) - len(str(percent_done))
-        pct_string = '%d%%' % percent_done
-        self.prog_bar = self.prog_bar[0:pct_place] + \
-                        (pct_string + self.prog_bar[pct_place + len(pct_string):])
-
-    def __str__(self):
-        return str(self.prog_bar)
-
-
-# *************************************************************
-
-def pack_2(folderpath, filename='', channels='all', chprefix='CH',
-           dref=None, session='0', source='100'):
-    '''Alternative version of pack which uses numpy's tofile function to write data.
-    pack_2 is much faster than pack and avoids quantization noise incurred in pack due
-    to conversion of data to float voltages during loadContinous followed by rounding
-    back to integers for packing.
-    filename: Name of the output file. By default, it follows the same layout of continuous files,
-              but without the channel number, for example, '100_CHs_3.dat' or '100_ADCs.dat'.
-    channels:  List of channel numbers specifying order in which channels are packed. By default
-               all CH continous files are packed in numerical order.
-    chprefix:  String name that defines if channels from headstage, auxiliary or ADC inputs
-               will be loaded.
-    dref:  Digital referencing - either supply a channel number or 'ave' to reference to the
-           average of packed channels.
-    source: String name of the source that openephys uses as the prefix. It is usually 100,
-            if the headstage is the first source added, but can specify something different.
-    '''
-
-    data_array = loadFolderToArray(folderpath, channels, chprefix, np.int16, session, source)
-
-    if dref:
-        if dref == 'ave':
-            print('Digital referencing to average of all channels.')
-            reference = np.mean(data_array, 1)
-        else:
-            print('Digital referencing to channel ' + str(dref))
-            if channels == 'all':
-                channels = _get_sorted_channels(folderpath, chprefix, session, source)
-            reference = deepcopy(data_array[:, channels.index(dref)])
-        for i in range(data_array.shape[1]):
-            data_array[:, i] = data_array[:, i] - reference
-
-    if session == '0':
-        session = ''
-    else:
-        session = '_' + session
-
-    if not filename: filename = source + '_' + chprefix + 's' + session + '.dat'
-    print('Packing data to file: ' + filename)
-    data_array.tofile(os.path.join(folderpath, filename))
 
 
 def _get_sorted_channels(folderpath, chprefix='CH', session='0', source='100'):
@@ -462,25 +293,5 @@ def _get_sorted_channels(folderpath, chprefix='CH', session='0', source='100'):
                  and f.split('.')[0].split('_')[2] == session]
 
         Chs = sorted([int(f.split('_' + chprefix)[1].split('_')[0]) for f in Files])
-
     return (Chs)
 
-
-if __name__ == '__main__':
-    downsampling_factor = 100
-    data_files = ['2019-09-03_15-01-54_prc', '2019-09-04_17-49-02_prc',
-                  '2019-09-05_12-26-14_prc', '2019-09-10_16-27-32_prc']
-
-    for file in data_files:
-        folder_to_take = f'../../data/sln_prc/{file}/'
-        folder_to_save = f'../../data/sln_prc_preprocessed/{file}/'
-        downsample_files(folder_to_take, folder_to_save, downsampling_factor)
-    # plot some data
-    # fig = plt.figure(figsize = (40,20))
-    # for suff in ['CH5', 'CH10', 'CH15', 'ADC1']:
-    #     data = pickle.load(open(f'../data/2019-09-04_t5_1/100_{suff}.pkl','rb+'))
-    #     plt.plot(data, 'r-', linewidth = 1, alpha = 0.95)
-    #     plt.title(f't5 {suff}')
-    #     plt.grid(True)
-    #     plt.savefig(f'../img/experimental/t2_{suff}')
-    # plt.show()
