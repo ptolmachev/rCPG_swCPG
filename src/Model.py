@@ -241,7 +241,7 @@ if __name__ == '__main__':
     params = json.load(file)
     W = np.array(params["b"])
     drives = np.array(params["c"])
-    dt = 1.0
+    dt = 0.5
     net = Network(populations, W, drives, dt, history_len=int(40000/dt))
     # get rid of all transients
     net.run(int(15000/dt)) # runs for 15 seconds

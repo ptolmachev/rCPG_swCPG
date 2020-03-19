@@ -136,76 +136,76 @@ if __name__ == '__main__':
     Ti2_std = data[:, 11]
 
 
-    # #PLOTTNG Ti_0 from shifts
-    # title = "Dependence of $Ti_0$ on shift"
-    # xlabel = "Shift, rad"
-    # ylabel = "$T_{i0}$"
-    # start_idx = 3
-    # x = Phis[start_idx:]
-    # y = Ti_0[start_idx:]
-    # error = Ti_0_std[start_idx:]
-    # nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
-    #
-    # # PLOTTNG Ti_0 from shifts
-    # title = "Dependence of $T_0$ on shift"
-    # xlabel = "Shift, rad"
-    # ylabel = "$T_0$"
-    # start_idx = 0
-    # x = Phis[start_idx:]
-    # y = T0[start_idx:]
-    # error = T0_std[start_idx:]
-    # nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
-    #
-    # #PLOTTNG T1 from shifts
-    # title = "Dependence of $T_1$ on shift"
-    # xlabel = "Shift, rad"
-    # ylabel = "$T_{1}$"
-    # start_idx = 0
-    # x = Phis[start_idx:]
-    # y = T1[start_idx:]
-    # error = T1_std[start_idx:]
-    # nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
+    #PLOTTNG Ti_0 from shifts
+    title = "Dependence of $Ti_0$ on shift"
+    xlabel = "Shift, rad"
+    ylabel = "$T_{i0}$"
+    start_idx = 3
+    x = Phis[start_idx:]
+    y = Ti_0[start_idx:]
+    error = Ti_0_std[start_idx:]
+    nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
 
-    # # PLOTTNG Phis from shifts
-    # title = "Dependence of $\Phi$ on shift"
-    # xlabel = "Shift, rad"
-    # ylabel = "$\Phi$"
-    # start_idx = 0
-    # x = Phis[start_idx:]
-    # y = T0[start_idx:]
-    # error = T0_std[start_idx:]
-    # nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
+    # PLOTTNG Ti_0 from shifts
+    title = "Dependence of $T_0$ on shift"
+    xlabel = "Shift, rad"
+    ylabel = "$T_0$"
+    start_idx = 0
+    x = Phis[start_idx:]
+    y = T0[start_idx:]
+    error = T0_std[start_idx:]
+    nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
 
-    # # PLOTTNG Thetas from shifts
-    # title = "Dependence of $\Theta$ on shift"
-    # xlabel = "Shift, rad"
-    # ylabel = "$\Theta$"
-    # start_idx = 0
-    # x = Phis[start_idx:]
-    # y = Theta[start_idx:]
-    # error = Theta_std[start_idx:]
-    # nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
-    #
-    # # PLOTTNG Thetas from shifts
-    # title = "PRC"
-    # xlabel = "Phis (in ms)"
-    # ylabel = "$\Delta \Theta"
-    # start_idx = 0
-    # x = Phis[start_idx:]
-    # y = (T1 - T0)/T0[start_idx:]
-    # error = np.zeros_like(y)
-    # nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
-    #
-    # title = "Dependence of $(T1s T0s ratio) on \Phi"
-    # xlabel = "Phis (in ms)"
-    # ylabel = "$\Delta \Theta"
-    # start_idx = 0
-    # x = Phis[start_idx:]
-    # y = (T1/T0)[start_idx:]
-    # error = np.zeros_like(y)
-    # nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
+    #PLOTTNG T1 from shifts
+    title = "Dependence of $T_1$ on shift"
+    xlabel = "Shift, rad"
+    ylabel = "$T_{1}$"
+    start_idx = 0
+    x = Phis[start_idx:]
+    y = T1[start_idx:]
+    error = T1_std[start_idx:]
+    nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
 
-    title = "Dependence of \Theta devided by T0"
+    # PLOTTNG Phis from shifts
+    title = "Dependence of $\Phi$ on shift"
+    xlabel = "Shift, rad"
+    ylabel = "$\Phi$"
+    start_idx = 0
+    x = Phis[start_idx:]
+    y = T0[start_idx:]
+    error = T0_std[start_idx:]
+    nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
+
+    # PLOTTNG Thetas from shifts
+    title = "Dependence of $\Theta$ on shift"
+    xlabel = "Shift, rad"
+    ylabel = "$\Theta$"
+    start_idx = 0
+    x = Phis[start_idx:]
+    y = Theta[start_idx:]
+    error = Theta_std[start_idx:]
+    nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
+
+    # PLOTTNG Thetas from shifts
+    title = "PRC"
+    xlabel = "Phis (in ms)"
+    ylabel = "$\Delta \Theta"
+    start_idx = 0
+    x = Phis[start_idx:]
+    y = (T1 - T0)/T0[start_idx:]
+    error = np.zeros_like(y)
+    nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
+
+    title = "Dependence of $(T1s T0s ratio) on \Phi"
+    xlabel = "Phis (in ms)"
+    ylabel = "$\Delta \Theta"
+    start_idx = 0
+    x = Phis[start_idx:]
+    y = (T1/T0)[start_idx:]
+    error = np.zeros_like(y)
+    nice_error_bar_scatter(x,y,error,title,xlabel,ylabel, title)
+
+    title = "Dependence of \Theta divided by T0"
     xlabel = "Phis (in ms)"
     ylabel = "$\Delta \Theta"
     start_idx = 0

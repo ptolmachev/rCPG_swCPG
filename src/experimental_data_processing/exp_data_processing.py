@@ -148,28 +148,44 @@ def get_onsets_and_ends(signal_begins, signal_ends, stim):
     return ts1, ts2, ts3, ts4, te1, te2, te3, te4
 
 
-def get_inspiration_onsets_and_ends(signal, threshold, min_len):
-    signal_binary = binarise_signal(signal, threshold)
-    signal_change = np.diff(signal_binary)
-    signal_begins = find_relevant_peaks(signal=signal_change, threshold=0.5)
-    signal_ends = find_relevant_peaks(signal=-signal_change, threshold=0.5)
+# def get_inspiration_onsets_and_ends(signal, threshold, min_len):
+#     signal_binary = binarise_signal(signal, threshold)
+#     signal_change = np.diff(signal_binary)
+#     signal_begins = find_relevant_peaks(signal=signal_change, threshold=0.5)
+#     signal_ends = find_relevant_peaks(signal=-signal_change, threshold=0.5)
+#
+#     x = signal_ends[0] - signal_begins[0]
+#     if x < 0:
+#         signal_ends = signal_ends[1:]
+#
+#     if len(signal_ends) != len(signal_begins):
+#         signal_begins = signal_begins[:np.minimum(len(signal_ends), len(signal_begins))]
+#         signal_ends = signal_ends[:np.minimum(len(signal_ends), len(signal_begins))]
+#
+#     #filter signal_begins
+#     irrelevant_inds_begins = np.array(signal_begins)[np.where(signal_ends - signal_begins < min_len)[0]]
+#     irrelevant_inds_ends = np.array(signal_ends)[np.where(signal_ends - signal_begins < min_len)[0]]
+#
+#     signal_begins = [elem for elem in signal_begins if not elem in irrelevant_inds_begins]
+#     signal_ends = [elem for elem in signal_ends if not elem in irrelevant_inds_ends]
+#     return signal_begins, signal_ends
 
-    x = signal_ends[0] - signal_begins[0]
-    if x < 0:
-        signal_ends = signal_ends[1:]
-
-    if len(signal_ends) != len(signal_begins):
-        signal_begins = signal_begins[:np.minimum(len(signal_ends), len(signal_begins))]
-        signal_ends = signal_ends[:np.minimum(len(signal_ends), len(signal_begins))]
-
-    #filter signal_begins
-    irrelevant_inds_begins = np.array(signal_begins)[np.where(signal_ends - signal_begins < min_len)[0]]
-    irrelevant_inds_ends = np.array(signal_ends)[np.where(signal_ends - signal_begins < min_len)[0]]
-
-    signal_begins = [elem for elem in signal_begins if not elem in irrelevant_inds_begins]
-    signal_ends = [elem for elem in signal_ends if not elem in irrelevant_inds_ends]
-
+def get_inspiration_onsets_and_ends(signal, model, pen, min_len):
+    breakpoints = detect_change_points(signal, model, pen, min_len)
+    # need to separete starts and ends
+    window_len = 100
+    mean_val = np.mean(signal)
+    signal_ends = []
+    signal_begins = []
+    for t in breakpoints:
+        if t == 0 or t == len(signal):
+            pass
+        if (np.mean(signal[np.maximum(0, t - window_len) : t]) > mean_val):
+            signal_ends.append(t)
+        else:
+            signal_begins.append(t)
     return signal_begins, signal_ends
+
 
 def get_timings(insp_begins, insp_ends, stim, len_chunk):
     timings = {}
@@ -199,7 +215,8 @@ def extract_data_from_chunk(dataset_chunks, save_to):
         PNA = chunk['signal']
         stim_start = chunk['stim_start']
         stim_end = chunk['stim_end']
-        insp_begins, insp_ends = get_inspiration_onsets_and_ends(PNA, threshold, min_len)
+        # insp_begins, insp_ends = get_inspiration_onsets_and_ends(PNA, threshold, min_len)
+        insp_begins, insp_ends = get_inspiration_onsets_and_ends(PNA, model='l2', pen=1000, min_len=60)
         len_chunk = len(PNA)
         ts = get_timings(insp_begins, insp_ends, stim_start, len_chunk)
 
@@ -243,14 +260,14 @@ def extract_data_from_chunk(dataset_chunks, save_to):
         pickle.dump(parameters_dict, open(save_to, 'wb+'))
     return None
 
-def ectract_data(data_folder):
+def ectract_data(data_folder, timestamp):
     folders = get_folders(data_folder, "_prc")
     for folder in folders:
         suffixes = ['CH10']#['CH5', 'CH10', 'CH15']  #
         for suffix in suffixes:
             file = f'100_{suffix}_chunked.pkl'
             data = pickle.load(open(f'{data_folder}/{folder}/{file}', 'rb+'))
-            save_to = f'../../data/parameters_prc_18032020_{folder}.pkl'
+            save_to = f'../../data/parameters_prc_{timestamp}_{folder}.pkl'
             extract_data_from_chunk(data, save_to)
     return None
 
@@ -520,24 +537,25 @@ def clarifying_plot(chunk, save_to):
     return None
 
 if __name__ == '__main__':
-    data_folder = '../../data/sln_prc'
-    folder_save_to = '../../data/sln_prc_filtered'
-    run_filtering(data_folder, folder_save_to)
+    timestamp = "19032020"
+    # data_folder = '../../data/sln_prc'
+    # folder_save_to = '../../data/sln_prc_filtered'
+    # run_filtering(data_folder, folder_save_to)
 
-    # split data into chunks
-    data_folder = f'../../data/sln_prc_filtered'
-    save_to = f'../../data/sln_prc_chunked'
-    chunk_data(data_folder, save_to)
+    # # split data into chunks
+    # data_folder = f'../../data/sln_prc_filtered'
+    # save_to = f'../../data/sln_prc_chunked'
+    # chunk_data(data_folder, save_to)
 
     data_folder = f'../../data/sln_prc_chunked'
-    ectract_data(data_folder)
+    ectract_data(data_folder, timestamp)
 
     # plotting final data
     for i in range(4):
         num_rec = i
         data_files = ['2019-09-03_15-01-54_prc', '2019-09-04_17-49-02_prc',
                       '2019-09-05_12-26-14_prc', '2019-08-22_16-18-36_prc']
-        file_load = f'../../data/parameters_prc_18032020_{data_files[num_rec]}.pkl'
+        file_load = f'../../data/parameters_prc_{timestamp}_{data_files[num_rec]}.pkl'
         dir_save_to = '../../img/experiments/'
         plot_final_data(data_files[num_rec], file_load, dir_save_to)
 

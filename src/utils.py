@@ -10,8 +10,22 @@ from Model import *
 from params_gen import *
 from scipy import signal
 from scipy.signal import butter
+import ruptures as rpt
 import os
 import re
+
+
+def create_dir_if_not_exist(path, name):
+    os.chdir(path + '/')
+    # Create target Directory if don't exist
+    if not os.path.exists(name):
+        os.mkdir(name)
+    else:
+        pass
+    return None
+
+def detect_change_points(signal, model, pen, min_len):
+    return rpt.Pelt(model=model, min_size=min_len).fit_predict(signal, pen)
 
 def butter_bandpass(lowcut, highcut, fs, order=5):
     nyq = 0.5 * fs
@@ -247,7 +261,7 @@ def get_features_short_impulse(signals, dt, t_stim_start, t_stim_finish):
     Ti_2 = (te4 - ts4) * dt
     return Ti_0, T0, T1, Phi, Theta, Ti_1, Ti_2
 
-def run_model(t_start, t_end, amp, stoptime, folder_save_to):
+def run_model(t_start, t_end, amp, stoptime, folder_save_img_to):
     default_neural_params = {
         'C': 20, 'g_NaP': 0.0, 'g_K': 5.0, 'g_ad': 10.0, 'g_l': 2.8, 'g_synE': 10, 'g_synI': 60, 'E_Na': 50,
         'E_K': -85, 'E_ad': -85, 'E_l': -60, 'E_synE': 0, 'E_synI': -75, 'V_half': -30, 'slope': 4, 'tau_ad': 2000,
@@ -309,8 +323,7 @@ def run_model(t_start, t_end, amp, stoptime, folder_save_to):
     # run til 60 seconds
     net.run(int((stoptime - (t_end - t_start) - t_start) / dt))
 
-
-    net.plot(show=False, save_to=f"../img/{folder_save_to}/{amp}.png")
+    net.plot(show=False, save_to=f"../img/{folder_save_img_to}/{amp}.png")
     V_array = net.v_history
     t = np.array(net.t)
     signals = net.firing_rate(V_array, net.V_half, net.slope).T

@@ -15,7 +15,7 @@ def generate_params(inh_NTS, inh_KF):
     # 15 - NTS_inh
     b = np.zeros((num_nrns, num_nrns))
     # positive weights
-    b[0,1] = 0.3  #PreI -> EarlyI
+    b[0,1] = 0.3  #PreI -> EarlyI # Rubins (2009): (0.4)    Rubins (2011): (0.35)
     b[0,4] = 0.6  #PreI -> RampI
     b[0,12] = 0.4 # PreI -> M_HN
     b[2,14] = 0.25 # PostI -> M_VN
@@ -38,23 +38,23 @@ def generate_params(inh_NTS, inh_KF):
     b[9, 11] = 1.4  # KF_t -> KF_relay
 
     # negative weights
-    b[1, 0] = -0.02  # EarlyI -> PreI
-    b[1,2] = -0.3   #EarlyI -> PostI
-    b[1,3] = -0.4  #EarlyI -> AugE
+    b[1, 0] = -0.02  # EarlyI -> PreI #in Rubins: (0)    Rubins (2011): (0)
+    b[1,2] = -0.3   #EarlyI -> PostI #in Rubins: (0.25)    Rubins (2011): (0.2)
+    b[1,3] = -0.4  #EarlyI -> AugE #in Rubins: (0.35)    Rubins (2011): (0.25)
     # b[1,6] = -0.05  #EarlyI -> Sw1
     b[1,4] = -0.15  #EarlyI1 -> RampI
     b[1,10] = -0.3  #EarlyI1 -> KF_p
 
-    b[2,0] = -0.16    #PostI -> PreI
-    b[2,1] = -0.35  #PostI -> EarlyI
-    b[2,3] = -0.35   #PostI -> AugE
-    b[2,4] = -0.67    #PostI -> RampI
+    b[2,0] = -0.16    #PostI -> PreI #in Rubins: (0.3)    Rubins (2011): (0.8)
+    b[2,1] = -0.35  #PostI -> EarlyI #in Rubins: (0.05)    Rubins (2011): (0.15)
+    b[2,3] = -0.35   #PostI -> AugE #in Rubins: (0.35)    Rubins (2011): (0.4)
+    b[2,4] = -0.67   #PostI -> RampI
     b[2,6] = -0.06  #PostI -> Sw1
     b[2,7] = -0.07  #PostI -> Sw2
 
-    b[3,0] = -0.55   #AugE -> PreI
-    b[3,1] = -0.44  #AugE -> EarlyI
-    b[3,2] = -0.04  #AugE -> PostI
+    b[3,0] = -0.55   #AugE -> PreI #in Rubins: (0.2)    Rubins (2011): (0.22)
+    b[3,1] = -0.44  #AugE -> EarlyI #in Rubins: (0.35)    Rubins (2011): (0.08)
+    b[3,2] = -0.04  #AugE -> PostI #in Rubins: (0.1)    Rubins (2011): (0.0)
     b[3,4] = -0.67  #AugE -> RampI
     b[3,6] = -0.01 #AugE -> Sw1
     b[3,7] = -0.02 #AugE -> Sw2
