@@ -1,13 +1,9 @@
-import numpy as np
-from utils import *
-from sp_utils import *
-from params_gen import *
+from num_experiments.run_model import run_model
+from src.utils.sp_utils import *
+from src.num_experiments.params_gen import *
 import pickle
-import json
 from tqdm.auto import tqdm
 import os
-from matplotlib import pyplot as plt
-from params_gen import generate_params
 
 def get_features_long_impulse(signals, dt, t_stim_start, t_stim_finish):
     #first one has to cut the relevant signal:
@@ -112,6 +108,6 @@ def run_simulations():
     return None
 
 if __name__ == "__main__":
-    # run_simulations()
+    run_simulations()
     # exctract_data("../data/long_stim")
-    process_data("../data/info_var_amp.pkl")
+    # process_data("../data/info_var_amp.pkl")

@@ -101,7 +101,7 @@ def generate_params(inh_NTS, inh_KF):
 
     params["c"] = c
 
-    json.dump(params, open('../data/rCPG_swCPG.json', 'w', encoding='utf-8'), separators=(',', ':'), sort_keys=True, indent=4)
+    json.dump(params, open('../../data/rCPG_swCPG.json', 'w', encoding='utf-8'), separators=(',', ':'), sort_keys=True, indent=4)
     return None
 
 if __name__ == '__main__':

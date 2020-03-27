@@ -1,12 +1,13 @@
 import numpy as np
-from utils import *
-from sp_utils import *
-from matplotlib import pyplot as plt
+from num_experiments.run_model import run_model
+from src.utils.sp_utils import *
 import pickle
 from tqdm.auto import tqdm
 from copy import deepcopy
-from params_gen import generate_params
+from num_experiments.params_gen import generate_params
 import os
+from utils.gen_utils import create_dir_if_not_exist, get_project_root
+
 
 def get_features_from_signal(signal, dt, stim_start, stim_end):
     insp_begins, insp_ends = get_insp_starts_and_ends(signal)
@@ -182,15 +183,15 @@ if __name__ == '__main__':
     params["num_shifts"] = 50
     params["settle_time"] = 25000
     amps = [150, 250, 350]
+    data_path = str(get_project_root()) + "/data"
+    img_path = str(get_project_root()) + "/img"
     save_extracted_data_to = "num_exp_results/short_stim/"
-    data_path = "../data"
-    img_path = "../img"
     for amp in amps:
         params["amp"] = amp
         folder_signals = f"num_exp_runs/num_exp_short_stim_{amp}_{stim_duration}"
         folder_save_img_to = f"num_exp_short_stim_{amp}_{stim_duration}"
-        create_dir_if_not_exist(data_path, folder_signals)
-        create_dir_if_not_exist(img_path, folder_save_img_to)
+        create_dir_if_not_exist(data_path + '/ ' + folder_signals)
+        create_dir_if_not_exist(img_path + '/ ' + folder_save_img_to)
         run_simulations(params, f"{data_path}/{folder_signals}", f"{img_path}/{folder_save_img_to}")
         extract_data(signals_path=f"{data_path}/{folder_signals}", save_to=f"{data_path}/{save_extracted_data_to}")
 

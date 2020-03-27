@@ -3,8 +3,9 @@ from matplotlib import pyplot as plt
 import json
 from copy import deepcopy
 from collections import deque
-from params_gen import generate_params
-from utils import *
+from num_experiments.params_gen import generate_params
+from src.utils.gen_utils import get_postfix
+
 
 class NeuralPopulation():
     def __init__(self, name, params):
@@ -237,7 +238,7 @@ if __name__ == '__main__':
     inh_NTS = 1
     inh_KF = 2
     generate_params(inh_NTS, inh_KF)
-    file = open("../data/rCPG_swCPG.json", "rb+")
+    file = open("../../data/rCPG_swCPG.json", "rb+")
     params = json.load(file)
     W = np.array(params["b"])
     drives = np.array(params["c"])
@@ -256,7 +257,8 @@ if __name__ == '__main__':
     net.set_input_current(np.zeros(net.N))
     # run for 15 more seconds
     net.run(int(15000/dt))
-    net.plot(show = True, save_to = f"../img/Model_10_02_2020/{get_postfix(inh_NTS, inh_KF)}.png")
+    # create_dir_if_not_exist("../img/")
+    # net.plot(show = True, save_to = f"../img/Model_10_02_2020/{get_postfix(inh_NTS, inh_KF)}.png")
 
 
 

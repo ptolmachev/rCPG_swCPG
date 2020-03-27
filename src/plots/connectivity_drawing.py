@@ -135,6 +135,7 @@ def draw_connection(node_A, node_B, strength):
     draw_line(t, t.position(), (x_d, y_d), style_params)
 
 if __name__ == '__main__':
+    file_name = "../../img/connections.eps"
     turtle.setup(1500, 1500)
     r = 50
     t = turtle.Turtle()
@@ -180,7 +181,7 @@ if __name__ == '__main__':
 
     # #draw connection
     # # load gson
-    file = open("rCPG_swCPG.json", "rb+")
+    file = open("../num_experiments/rCPG_swCPG.json", "rb+")
     params = json.load(file)
     b = np.array(params["b"])
     c = np.array(params["c"])
@@ -204,7 +205,6 @@ if __name__ == '__main__':
 
     turtle.hideturtle()
     ts = turtle.getscreen()
-    file_name = "../img/Model_22_02_2020/connections.eps"
     ts.getcanvas().postscript(file=file_name)
 
     from PIL import Image

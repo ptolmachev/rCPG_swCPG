@@ -2,10 +2,122 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="eebbf286-5f0d-44eb-8bff-357892bdab06" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/plots/plot_long_stimulus_traces.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/plots/plot_shorts_stim_traces.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/rCPG_swCPG.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/rCPG_swCPG.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/params_gen.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/params_gen.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/plot_signals.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/plot_signals.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/rCPG_swCPG.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/rCPG_swCPG.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/rCPG_swCPG.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/rCPG_swCPG.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/.ipynb_checkpoints/Untitled-checkpoint.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Model.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/num_experiments/Model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/connections.eps" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/connectivity_drawing.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/plots/connectivity_drawing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/experimental_data_processing/exp_data_processing.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/experimental_data_processing/openphys_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/openphys_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features_long_impulse.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/num_experiments/features_long_impulse.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features_short_impulse.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/num_experiments/features_short_impulse.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/graph_representation.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/num_experiments/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model_with_izhikevich_neurons.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/brianlib/clocks.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/brianlib/common_math.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/brianlib/dynamic_array.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/brianlib/randomkit/randomkit.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/brianlib/randomkit/randomkit.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/brianlib/randomkit/randomkit.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/brianlib/spikequeue.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/brianlib/stdint_compat.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/code_objects/synapses_1_synapses_create_generator_codeobject.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/code_objects/synapses_1_synapses_create_generator_codeobject.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/code_objects/synapses_1_synapses_create_generator_codeobject.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/code_objects/synapses_synapses_create_generator_codeobject.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/code_objects/synapses_synapses_create_generator_codeobject.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/code_objects/synapses_synapses_create_generator_codeobject.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/main" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/main.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/make.deps" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/network.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/network.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/network.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/objects.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/objects.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/objects.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_defaultclock_dt_5070620504685610540" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_defaultclock_t_8380215873060420977" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_defaultclock_timestep_-6850597610214938343" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_neurongroup_1__spikespace_-9217729725909361912" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_neurongroup_1_d_-2099436476966690710" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_neurongroup_1_i_2333462593416898344" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_neurongroup_1_u_-8593316811977182704" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_neurongroup_1_v_2658762244065169908" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_neurongroup_1_y_7370039761397642701" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_neurongroup__spikespace_-3455573838519136820" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_neurongroup_d_2457620988887119346" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_neurongroup_i_-7190308026009652562" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_neurongroup_u_-6679141570662581724" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_neurongroup_v_-5086518440027808725" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_neurongroup_y_-5052099310947811299" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_ratemonitor_1_N_1746938191374768293" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_ratemonitor_N_6183894783415535879" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_spikemonitor_1_N_-2662604113030910209" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_spikemonitor_1__source_idx_-2740327250578044253" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_spikemonitor_1_count_-1909928569126651378" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_spikemonitor_N_-6906722412373723413" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_spikemonitor__source_idx_4418105594119972215" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_spikemonitor_count_8293588248689608437" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_statemonitor_1_N_-6697648317811202230" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_statemonitor_1__indices_7995260259028642250" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_statemonitor_N_-5920263038206285335" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_statemonitor__indices_4113357629348844474" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_synapses_1_N_1075116645803852605" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_array_synapses_N_2125399753294640957" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_dynamic_array_ratemonitor_1_rate_2399882820352084338" beforeDir="false" afterPath="$PROJECT_DIR$/src/experimental_data_processing/extract_prc_params.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_dynamic_array_ratemonitor_1_t_7494325113387308880" beforeDir="false" afterPath="$PROJECT_DIR$/src/experimental_data_processing/process_recordings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_dynamic_array_ratemonitor_rate_-4428225078767363371" beforeDir="false" afterPath="$PROJECT_DIR$/src/experimental_data_processing/split_recordings_into_chunks.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_dynamic_array_ratemonitor_t_3489280827153631569" beforeDir="false" afterPath="$PROJECT_DIR$/src/num_experiments/run_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_dynamic_array_spikemonitor_1_i_-5042486502673752350" beforeDir="false" afterPath="$PROJECT_DIR$/src/plots/plot_prc_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_dynamic_array_spikemonitor_1_t_4268807878277464587" beforeDir="false" afterPath="$PROJECT_DIR$/src/plots/plot_prc_params_meaning.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_dynamic_array_spikemonitor_i_4779651247597667484" beforeDir="false" afterPath="$PROJECT_DIR$/src/plots/plot_short_stim_traces_numerical.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_dynamic_array_spikemonitor_t_-6912973336912117839" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_dynamic_array_statemonitor_1_t_-935205760974690230" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_dynamic_array_statemonitor_1_u_3881097078116784560" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_dynamic_array_statemonitor_1_v_1438413998924325932" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_dynamic_array_statemonitor_t_-1559023182752840185" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_dynamic_array_statemonitor_u_783326094281675113" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_dynamic_array_statemonitor_v_-2200803759973358153" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_dynamic_array_synapses_1_N_incoming_-3574290466725963771" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_dynamic_array_synapses_1_N_outgoing_-412538781518336890" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_dynamic_array_synapses_1__synaptic_post_5345084982815233882" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_dynamic_array_synapses_1__synaptic_pre_-5447818040820807112" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_dynamic_array_synapses_1_delay_4122939955376611857" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_dynamic_array_synapses_N_incoming_8672532323198523295" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_dynamic_array_synapses_N_outgoing_11676605058085343" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_dynamic_array_synapses__synaptic_post_7268826885208150740" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_dynamic_array_synapses__synaptic_pre_9101119660382277293" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/_dynamic_array_synapses_delay_-2639851434804625556" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/results/last_run_info.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/run.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/run.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/run.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/static_arrays/_static_array__array_neurongroup_1_d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/static_arrays/_static_array__array_neurongroup_1_u" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/static_arrays/_static_array__array_neurongroup_1_v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/static_arrays/_static_array__array_neurongroup_d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/static_arrays/_static_array__array_neurongroup_u" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/static_arrays/_static_array__array_neurongroup_v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/static_arrays/_static_array__array_statemonitor_1__indices" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/static_arrays/_static_array__array_statemonitor__indices" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/synapses_classes.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/synapses_classes.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/output/synapses_classes.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/params_gen.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/num_experiments/params_gen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/plot_signals.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/plots.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/plot_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/rCPG_swCPG.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/num_experiments/rCPG_swCPG.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sp_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/sp_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/gen_utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,16 +130,6 @@
         <option value="Python Script" />
       </list>
     </option>
-  </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>KF</find>
-      <find>9</find>
-      <find>NTS1</find>
-      <find>mean</find>
-      <find>t_conversion</find>
-      <find>start_peak</find>
-    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -44,11 +146,13 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/utils" />
+      <recent name="$PROJECT_DIR$/src/num_experiments" />
       <recent name="$PROJECT_DIR$/src/experimental_data_processing" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.plot_signals">
-    <configuration name="model" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.extract_prc_params">
+    <configuration name="extract_prc_params" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="rCPG_swCPG" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -56,11 +160,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/experimental_data_processing" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/model.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/experimental_data_processing/extract_prc_params.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -69,7 +173,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="model_with_izhikevich_neurons" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="gen_utils" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="rCPG_swCPG" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -77,11 +181,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/utils" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/model_with_izhikevich_neurons.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/utils/gen_utils.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -90,7 +194,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="params_gen" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="plot_shorts_stim_traces" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="rCPG_swCPG" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -98,11 +202,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/plots" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/params_gen.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/plots/plot_shorts_stim_traces.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -111,7 +215,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="plot_signals" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="process_recordings" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="rCPG_swCPG" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -119,11 +223,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/experimental_data_processing" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/plot_signals.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/experimental_data_processing/process_recordings.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -132,7 +236,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="reading_experimental_data" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="split_recordings_into_chunks" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="rCPG_swCPG" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -140,11 +244,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/experimental_data_processing" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/experimental_data_processing/reading_experimental_data.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/experimental_data_processing/split_recordings_into_chunks.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -155,11 +259,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.plot_signals" />
-        <item itemvalue="Python.params_gen" />
-        <item itemvalue="Python.model" />
-        <item itemvalue="Python.model_with_izhikevich_neurons" />
-        <item itemvalue="Python.reading_experimental_data" />
+        <item itemvalue="Python.extract_prc_params" />
+        <item itemvalue="Python.split_recordings_into_chunks" />
+        <item itemvalue="Python.process_recordings" />
+        <item itemvalue="Python.plot_shorts_stim_traces" />
+        <item itemvalue="Python.gen_utils" />
       </list>
     </recent_temporary>
   </component>
@@ -202,42 +306,42 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state x="860" y="164" width="924" height="916" key="#xdebugger.evaluate" timestamp="1579522761220">
+    <state x="893" y="115" width="924" height="522" key="#xdebugger.evaluate" timestamp="1585302866684">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state x="860" y="164" width="924" height="916" key="#xdebugger.evaluate/70.27.1850.1053@70.27.1850.1053" timestamp="1579522761220" />
-    <state width="1827" height="274" key="GridCell.Tab.0.bottom" timestamp="1579665854374">
+    <state x="893" y="115" width="924" height="522" key="#xdebugger.evaluate/70.27.1850.1053@70.27.1850.1053" timestamp="1585302866684" />
+    <state width="1827" height="274" key="GridCell.Tab.0.bottom" timestamp="1585315438158">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="274" key="GridCell.Tab.0.bottom/70.27.1850.1053@70.27.1850.1053" timestamp="1579665854374" />
-    <state width="1827" height="274" key="GridCell.Tab.0.center" timestamp="1579665854374">
+    <state width="1827" height="274" key="GridCell.Tab.0.bottom/70.27.1850.1053@70.27.1850.1053" timestamp="1585315438158" />
+    <state width="1827" height="274" key="GridCell.Tab.0.center" timestamp="1585315438158">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="274" key="GridCell.Tab.0.center/70.27.1850.1053@70.27.1850.1053" timestamp="1579665854374" />
-    <state width="1827" height="274" key="GridCell.Tab.0.left" timestamp="1579665854373">
+    <state width="1827" height="274" key="GridCell.Tab.0.center/70.27.1850.1053@70.27.1850.1053" timestamp="1585315438158" />
+    <state width="1827" height="274" key="GridCell.Tab.0.left" timestamp="1585315438157">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="274" key="GridCell.Tab.0.left/70.27.1850.1053@70.27.1850.1053" timestamp="1579665854373" />
-    <state width="1827" height="274" key="GridCell.Tab.0.right" timestamp="1579665854374">
+    <state width="1827" height="274" key="GridCell.Tab.0.left/70.27.1850.1053@70.27.1850.1053" timestamp="1585315438157" />
+    <state width="1827" height="274" key="GridCell.Tab.0.right" timestamp="1585315438158">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="274" key="GridCell.Tab.0.right/70.27.1850.1053@70.27.1850.1053" timestamp="1579665854374" />
-    <state width="1827" height="340" key="GridCell.Tab.1.bottom" timestamp="1579655512542">
+    <state width="1827" height="274" key="GridCell.Tab.0.right/70.27.1850.1053@70.27.1850.1053" timestamp="1585315438158" />
+    <state width="1827" height="340" key="GridCell.Tab.1.bottom" timestamp="1585312876967">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="340" key="GridCell.Tab.1.bottom/70.27.1850.1053@70.27.1850.1053" timestamp="1579655512542" />
-    <state width="1827" height="340" key="GridCell.Tab.1.center" timestamp="1579655512541">
+    <state width="1827" height="340" key="GridCell.Tab.1.bottom/70.27.1850.1053@70.27.1850.1053" timestamp="1585312876967" />
+    <state width="1827" height="340" key="GridCell.Tab.1.center" timestamp="1585312876967">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="340" key="GridCell.Tab.1.center/70.27.1850.1053@70.27.1850.1053" timestamp="1579655512541" />
-    <state width="1827" height="340" key="GridCell.Tab.1.left" timestamp="1579655512541">
+    <state width="1827" height="340" key="GridCell.Tab.1.center/70.27.1850.1053@70.27.1850.1053" timestamp="1585312876967" />
+    <state width="1827" height="340" key="GridCell.Tab.1.left" timestamp="1585312876966">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="340" key="GridCell.Tab.1.left/70.27.1850.1053@70.27.1850.1053" timestamp="1579655512541" />
-    <state width="1827" height="340" key="GridCell.Tab.1.right" timestamp="1579655512542">
+    <state width="1827" height="340" key="GridCell.Tab.1.left/70.27.1850.1053@70.27.1850.1053" timestamp="1585312876966" />
+    <state width="1827" height="340" key="GridCell.Tab.1.right" timestamp="1585312876967">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="340" key="GridCell.Tab.1.right/70.27.1850.1053@70.27.1850.1053" timestamp="1579655512542" />
+    <state width="1827" height="340" key="GridCell.Tab.1.right/70.27.1850.1053@70.27.1850.1053" timestamp="1585312876967" />
     <state x="651" y="381" key="com.intellij.ide.util.TipDialog" timestamp="1579653072736">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
@@ -265,6 +369,11 @@
           <url>file://$PROJECT_DIR$/src/model_with_izhikevich_neurons.py</url>
           <line>192</line>
           <option name="timeStamp" value="34" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/utils/gen_utils.py</url>
+          <line>63</line>
+          <option name="timeStamp" value="35" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
