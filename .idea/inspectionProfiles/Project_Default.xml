@@ -8,6 +8,7 @@
           <option value="learning_rules" />
           <option value="src.Hopfield_net.*" />
           <option value="float.__matmul__" />
+          <option value="utils.plot_utils.get_inspiration_onsets_and_ends" />
         </list>
       </option>
     </inspection_tool>

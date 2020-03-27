@@ -1,10 +1,6 @@
-import numpy as np
-import scipy
-from matplotlib import pyplot as plt
 from scipy.signal import savgol_filter as sg
 from sklearn.ensemble import IsolationForest as IF
-from Model import *
-from params_gen import *
+from num_experiments.params_gen import *
 from scipy import signal
 from scipy.signal import butter
 import ruptures as rpt
@@ -30,8 +26,8 @@ def get_insp_starts_and_ends(signal):
     threshold = 0.4
     signal_binary = binarise_signal(signal_filtered, threshold)
     signal_change = np.diff(signal_binary)
-    starts_inds = find_relevant_peaks(signal_change, 0.5)
-    ends_inds = find_relevant_peaks(-signal_change, 0.5)
+    starts_inds = find_relevant_peaks(signal_change, 0.5, min_dist = 100)
+    ends_inds = find_relevant_peaks(-signal_change, 0.5, min_dist = 100)
     return starts_inds,ends_inds
 
 def get_period(signal):
@@ -44,8 +40,8 @@ def get_period(signal):
     # plt.plot(signal_filtered)
     # plt.plot(threshold * np.ones_like(signal_filtered))
     signal_change = np.diff(signal_binary)
-    begins = find_relevant_peaks(signal_change, 0.5)
-    ends = find_relevant_peaks(-signal_change, 0.5)
+    begins = find_relevant_peaks(signal_change, 0.5, min_dist = 100)
+    ends = find_relevant_peaks(-signal_change, 0.5, min_dist = 100)
     T = np.median(np.hstack([np.diff(begins), np.diff(ends)]))
     std = np.std(np.hstack([np.diff(begins), np.diff(ends)]))
     #Ti =  ends - begins

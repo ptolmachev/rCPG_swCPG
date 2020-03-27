@@ -1,8 +1,5 @@
-import json
-import numpy as np
-from Model import *
-from utils import *
-from params_gen import *
+from num_experiments.Model import *
+from num_experiments.params_gen import *
 
 default_neural_params = {
     'C': 20,
