@@ -1,5 +1,7 @@
 import pickle
 import numpy as np
+
+from utils.gen_utils import get_project_root
 from utils.plot_utils import scatterplot
 
 
@@ -59,12 +61,14 @@ def features_plots(file_load, dir_save_to, modifier, fit_poly):
     return None
 
 
-
-for i in range(4):
-    num_rec = i
-    data_files = ['2019-09-03_15-01-54_prc', '2019-09-04_17-49-02_prc',
-                  '2019-09-05_12-26-14_prc', '2019-08-22_16-18-36_prc']
-    file_load = f'../data/parameters_prc_{data_files[num_rec]}.pkl'
-    dir_save_to = '../img/experiments'
-    modifier = num_rec
-    features_plots(file_load, dir_save_to, modifier, fit_poly=True)
+if __name__ == '__main__':
+    data_path = str(get_project_root()) + "/data"
+    img_path = str(get_project_root()) + "/img"
+    for i in range(4):
+        num_rec = i
+        data_files = ['2019-09-03_15-01-54_prc', '2019-09-04_17-49-02_prc',
+                      '2019-09-05_12-26-14_prc', '2019-08-22_16-18-36_prc']
+        file_load = f'{data_path}/sln_prc_params/parameters_prc_{data_files[num_rec]}.pkl'
+        dir_save_to = f'{img_path}/experiments'
+        modifier = num_rec
+        features_plots(file_load, dir_save_to, modifier, fit_poly=True)

@@ -1,17 +1,21 @@
 import pickle
 import numpy as np
 from matplotlib import pyplot as plt
-from utils.sp_utils import get_onsets_and_ends
+
+from utils.gen_utils import get_project_root
+from utils.sp_utils import get_onsets_and_ends, get_timings
 
 
 def clarifying_plot(chunk, save_to):
-    PNA = chunk['signal']
+    PNA = chunk['PNA']
     s = int(0.4 * len(PNA))
     e = int(0.8 * len(PNA))
-    stim = chunk['stim'] - s
+    stim = chunk['stim_start'] - s
     PNA = (PNA[s:e])
     insp_begins, insp_ends = get_onsets_and_ends(PNA, model='l2', pen=1000, min_len=100)
-    ts1, ts2, ts3, ts4, te1, te2, te3, te4 = get_onsets_and_ends(insp_begins, insp_ends, stim,  min_len=100)
+    timings = get_timings(insp_begins, insp_ends, stim, len(PNA))
+    ts1, ts2, ts3, ts4, te1, te2, te3, te4 = timings["t_start"][-1], timings["t_start"][0], timings["t_start"][1], timings["t_start"][2],\
+                                             timings["t_end"][-1], timings["t_end"][0], timings["t_end"][1], timings["t_end"][1]
     PNA = (PNA - np.min(PNA)) / (np.max(PNA) - np.min(PNA))
 
     class DoubleArrow():
@@ -76,9 +80,11 @@ def clarifying_plot(chunk, save_to):
 
 if __name__ == '__main__':
     # # PLOT WITH MEANING OF THE PARAMETERS
+    data_path = str(get_project_root()) + "/data"
+    img_path = str(get_project_root()) + "/img"
     num_rec = 3
     num_chunk = 6
-    save_to = f'../../img/param_representation.png'
-    data = pickle.load(open(f'../../data/sln_prc_chunked/2019-09-05_12-26-14_prc/100_CH10_chunked.pkl', 'rb+'))
+    save_to = f'{img_path}/param_representation.png'
+    data = pickle.load(open(f'{data_path}/sln_prc_chunked/2019-09-05_12-26-14_prc/chunked.pkl', 'rb+'))
     chunk = data[num_chunk]
     clarifying_plot(chunk, save_to)

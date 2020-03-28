@@ -3,8 +3,10 @@ import pickle
 import numpy as np
 from num_experiments.Model import Network, NeuralPopulation
 from num_experiments.params_gen import generate_params
+from utils.gen_utils import get_project_root
 
-def run_model(dt, t_start, t_end, amp, stoptime, folder_save_img_to):
+
+def run_model(dt, t_start, t_end, amp, stoptime):
     default_neural_params = {
         'C': 20, 'g_NaP': 0.0, 'g_K': 5.0, 'g_ad': 10.0, 'g_l': 2.8, 'g_synE': 10, 'g_synI': 60, 'E_Na': 50,
         'E_K': -85, 'E_ad': -85, 'E_l': -60, 'E_synE': 0, 'E_synI': -75, 'V_half': -30, 'slope': 4, 'tau_ad': 2000,
@@ -47,7 +49,8 @@ def run_model(dt, t_start, t_end, amp, stoptime, folder_save_img_to):
     inh_NTS = 1
     inh_KF = 1
     generate_params(inh_NTS, inh_KF)
-    file = open("../../data/rCPG_swCPG.json", "rb+")
+    data_path = str(get_project_root()) + "/data"
+    file = open(f"{data_path}/rCPG_swCPG.json", "rb+")
     params = json.load(file)
     W = np.array(params["b"])
     drives = np.array(params["c"])
@@ -64,7 +67,8 @@ def run_model(dt, t_start, t_end, amp, stoptime, folder_save_img_to):
     # run til stoptime
     net.run(int((stoptime - (t_end - t_start) - t_start) / dt))
 
-    net.plot(show=False, save_to=f"../img/{folder_save_img_to}/single_trial_{amp}.png")
+    # img_path = str(get_project_root()) + "/img"
+    # net.plot(show=False, save_to=f"{img_path}/{folder_save_img_to}/single_trial_{amp}.png")
     V_array = net.v_history
     t = np.array(net.t)
     signals = net.firing_rate(V_array, net.V_half, net.slope).T
@@ -76,6 +80,6 @@ if __name__ == '__main__':
     t_end = 22500
     stoptime = 60000
     amp = 300
-    folder_save_to = 'num_experiments/short_stim'
-    signals, t = run_model(dt, t_start, t_end, amp, stoptime, folder_save_to)
-    pickle.dump((signals, t), open('../../data/signals_intact_model.pkl', 'wb+'))
+    signals, t = run_model(dt, t_start, t_end, amp, stoptime)
+    data_path = str(get_project_root()) + "/data"
+    pickle.dump((signals, t), open(f'{data_path}/signals_intact_model.pkl', 'wb+'))

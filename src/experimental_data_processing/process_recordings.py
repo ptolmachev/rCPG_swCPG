@@ -74,6 +74,7 @@ def run_filtering_short_stim(data_folder, folder_save_to):
             data_to_save['stim_start'] = stim_start
             data_to_save['stim_end'] = stim_end
             data_to_save['signal'] = signal
+            data_to_save['fr'] = int(fr / downsampling_factor ** 2)
             create_dir_if_not_exist(f'{folder_save_to}/{folder}')
             pickle.dump(data_to_save, open(f'{folder_save_to}/{folder}/100_{suffix}_processed.pkl', 'wb+'))
     return None
@@ -110,20 +111,21 @@ def run_filtering_long_stim(data_folder, folder_save_to):
             data_to_save['stim_start'] = stim_start
             data_to_save['stim_end'] = stim_end
             data_to_save['signal'] = signal
+            data_to_save['fr'] = int(fr / downsampling_factor ** 2)
             create_dir_if_not_exist(f'{folder_save_to}/{folder}')
             pickle.dump(data_to_save, open(f'{folder_save_to}/{folder}/100_{suffix}_processed.pkl', 'wb+'))
     return None
 
 if __name__ == '__main__':
     data_path = str(get_project_root()) + "/data"
-    # # FILTERING SHORT STIM DATA
-    data_folder = f'{data_path}/sln_prc'
-    folder_save_to = f'{data_path}/sln_prc_filtered'
-    create_dir_if_not_exist(folder_save_to)
-    run_filtering_short_stim(data_folder, folder_save_to)
-
-    # FILTERING LONG STIM DATA
+    # # # FILTERING SHORT STIM DATA
     # data_folder = f'{data_path}/sln_prc'
     # folder_save_to = f'{data_path}/sln_prc_filtered'
     # create_dir_if_not_exist(folder_save_to)
-    # run_filtering_long_stim(data_folder, folder_save_to)
+    # run_filtering_short_stim(data_folder, folder_save_to)
+
+    # FILTERING LONG STIM DATA
+    data_folder = f'{data_path}/sln_prc'
+    folder_save_to = f'{data_path}/sln_prc_filtered'
+    create_dir_if_not_exist(folder_save_to)
+    run_filtering_long_stim(data_folder, folder_save_to)
