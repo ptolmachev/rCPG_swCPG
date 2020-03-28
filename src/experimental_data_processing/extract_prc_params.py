@@ -32,13 +32,14 @@ def get_features_from_signal(signal, dt, stim_start, stim_end):
     Ti_2 = (ts["t_end"][2] - ts["t_start"][2]) * dt
     return Phi, Ti_0, T0, T1, Theta, Ti_1, Ti_2, Ti_0_std, T0_std # all in ms
 
-def extract_data_from_chunks(dataset_chunks, dt, save_to):
+def extract_data_from_chunks(dataset_chunks):
     parameters_dict = {}
     parameters_dict['data'] = []
     print(f"The number of chunks of keys: {len(list(dataset_chunks.keys()))}")
     for num in list(dataset_chunks.keys()):
         print(f"chunk number: {num}")
         chunk = dataset_chunks[num]
+        dt = chunk['dt']
         PNA = chunk['PNA']
         stim_start = chunk['stim_start']
         stim_end = chunk['stim_end']
@@ -47,23 +48,23 @@ def extract_data_from_chunks(dataset_chunks, dt, save_to):
             res = (Phi, Ti_0, T0, T1, Theta, Ti_1, Ti_2)
             print(res)
             parameters_dict['data'].append(res)
-        pickle.dump(parameters_dict, open(save_to, 'wb+'))
-    return None
+    return parameters_dict
 
-def ectract_data(data_folder, dt):
+def ectract_data(data_folder, save_to):
     folders = get_folders(data_folder, "_prc")
     for folder in folders:
         file = f'chunked.pkl'
         data = pickle.load(open(f'{data_folder}/{folder}/{file}', 'rb+'))
-        save_to = f'../../data/parameters_prc_{folder}.pkl'
-        extract_data_from_chunks(data, dt, save_to)
+        params_save_to = f'{save_to}/parameters_prc_{folder}.pkl'
+        params_extracted = extract_data_from_chunks(data)
+        pickle.dump(params_extracted, open(params_save_to, 'wb+'))
     return None
 
 if __name__ == '__main__':
     data_path = str(get_project_root()) + "/data"
     img_path = str(get_project_root()) + "/img"
 
-    dt = 10/3
     data_folder = f'{data_path}/sln_prc_chunked'
-    ectract_data(data_folder, dt)
+    save_to = f'{data_path}/sln_prc_params'
+    ectract_data(data_folder, save_to)
 

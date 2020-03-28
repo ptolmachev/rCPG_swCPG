@@ -4,7 +4,7 @@ from utils.sp_utils import get_period
 from tqdm.auto import tqdm
 
 
-def split_signal_into_chunks(signals, stim_starts, stim_end):
+def split_signal_into_chunks(signals, stim_starts, stim_end, dt):
     # for span between the two stims
     PNA, VNA, HNA = signals
     data_chunked = dict()
@@ -19,6 +19,7 @@ def split_signal_into_chunks(signals, stim_starts, stim_end):
         new_chunk_VNA = VNA[int(start + int(1 * T)):int(end + int(4 * T))]
         new_chunk_HNA = HNA[int(start + int(1 * T)):int(end + int(4 * T))]
         data_chunked[i] = dict()
+        data_chunked[i]['dt'] = dt
         data_chunked[i]['PNA'] = new_chunk_PNA
         data_chunked[i]['VNA'] = new_chunk_VNA
         data_chunked[i]['HNA'] = new_chunk_HNA
@@ -41,12 +42,13 @@ def chunk_data(data_folder, save_to):
 
         PNA_data = pickle.load(open(f'{data_folder}/{folder}/100_CH10_processed.pkl', 'rb+'))
         PNA = PNA_data['signal']
+        dt = (1000 / PNA_data['fr']) # ms
 
         stim_start = PNA_data['stim_start']
         stim_end = PNA_data['stim_end']
         signals = [PNA, VNA, HNA]
 
-        data_chunked = split_signal_into_chunks(signals, stim_start, stim_end)
+        data_chunked = split_signal_into_chunks(signals, stim_start, stim_end, dt)
         create_dir_if_not_exist(f'{save_to}/{folder}')
         pickle.dump(data_chunked, open(f'{save_to}/{folder}/chunked.pkl', 'wb+'))
     return None

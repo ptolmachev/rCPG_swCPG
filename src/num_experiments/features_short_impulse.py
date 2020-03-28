@@ -107,7 +107,7 @@ def get_features_from_signal(signal, dt, stim_start, stim_end):
 #     return Ti_0, T0, T1, Phi, Theta, Ti_1, Ti_2
 
 
-def run_simulations(params, folder_save_to, folder_save_img_to):
+def run_simulations(params, folder_save_to):
     generate_params(1, 1)
     # first, find the preiod, then create a list of points with the same phase if there are no stimulation at all
     stim_duration = params["stim_duration"] #250
@@ -116,7 +116,7 @@ def run_simulations(params, folder_save_to, folder_save_img_to):
     stoptime = params["stoptime"] #70000
     num_shifts = params["num_shifts"] #100
     settle_time = params["settle_time"] #25000
-    signals, t = run_model(dt, t_start=0, t_end=1, amp=0, stoptime=stoptime, folder_save_img_to=folder_save_img_to)
+    signals, t = run_model(dt, t_start=0, t_end=1, amp=0, stoptime=stoptime)
     # signals, t = pickle.load(open("../data/signals_intact_model.pkl", "rb+"))
     # get rid of transients 20000:
     # warning period is in indices not in ms!
@@ -185,15 +185,13 @@ if __name__ == '__main__':
     amps = [150, 250, 350]
     data_path = str(get_project_root()) + "/data"
     img_path = str(get_project_root()) + "/img"
-    save_extracted_data_to = "num_exp_results/short_stim/"
+    save_extracted_data_to = data_path + '/' + "num_exp_results/short_stim/"
     for amp in amps:
         params["amp"] = amp
-        folder_signals = f"num_exp_runs/num_exp_short_stim_{amp}_{stim_duration}"
-        folder_save_img_to = f"num_exp_short_stim_{amp}_{stim_duration}"
-        create_dir_if_not_exist(data_path + '/ ' + folder_signals)
-        create_dir_if_not_exist(img_path + '/ ' + folder_save_img_to)
-        run_simulations(params, f"{data_path}/{folder_signals}", f"{img_path}/{folder_save_img_to}")
-        extract_data(signals_path=f"{data_path}/{folder_signals}", save_to=f"{data_path}/{save_extracted_data_to}")
+        folder_signals = f"{data_path}/num_exp_runs/short_stim/num_exp_short_stim_{amp}_{stim_duration}"
+        create_dir_if_not_exist(folder_signals)
+        run_simulations(params, folder_signals)
+        extract_data(signals_path=folder_signals, save_to=save_extracted_data_to)
 
 
 
