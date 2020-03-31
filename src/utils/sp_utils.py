@@ -1,3 +1,4 @@
+from copy import deepcopy
 from scipy.signal import savgol_filter as sg
 from sklearn.ensemble import IsolationForest as IF
 from num_experiments.params_gen import *
@@ -20,6 +21,21 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order=2):
     b, a = butter_bandpass(lowcut, highcut, fs, order=order)
     y = signal.filtfilt(b, a, data)
     return y
+
+def get_VNA_starts_and_ends(VNA, insp_starts, insp_ends):
+    VNA = sg(VNA, 41, 3)
+    VNA_reduced = deepcopy(VNA)
+    min_val = np.quantile(VNA, 0.1)
+
+    if insp_starts[0] > insp_ends[0]:
+        insp_ends = insp_ends[1:]
+
+    for i in range(np.minimum(len(insp_starts), len(insp_ends))):
+        VNA_reduced[insp_starts[i] : insp_ends[i]] = min_val
+
+    VNA_starts, VNA_ends = get_onsets_and_ends(VNA_reduced, model='l2', pen=100, min_len=100)
+    return VNA_starts, VNA_ends
+
 
 def get_insp_starts_and_ends(signal):
     signal_filtered = sg(signal, 121, 1)
@@ -108,14 +124,17 @@ def get_timings(insp_begins, insp_ends, stim, len_chunk):
 def get_onsets_and_ends(signal, model, pen, min_len):
     breakpoints = detect_change_points(signal, model, pen, min_len)
     # need to separete starts and ends
-    window_len = 100
+    window_len = 50
     mean_val = np.mean(signal)
     signal_ends = []
     signal_begins = []
     for t in breakpoints:
-        if t == 0 or t == len(signal):
+        ind_window_start = np.maximum(0, t - window_len)
+        ind_window_end = np.minimum(len(signal) - 1, t + window_len)
+        fall = np.mean(signal[ind_window_start : t]) > np.mean(signal[t : ind_window_end])
+        if t == 0 or t == len(signal) - 1:
             pass
-        if (np.mean(signal[np.maximum(0, t - window_len) : t]) > mean_val):
+        if fall:
             signal_ends.append(t)
         else:
             signal_begins.append(t)

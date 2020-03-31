@@ -137,7 +137,7 @@ def run_simulations(params, folder_save_to):
             # print("Shift: {}, Impulse at time : {}".format(shift, t1))
             t2 = t1 + stim_duration
             # create and run a model
-            signals, t = run_model(dt, t1, t2, amp, stoptime, folder_save_img_to)
+            signals, t = run_model(dt, t1, t2, amp, stoptime)
             data = dict()
             data['signals'] = signals
             data['t'] = t
@@ -177,12 +177,12 @@ def extract_data(signals_path, save_to):
 if __name__ == '__main__':
     params = {}
     params["dt"] = 0.75
-    params["stim_duration"] = 750
+    params["stim_duration"] = 1500
     stim_duration = params["stim_duration"]
     params["stoptime"] = 56000
     params["num_shifts"] = 50
     params["settle_time"] = 25000
-    amps = [150, 250, 350]
+    amps = [150]
     data_path = str(get_project_root()) + "/data"
     img_path = str(get_project_root()) + "/img"
     save_extracted_data_to = data_path + '/' + "num_exp_results/short_stim/"
@@ -192,8 +192,3 @@ if __name__ == '__main__':
         create_dir_if_not_exist(folder_signals)
         run_simulations(params, folder_signals)
         extract_data(signals_path=folder_signals, save_to=save_extracted_data_to)
-
-
-
-
-
