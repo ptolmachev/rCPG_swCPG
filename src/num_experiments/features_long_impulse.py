@@ -101,7 +101,7 @@ if __name__ == "__main__":
     # save_to = data_path + "/" + "num_exp_runs" "/" + "long_stim"
     # run_simulations(dt, stim_duration, t_starts, stoptime, amps, save_to)
 
-    # data_folder = data_path + "/" + "num_exp_runs" + "/" + "long_stim"
-    # save_to = data_path + "/" + "num_exp_results" + "/" + "long_stim"
-    # exctract_data(data_folder, save_to)
+    data_folder = data_path + "/" + "num_exp_runs" + "/" + "long_stim"
+    save_to = data_path + "/" + "num_exp_results" + "/" + "long_stim"
+    exctract_data(data_folder, save_to)
 

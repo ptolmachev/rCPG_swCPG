@@ -1,9 +1,12 @@
+import pickle
+
 import numpy as np
 from matplotlib import pyplot as plt
-from src.utils.sp_utils import get_onsets_and_ends
+from src.utils.sp_utils import get_onsets_and_ends, get_VNA_starts_and_ends
 from utils.gen_utils import get_project_root
 from scipy.signal import savgol_filter
 from scipy.signal import periodogram
+from numpy.polynomial.polynomial import Polynomial
 
 def plot_power_spectrum(rec, fs, fr_low):
     img_path = str(get_project_root()) + "/img"
@@ -45,7 +48,7 @@ def nice_error_bar_scatter(x,y,error, title, xlabel,ylabel, save_to = None):
     if save_to is not None:
         fig.savefig(img_path + '/' + save_to)
 
-def scatterplot(x, y, x_label, y_label, x_lim, y_lim, title, fit_poly, path_save_to, phi_insp=None, deg=None):
+def scatterplot(x, y, x_label, y_label, x_lim, y_lim, title, fit_poly, phi_insp=None, deg=None):
     fig = plt.figure()
     plt.title(title)
     plt.scatter(x, y)
@@ -62,8 +65,8 @@ def scatterplot(x, y, x_label, y_label, x_lim, y_lim, title, fit_poly, path_save
     if not x_lim is None:
         plt.xlim(x_lim)
     # plt.show(block=True)
-    plt.savefig(path_save_to)
-    return None
+    # plt.savefig(path_save_to)
+    return fig
 
 def plot_chunk(data_chunk, y_lim):
         PNA = data_chunk['PNA']
@@ -76,7 +79,7 @@ def plot_chunk(data_chunk, y_lim):
         signals = [savgol_filter(s, 5, 3) for s in signals]
         labels = ["PNA", "HNA", "VNA"]
         starts, ends = get_onsets_and_ends(PNA, model='l2', pen=1000, min_len=60)
-        # starts_VNA, ends_VNA = get_onsets_and_ends(VNA, model='l2', pen=100, min_len=60)
+        starts_VNA, ends_VNA = get_VNA_starts_and_ends(VNA, starts, ends)
         for i in range(3):
             ax = eval(f"ax{i+1}")
             ax.plot(signals[i], 'k', linewidth=2)
@@ -84,16 +87,11 @@ def plot_chunk(data_chunk, y_lim):
                 ax.axvline(starts[j], color="r")
             for j in range(len(ends)):
                 ax.axvline(ends[j], color="b")
-            # if i != 2:
-            #     for j in range(len(starts)):
-            #         ax.axvline(starts[j], color="r")
-            #     for j in range(len(ends)):
-            #         ax.axvline(ends[j], color="b")
-            # else:
-            #     for j in range(len(starts_VNA)):
-            #         ax.axvline(starts_VNA[j], color="r")
-            #     for j in range(len(ends_VNA)):
-            #         ax.axvline(ends_VNA[j], color="b")
+            if i == 2:
+                for j in range(len(starts_VNA)):
+                    ax.axvline(starts_VNA[j], color="magenta")
+                for j in range(len(ends_VNA)):
+                    ax.axvline(ends_VNA[j], color="orange")
 
             ax.axvline(stim_start, color="r", linewidth=2, linestyle = "-")
             ax.axvline(stim_end, color="r", linewidth=2, linestyle="-")
@@ -109,7 +107,73 @@ def plot_chunk(data_chunk, y_lim):
         plt.subplots_adjust(wspace=0, hspace=0)
         return fig
 
-def plot_num_exp_traces(signals, save_to):
+def features_plots(file_load, dir_save_to, modifier, plot_params):
+    fit_poly = plot_params["fit_poly"]
+    y_lim_T0 = plot_params["y_lim_T0"]
+    y_lim_T1 = plot_params["y_lim_T1"]
+    y_lim_Ti1 = plot_params["y_lim_Ti1"]
+    y_lim_T1divT0 = plot_params["y_lim_T1divT0"]
+
+    data_ = pickle.load(open(file_load,'rb'))['data']
+    data_ = np.array(data_)
+    # data = get_rid_of_outliers(data)
+    Phi = data_[:, 0]
+    Ti_0 = data_[:, 1]
+    T0 = data_[:, 2]
+    T1 = data_[:, 3]
+    Theta = data_[:, 4]
+    Ti_1 = data_[:, 5]
+    Ti_2 = data_[:, 6]
+    phase = (Phi/np.nanmean(T0))
+    cophase = (Theta/np.nanmean(T0))
+    phi_insp = np.nanmean(Ti_0)/np.nanmean(T0)
+
+    x_label = "Phase"
+    x = phase
+    x_lim = [0, 1.2]
+
+    title = "Phase-Cophase"
+    y_label = "Cophase"
+    y = cophase
+    y_lim = [0, 1.1]
+    path_save_to = f"{dir_save_to}/{title}_{modifier}.png"
+    fig = scatterplot(x, y, x_label, y_label, x_lim, y_lim , title, fit_poly, phi_insp=phi_insp, deg=6)
+    fig.savefig(path_save_to)
+
+    title = "T1 T0 ratio"
+    y_label = "T1/T0"
+    y = T1/T0
+    y_lim = y_lim_T1divT0
+    path_save_to = f"{dir_save_to}/{title}_{modifier}.png"
+    fig = scatterplot(x, y, x_label, y_label, x_lim, y_lim , title, fit_poly, phi_insp=phi_insp, deg=6)
+    fig.savefig(path_save_to)
+
+    title = "T0"
+    y_label = "T0, ms"
+    y = T0
+    y_lim = y_lim_T0
+    path_save_to = f"{dir_save_to}/{title}_{modifier}.png"
+    fig = scatterplot(x, y, x_label, y_label, x_lim, y_lim , title, fit_poly, phi_insp=phi_insp, deg=0)
+    fig.savefig(path_save_to)
+
+    title = "T1"
+    y_label = "T1, ms"
+    y = T1
+    y_lim = y_lim_T1
+    path_save_to = f"{dir_save_to}/{title}_{modifier}.png"
+    fig = scatterplot(x, y, x_label, y_label, x_lim, y_lim , title, fit_poly, phi_insp=phi_insp, deg=6)
+    fig.savefig(path_save_to)
+
+    title = "Ti 1"
+    y_label = "Ti 1, ms"
+    y = Ti_1
+    y_lim = y_lim_Ti1
+    path_save_to = f"{dir_save_to}/{title}_{modifier}.png"
+    fig = scatterplot(x, y, x_label, y_label, x_lim, y_lim , title, fit_poly, phi_insp=phi_insp, deg=0)
+    fig.savefig(path_save_to)
+    return None
+
+def plot_num_exp_traces(signals):
     N = signals.shape[0]
     names = ['PreI', 'EarlyI', "PostI", "AugE","RampI", "Relay", "Sw1","Sw2","Sw3", "KF_t", "KF_p", "KF_relay", "HN",  "PN",  "VN", "KF_inh", "NTS_inh"]  # 16
     fig, axes = plt.subplots(N - 2, 1, figsize=(25, 15))
@@ -126,9 +190,7 @@ def plot_num_exp_traces(signals, save_to):
             axes[i].set_xticklabels([])
         axes[i].set_xlabel('t, ms', fontdict={"size": 25})
     plt.subplots_adjust(wspace=0.01, hspace=0)
-    fig.savefig(save_to)
-    plt.close()
-    return None
+    return fig
 
 
 
