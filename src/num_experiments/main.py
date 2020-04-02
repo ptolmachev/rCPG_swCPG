@@ -1,5 +1,6 @@
 from num_experiments.Model import *
 from num_experiments.params_gen import *
+from utils.gen_utils import get_project_root, create_dir_if_not_exist
 
 default_neural_params = {
     'C': 20,
@@ -41,27 +42,38 @@ for name in population_names:
     populations[name] = eval(name)
 
 
+durations = [500, 10000]
+
 for inh_NTS, inh_KF in [(1,1), (1,2), (2,1)]:
-    generate_params(inh_NTS, inh_KF)
-    file = open("rCPG_swCPG.json", "rb+")
-    params = json.load(file)
-    W = np.array(params["b"])
-    drives = np.array(params["c"])
-    dt = 0.75
-    net = Network(populations, W, drives, dt, history_len=int(40000 / dt))
-    # get rid of all transients
-    net.run(int(15000 / dt))  # runs for 15 seconds
-    # run for 15 more seconds
-    net.run(int(15000 / dt))
-    # set input to Relay neurons
-    inp = np.zeros(net.N)
-    inp[5] = 370
-    net.set_input_current(inp)
-    # run for 10 more seconds
-    net.run(int(10000 / dt))
-    net.set_input_current(np.zeros(net.N))
-    # run for 15 more seconds
-    net.run(int(15000 / dt))
-    net.plot(show=False, save_to=f"../img/Model_22_02_2020/{get_postfix(inh_NTS, inh_KF)}.png")
+    for duration in durations:
+        generate_params(inh_NTS, inh_KF)
+        file = open("rCPG_swCPG.json", "rb+")
+        params = json.load(file)
+        W = np.array(params["b"])
+        drives = np.array(params["c"])
+        dt = 0.75
+        net = Network(populations, W, drives, dt, history_len=int(40000 / dt))
+        # get rid of all transients
+        net.run(int(15000 / dt))  # runs for 15 seconds
+        # run for 15 more seconds
+        net.run(int(15000 / dt))
+        # set input to Relay neurons
+        inp = np.zeros(net.N)
+        inp[5] = 150
+        net.set_input_current(inp)
+        # run for 10 more seconds
+        net.run(int(10000 / dt))
+        net.set_input_current(np.zeros(net.N))
+        # run for 15 more seconds
+        net.run(int(15000 / dt))
+        img_path = str(get_project_root()) + "/img"
+        folder = "Model_02042020"
+        create_dir_if_not_exist(f"{img_path}/{folder}")
+        net.plot(show=False, save_to=f"{img_path}/{folder}/{get_postfix(inh_NTS, inh_KF)}.png")
+        fig = plot_num_exp_traces(signals)
+        folder_save_img_to = img_path + "/" + f"other_plots"
+        fig.savefig(folder_save_img_to + "/" + f"num_exp_{amp}_{stim_duration}" + ".png")
+        plt.close(fig)
+
 
 generate_params(1, 1)

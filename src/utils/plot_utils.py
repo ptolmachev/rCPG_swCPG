@@ -2,7 +2,7 @@ import pickle
 
 import numpy as np
 from matplotlib import pyplot as plt
-from src.utils.sp_utils import get_onsets_and_ends, get_VNA_starts_and_ends
+from src.utils.sp_utils import get_onsets_and_ends, get_VNA_ends
 from utils.gen_utils import get_project_root
 from scipy.signal import savgol_filter
 from scipy.signal import periodogram
@@ -79,7 +79,7 @@ def plot_chunk(data_chunk, y_lim):
         signals = [savgol_filter(s, 5, 3) for s in signals]
         labels = ["PNA", "HNA", "VNA"]
         starts, ends = get_onsets_and_ends(PNA, model='l2', pen=1000, min_len=60)
-        starts_VNA, ends_VNA = get_VNA_starts_and_ends(VNA, starts, ends)
+        ends_VNA = get_VNA_ends(VNA, starts, ends)
         for i in range(3):
             ax = eval(f"ax{i+1}")
             ax.plot(signals[i], 'k', linewidth=2)
@@ -88,8 +88,8 @@ def plot_chunk(data_chunk, y_lim):
             for j in range(len(ends)):
                 ax.axvline(ends[j], color="b")
             if i == 2:
-                for j in range(len(starts_VNA)):
-                    ax.axvline(starts_VNA[j], color="magenta")
+                # for j in range(len(starts_VNA)):
+                #     ax.axvline(starts_VNA[j], color="magenta")
                 for j in range(len(ends_VNA)):
                     ax.axvline(ends_VNA[j], color="orange")
 

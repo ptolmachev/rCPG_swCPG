@@ -1,6 +1,9 @@
 import json
 import numpy as np
 
+from utils.gen_utils import get_project_root
+
+
 def generate_params(inh_NTS, inh_KF):
     params = dict()
     num_nrns = 17
@@ -96,12 +99,10 @@ def generate_params(inh_NTS, inh_KF):
     c = c.tolist()
 
     params["description"] = ""
-
     params["b"] = b
-
     params["c"] = c
-
-    json.dump(params, open('../../data/rCPG_swCPG.json', 'w', encoding='utf-8'), separators=(',', ':'), sort_keys=True, indent=4)
+    data_path = str(get_project_root()) + "/data"
+    json.dump(params, open(f'{data_path}/rCPG_swCPG.json', 'w', encoding='utf-8'), separators=(',', ':'), sort_keys=True, indent=4)
     return None
 
 if __name__ == '__main__':

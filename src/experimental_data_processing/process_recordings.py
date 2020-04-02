@@ -6,7 +6,7 @@ from scipy.signal import decimate, convolve
 from utils.gen_utils import get_folders, create_dir_if_not_exist, get_project_root
 from utils.openphys_utils import load
 from utils.sp_utils import butter_bandpass_filter
-
+from scipy.signal import hilbert
 
 def filter_signal(signal,cutoff_fr_low, cutoff_fr_high, fr):
     processed_signal = signal - np.mean(signal)
@@ -119,13 +119,13 @@ def run_filtering_long_stim(data_folder, folder_save_to):
 if __name__ == '__main__':
     data_path = str(get_project_root()) + "/data"
     # # # FILTERING SHORT STIM DATA
-    # data_folder = f'{data_path}/sln_prc'
-    # folder_save_to = f'{data_path}/sln_prc_filtered'
-    # create_dir_if_not_exist(folder_save_to)
-    # run_filtering_short_stim(data_folder, folder_save_to)
-
-    # FILTERING LONG STIM DATA
     data_folder = f'{data_path}/sln_prc'
     folder_save_to = f'{data_path}/sln_prc_filtered'
     create_dir_if_not_exist(folder_save_to)
-    run_filtering_long_stim(data_folder, folder_save_to)
+    run_filtering_short_stim(data_folder, folder_save_to)
+
+    # FILTERING LONG STIM DATA
+    # data_folder = f'{data_path}/sln_prc'
+    # folder_save_to = f'{data_path}/sln_prc_filtered'
+    # create_dir_if_not_exist(folder_save_to)
+    # run_filtering_long_stim(data_folder, folder_save_to)

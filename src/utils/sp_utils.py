@@ -10,31 +10,62 @@ import peakutils
 def detect_change_points(signal, model, pen, min_len):
     return rpt.Pelt(model=model, min_size=min_len).fit_predict(signal, pen)
 
-def butter_bandpass(lowcut, highcut, fs, order=2):
-    nyq = 0.5 * fs
-    low = lowcut / nyq
-    high = highcut / nyq
-    b, a = butter(order, [low, high], btype='bandpass')
-    return b, a
+
+def butter_lowpass_filter(data, lowcut, fs, order=2):
+    def butter_lowpass(lowcut, fs, order=2):
+        nyq = 0.5 * fs
+        low = lowcut / nyq
+        b, a = butter(order, low, btype='lowpass')
+        return b, a
+
+    b, a = butter_lowpass(lowcut, fs, order=order)
+    y = signal.filtfilt(b, a, data)
+    return y
 
 def butter_bandpass_filter(data, lowcut, highcut, fs, order=2):
+    def butter_bandpass(lowcut, highcut, fs, order=2):
+        nyq = 0.5 * fs
+        low = lowcut / nyq
+        high = highcut / nyq
+        b, a = butter(order, [low, high], btype='bandpass')
+        return b, a
     b, a = butter_bandpass(lowcut, highcut, fs, order=order)
     y = signal.filtfilt(b, a, data)
     return y
 
-def get_VNA_starts_and_ends(VNA, insp_starts, insp_ends):
-    VNA = sg(VNA, 41, 3)
-    VNA_reduced = deepcopy(VNA)
-    min_val = np.quantile(VNA, 0.1)
+def get_VNA_ends(VNA, insp_starts, insp_ends):
+    VNA_filt = sg(VNA, 101, 3)
+    VNA_reduced = deepcopy(VNA_filt)
+    thresh = np.quantile(VNA_filt, 0.15)
 
     if insp_starts[0] > insp_ends[0]:
         insp_ends = insp_ends[1:]
 
-    for i in range(np.minimum(len(insp_starts), len(insp_ends))):
-        VNA_reduced[insp_starts[i] : insp_ends[i]] = min_val
+    length = np.minimum(len(insp_ends), len(insp_starts))
+    insp_ends = insp_ends[:length]
+    insp_starts = insp_starts[:length]
 
-    VNA_starts, VNA_ends = get_onsets_and_ends(VNA_reduced, model='l2', pen=100, min_len=100)
-    return VNA_starts, VNA_ends
+    for i in range(np.minimum(len(insp_starts), len(insp_ends))):
+        VNA_reduced[insp_starts[i]: insp_ends[i]] = thresh
+
+
+    VNA_ends = []
+    for i in range(len(insp_starts)-1):
+        s = VNA_reduced[insp_starts[i]:insp_starts[i+1]]
+        inds_below_th = np.where(s < thresh)[0]
+        if len(inds_below_th) != 0:
+            VNA_ends.append(deepcopy(inds_below_th[0]) + insp_starts[i])
+        else:
+            VNA_ends.append(np.argmin(s) + insp_starts[i])
+
+    # from matplotlib import pyplot as plt
+    # fig11 = plt.figure()
+    # plt.plot(VNA, color='k')
+    # for i in range(len(VNA_ends)):
+    #     plt.axvline(VNA_ends[i], color='r')
+    # plt.show(fig11)
+
+    return VNA_ends
 
 
 def get_insp_starts_and_ends(signal):
