@@ -3,16 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="eebbf286-5f0d-44eb-8bff-357892bdab06" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/rCPG_swCPG.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/rCPG_swCPG.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/experimental_data_processing/.ipynb_checkpoints/Processing and plots-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/experimental_data_processing/.ipynb_checkpoints/Processing and plots-checkpoint.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/experimental_data_processing/Processing and plots.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/experimental_data_processing/Processing and plots.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/num_experiments/features_long_impulse.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/num_experiments/features_long_impulse.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/num_experiments/features_short_impulse.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/num_experiments/features_short_impulse.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/plots/plot_prc_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/plots/plot_prc_params.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/plots/plot_short_stim_traces_numerical.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/plots/plot_short_stim_traces_numerical.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/plots/plot_shorts_stim_traces.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/plots/plot_shorts_stim_traces.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/plot_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/plot_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/sp_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/sp_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/num_experiments/run_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/num_experiments/run_model.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,8 +37,8 @@
       <recent name="$PROJECT_DIR$/src/experimental_data_processing" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.features_short_impulse">
-    <configuration name="features_short_impulse" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.run_model">
+    <configuration name="params_gen" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="rCPG_swCPG" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -59,28 +50,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/num_experiments/features_short_impulse.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="plot_short_stim_traces_numerical" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="rCPG_swCPG" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/plots" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/plots/plot_short_stim_traces_numerical.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/num_experiments/params_gen.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -110,7 +80,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="plot_utils" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="prc_extraction" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="rCPG_swCPG" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -118,11 +88,32 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/utils" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/experimental_data_processing" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/utils/plot_utils.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/experimental_data_processing/prc_extraction.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="run_model" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="rCPG_swCPG" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/num_experiments" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/num_experiments/run_model.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -154,11 +145,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.features_short_impulse" />
+        <item itemvalue="Python.run_model" />
+        <item itemvalue="Python.params_gen" />
         <item itemvalue="Python.plot_shorts_stim_traces" />
-        <item itemvalue="Python.plot_utils" />
         <item itemvalue="Python.sp_utils" />
-        <item itemvalue="Python.plot_short_stim_traces_numerical" />
+        <item itemvalue="Python.prc_extraction" />
       </list>
     </recent_temporary>
   </component>
@@ -201,46 +192,50 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state x="552" y="208" width="1047" height="739" key="#xdebugger.evaluate" timestamp="1585634069368">
+    <state x="513" y="561" width="1121" height="519" key="#xdebugger.evaluate" timestamp="1585797013713">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state x="552" y="208" width="1047" height="739" key="#xdebugger.evaluate/70.27.1850.1053@70.27.1850.1053" timestamp="1585634069368" />
-    <state width="1827" height="274" key="GridCell.Tab.0.bottom" timestamp="1585634517757">
+    <state x="513" y="561" width="1121" height="519" key="#xdebugger.evaluate/70.27.1850.1053@70.27.1850.1053" timestamp="1585797013713" />
+    <state width="1848" height="480" key="DebuggerActiveHint" timestamp="1585709268720">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="274" key="GridCell.Tab.0.bottom/70.27.1850.1053@70.27.1850.1053" timestamp="1585634517757" />
-    <state width="1827" height="274" key="GridCell.Tab.0.center" timestamp="1585634517757">
+    <state width="1848" height="480" key="DebuggerActiveHint/70.27.1850.1053@70.27.1850.1053" timestamp="1585709268720" />
+    <state width="1827" height="274" key="GridCell.Tab.0.bottom" timestamp="1585878743581">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="274" key="GridCell.Tab.0.center/70.27.1850.1053@70.27.1850.1053" timestamp="1585634517757" />
-    <state width="1827" height="274" key="GridCell.Tab.0.left" timestamp="1585634517757">
+    <state width="1827" height="274" key="GridCell.Tab.0.bottom/70.27.1850.1053@70.27.1850.1053" timestamp="1585878743581" />
+    <state width="1827" height="274" key="GridCell.Tab.0.center" timestamp="1585878743580">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="274" key="GridCell.Tab.0.left/70.27.1850.1053@70.27.1850.1053" timestamp="1585634517757" />
-    <state width="1827" height="274" key="GridCell.Tab.0.right" timestamp="1585634517757">
+    <state width="1827" height="274" key="GridCell.Tab.0.center/70.27.1850.1053@70.27.1850.1053" timestamp="1585878743580" />
+    <state width="1827" height="274" key="GridCell.Tab.0.left" timestamp="1585878743580">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="274" key="GridCell.Tab.0.right/70.27.1850.1053@70.27.1850.1053" timestamp="1585634517757" />
-    <state width="1827" height="340" key="GridCell.Tab.1.bottom" timestamp="1585634085136">
+    <state width="1827" height="274" key="GridCell.Tab.0.left/70.27.1850.1053@70.27.1850.1053" timestamp="1585878743580" />
+    <state width="1827" height="274" key="GridCell.Tab.0.right" timestamp="1585878743581">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="340" key="GridCell.Tab.1.bottom/70.27.1850.1053@70.27.1850.1053" timestamp="1585634085136" />
-    <state width="1827" height="340" key="GridCell.Tab.1.center" timestamp="1585634085131">
+    <state width="1827" height="274" key="GridCell.Tab.0.right/70.27.1850.1053@70.27.1850.1053" timestamp="1585878743581" />
+    <state width="1827" height="340" key="GridCell.Tab.1.bottom" timestamp="1585806016667">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="340" key="GridCell.Tab.1.center/70.27.1850.1053@70.27.1850.1053" timestamp="1585634085131" />
-    <state width="1827" height="340" key="GridCell.Tab.1.left" timestamp="1585634085130">
+    <state width="1827" height="340" key="GridCell.Tab.1.bottom/70.27.1850.1053@70.27.1850.1053" timestamp="1585806016667" />
+    <state width="1827" height="340" key="GridCell.Tab.1.center" timestamp="1585806016666">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="340" key="GridCell.Tab.1.left/70.27.1850.1053@70.27.1850.1053" timestamp="1585634085130" />
-    <state width="1827" height="340" key="GridCell.Tab.1.right" timestamp="1585634085131">
+    <state width="1827" height="340" key="GridCell.Tab.1.center/70.27.1850.1053@70.27.1850.1053" timestamp="1585806016666" />
+    <state width="1827" height="340" key="GridCell.Tab.1.left" timestamp="1585806016666">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="340" key="GridCell.Tab.1.right/70.27.1850.1053@70.27.1850.1053" timestamp="1585634085131" />
-    <state width="925" height="527" key="XDebugger.FullValuePopup" timestamp="1585316637949">
+    <state width="1827" height="340" key="GridCell.Tab.1.left/70.27.1850.1053@70.27.1850.1053" timestamp="1585806016666" />
+    <state width="1827" height="340" key="GridCell.Tab.1.right" timestamp="1585806016666">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="925" height="527" key="XDebugger.FullValuePopup/70.27.1850.1053@70.27.1850.1053" timestamp="1585316637949" />
+    <state width="1827" height="340" key="GridCell.Tab.1.right/70.27.1850.1053@70.27.1850.1053" timestamp="1585806016666" />
+    <state width="925" height="527" key="XDebugger.FullValuePopup" timestamp="1585721883592">
+      <screen x="70" y="27" width="1850" height="1053" />
+    </state>
+    <state width="925" height="527" key="XDebugger.FullValuePopup/70.27.1850.1053@70.27.1850.1053" timestamp="1585721883592" />
     <state x="651" y="381" key="com.intellij.ide.util.TipDialog" timestamp="1579653072736">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
@@ -285,14 +280,19 @@
           <option name="timeStamp" value="42" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/utils/plot_utils.py</url>
-          <line>81</line>
-          <option name="timeStamp" value="43" />
+          <url>file://$PROJECT_DIR$/src/utils/sp_utils.py</url>
+          <line>67</line>
+          <option name="timeStamp" value="49" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/utils/plot_utils.py</url>
-          <line>80</line>
-          <option name="timeStamp" value="48" />
+          <url>file://$PROJECT_DIR$/src/experimental_data_processing/prc_extraction.py</url>
+          <line>51</line>
+          <option name="timeStamp" value="50" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/experimental_data_processing/process_recordings.py</url>
+          <line>68</line>
+          <option name="timeStamp" value="51" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
