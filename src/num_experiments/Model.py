@@ -66,6 +66,11 @@ class Network():
     def tau_NaP(self, v, tau_NaP_max):
         return tau_NaP_max / np.cosh((v + 48.0) / 12.0)
 
+    def r_inf(self, v):
+        v_half = -35
+        k_half = 6
+        return 1.0 / (1.0 + np.exp(-(v - v_half) / k_half))
+
     def I_NaP(self, v, h_NaP):
         res = np.zeros_like(v)
         c = self.g_NaP != 0.0
@@ -89,6 +94,24 @@ class Network():
         c = self.g_ad != 0.0
         res[c] = self.g_ad[c] * m_ad[c] * (v[c] - self.E_ad[c])
         return res
+
+
+    #advanced synaptic currents
+
+    # def I_SynE(self, v):
+    #     tonic_drives_all = np.sum(self.drives, axis=0)
+    #     I_tonicE = self.g_synE * (v - self.E_synE) * tonic_drives_all
+    #     I_synE = I_tonicE + self.g_synE * (v - self.E_synE) *
+    #     return I_synE
+    #
+    # def I_SynI(self, v):
+    #     I_synI = self.g_synI * (v - self.E_synI) * \
+    #              (self.firing_rate(v, self.V_half, self.slope).reshape(1, self.N) @  self.W_neg).flatten()
+    #     return I_synI
+
+    # def rhs_r(self, v):
+    #     res = (self.r_inf(v) - self.r) /
+    #     return res
 
     def I_SynE(self, v):
         tonic_drives_all = np.sum(self.drives, axis=0)

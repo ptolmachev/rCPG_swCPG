@@ -1,11 +1,17 @@
 from copy import deepcopy
 from scipy.signal import savgol_filter as sg
 from sklearn.ensemble import IsolationForest as IF
-from num_experiments.params_gen import *
+# from num_experiments.params_gen import *
 from scipy import signal
 from scipy.signal import butter
 import ruptures as rpt
 import peakutils
+import numpy as np
+
+
+def scale(s):
+    return (s - np.min(s)) / (np.max(s) - np.min(s))
+
 
 def detect_change_points(signal, model, pen, min_len):
     return rpt.Pelt(model=model, min_size=min_len).fit_predict(signal, pen)
@@ -75,7 +81,7 @@ def get_insp_starts_and_ends(signal):
     signal_change = np.diff(signal_binary)
     starts_inds = find_relevant_peaks(signal_change, 0.5, min_dist = 100)
     ends_inds = find_relevant_peaks(-signal_change, 0.5, min_dist = 100)
-    return starts_inds,ends_inds
+    return starts_inds, ends_inds
 
 def get_period(signal):
     # for i in range(len(signals)):
@@ -143,13 +149,13 @@ def get_timings(insp_begins, insp_ends, stim, len_chunk):
     timings['t_end'] = {}
     ind_insp_0 = np.searchsorted(insp_begins, stim) - 1
     for i in range(ind_insp_0+1):
-        timings['t_start'][-i] = insp_begins[ind_insp_0-i]
-        timings['t_end'][-i] = insp_ends[np.searchsorted(insp_ends, timings['t_start'][-i])]
+        timings['t_start'][str(-i)] = insp_begins[ind_insp_0-i]
+        timings['t_end'][str(-i)] = insp_ends[np.searchsorted(insp_ends, timings['t_start'][str(-i)])]
 
     for i in range( np.minimum(len(insp_begins), len(insp_ends)) - ind_insp_0):
-        timings['t_start'][i] = insp_begins[ind_insp_0+i]
-        ind = np.searchsorted(insp_ends, timings['t_start'][i])
-        timings['t_end'][i] = insp_ends[ind] if ind != len(insp_ends) else len_chunk - 1
+        timings['t_start'][str(i)] = insp_begins[ind_insp_0+i]
+        ind = np.searchsorted(insp_ends, timings['t_start'][str(i)])
+        timings['t_end'][str(i)] = insp_ends[ind] if ind != len(insp_ends) else len_chunk - 1
     return timings
 
 def get_onsets_and_ends(signal, model, pen, min_len):
@@ -162,9 +168,10 @@ def get_onsets_and_ends(signal, model, pen, min_len):
     for t in breakpoints:
         ind_window_start = np.maximum(0, t - window_len)
         ind_window_end = np.minimum(len(signal) - 1, t + window_len)
-        fall = np.mean(signal[ind_window_start : t]) > np.mean(signal[t : ind_window_end])
-        if t == 0 or t == len(signal) - 1:
+        if t == 0 or t == len(signal):
             pass
+        else:
+            fall = np.mean(signal[ind_window_start: t]) > np.mean(signal[t: ind_window_end])
         if fall:
             signal_ends.append(t)
         else:
