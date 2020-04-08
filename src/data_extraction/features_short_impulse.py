@@ -154,8 +154,8 @@ if __name__ == '__main__':
     params["stoptime"] = 65000
     params["num_shifts"] = 30
     params["settle_time"] = 25000
-    amps = [150, 300]
-    stim_durations = [500, 1000]
+    amps = [150]
+    stim_durations = [1000]
     data_path = str(get_project_root()) + "/data"
     img_path = str(get_project_root()) + "/img"
     save_extracted_data_to = data_path + '/' + "num_exp_results/short_stim/"
@@ -165,6 +165,6 @@ if __name__ == '__main__':
             params["stim_duration"] = stim_duration
             print(amp, stim_duration)
             folder_signals = f"{data_path}/num_exp_runs/short_stim/num_exp_short_stim_{amp}_{stim_duration}"
-            create_dir_if_not_exist(folder_signals)
-            run_simulations(params, folder_signals)
-            # extract_data(signals_path=folder_signals, save_to=save_extracted_data_to)
+            # create_dir_if_not_exist(folder_signals)
+            # run_simulations(params, folder_signals)
+            extract_data(signals_path=folder_signals, save_to=save_extracted_data_to)

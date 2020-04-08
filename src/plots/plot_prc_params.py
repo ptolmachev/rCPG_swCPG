@@ -206,7 +206,7 @@ if __name__ == '__main__':
     # plot_params["y_lim_T1divT0"] = [0, 2]
     # plot_feature_from_num_experiment(amp, duration, plot_params)
 
-    amp = 300
+    amp = 150
     duration = 1000
     plot_params = {}
     plot_params["fit_poly"] = True
