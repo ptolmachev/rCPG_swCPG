@@ -24,7 +24,7 @@ def generate_params(inh_NTS, inh_KF):
     b[2,14] = 0.25 # PostI -> M_VN
     b[4,13] = 0.6 # RampI -> M_HN
     b[4,13] = 0.5 # RampI -> M_PN
-    b[4,14] = 0.3 # RampI -> M_VN
+    b[4,14] = 0.6 # RampI -> M_VN
     b[5,2] = 0.4 # Relay -> PostI
     b[5,6] = 0.84 # Relay -> Sw1
     b[5,7] = 0.77 # Relay -> Sw2
@@ -82,10 +82,10 @@ def generate_params(inh_NTS, inh_KF):
 
     c = np.zeros((num_drives, num_nrns))
     # other
-    c[0,0] = 0.265 #To PreI
+    c[0,0] = 0.262 #To PreI
     c[0,1] = 0.38  #To EarlyI
-    c[0,2] = 0.03  #To PostI
-    c[0,3] = 0.39  #To AugE
+    c[0,2] = 0.032  #To PostI
+    c[0,3] = 0.385  #To AugE
     c[0,4] = 0.53  #To RampI
     c[0,6] = 0.63 #To Sw1
     c[0,7] = 0.74  #To Sw2
