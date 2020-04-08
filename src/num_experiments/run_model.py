@@ -40,8 +40,8 @@ def run_model(dt, t_start, t_end, amp, stoptime):
     PreI.g_NaP = 5.0
     PreI.g_ad = HN.g_ad = PN.g_ad = VN.g_ad = 0.0
     HN.g_NaP = PN.g_NaP = VN.g_NaP = 0.0
-    Relay.tau_ad = 8000.0
-    PostI.tau_ad = 8000.0
+    Relay.tau_ad = 15000.0
+    PostI.tau_ad = 10000.0
 
     # populations dictionary
     populations = dict()
@@ -95,7 +95,7 @@ if __name__ == '__main__':
     stim_durations = [500, 10000]
     amps = [150, 300]
     dt = 0.75
-    t_starts = [22500, 24000, 25500]
+    t_starts = [22500, 24000, 25500, 27000, 28500]
     stoptime = 60000
     for inh_NTS, inh_KF in [(1, 1), (1, 2), (2, 1)]:
         #long stim
