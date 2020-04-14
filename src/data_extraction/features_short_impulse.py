@@ -152,10 +152,10 @@ if __name__ == '__main__':
     params = {}
     params["dt"] = 0.75
     params["stoptime"] = 65000
-    params["num_shifts"] = 30
+    params["num_shifts"] = 50
     params["settle_time"] = 25000
     amps = [150]
-    stim_durations = [1000]
+    stim_durations = [500]
     data_path = str(get_project_root()) + "/data"
     img_path = str(get_project_root()) + "/img"
     save_extracted_data_to = data_path + '/' + "num_exp_results/short_stim/"

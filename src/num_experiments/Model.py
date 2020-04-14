@@ -15,25 +15,29 @@ class NeuralPopulation():
             exec(f"self.{p_name} = params[\"{p_name}\"]")
 
 class Network():
-    def __init__(self, populations, synaptic_weights, drives, dt, history_len):
+    def __init__(self, populations, fast_synaptic_weights, slow_synaptic_weights, drives, dt, history_len):
         # should be a dictionary
         self.history_len = history_len
         self.populations = populations
         self.N = len(self.populations)
-        self.W = synaptic_weights
+        self.W = fast_synaptic_weights
         self.W_neg = np.maximum(-self.W, 0)
         self.W_pos = np.maximum(self.W, 0)
+        self.W_neg_slow = np.maximum(-slow_synaptic_weights, 0)
+        self.W_pos_slow = np.maximum(slow_synaptic_weights, 0)
+
         self.drives = drives
         self.dt = dt
         self.v = np.ones(self.N) #-100*np.random.rand(self.N)
         self.h_NaP = 0.4 + 0.0 * np.random.rand(self.N)
         self.m_ad = 0.4 + 0.0 * np.random.rand(self.N)
+        self.r = 0.0 * np.random.rand(self.N)
 
         self.input_cur = np.zeros(self.N)
         self.names = []
-        self.C, self.g_NaP, self.g_K, self.g_ad, self.g_l, self.g_synE, self.g_synI, self.E_Na, self.E_K, self.E_l,\
-        self.E_ad, self.E_synE, self.E_synI, self.V_half, self.slope, self.K_ad, self.tau_ad, self.tau_NaP_max = \
-        [np.zeros(self.N) for i in range(18)]
+        self.C, self.g_NaP, self.g_K, self.g_ad, self.g_l, self.g_synE, self.g_synI, self.g_synE_slow, self.E_Na, self.E_K, self.E_l,\
+        self.E_ad, self.E_synE, self.E_synI, self.V_half, self.slope, self.K_ad, self.tau_ad, self.tau_NaP_max, self.tau_synE_slow = \
+        [np.zeros(self.N) for i in range(20)]
         self.v_history = deque(maxlen=self.history_len)
         self.t = deque(maxlen=self.history_len)
         self.v_history.append(self.v)
@@ -42,8 +46,8 @@ class Network():
         #load neural parameters into the internal variables: "self.C[i] = population[i].C"
         for i, (name, population) in enumerate(populations.items()):
             self.names.append(name)
-            params_list = ["C", "g_NaP", "g_K", "g_ad", "g_l", "g_synE", "g_synI", "E_Na", "E_K", "E_l", \
-                        "E_ad", "E_synE", "E_synI", "V_half", "slope", "K_ad", "tau_ad", "tau_NaP_max"]
+            params_list = ["C", "g_NaP", "g_K", "g_ad", "g_l", "g_synE", "g_synI", "g_synE_slow", "E_Na", "E_K", "E_l",
+                        "E_ad", "E_synE", "E_synI", "V_half", "slope", "K_ad", "tau_ad", "tau_NaP_max", "tau_synE_slow"]
             for p_name in params_list:
                 exec(f'self.{p_name}[i] = population.{p_name}')
 
@@ -63,13 +67,12 @@ class Network():
     def h_NaP_inf(self, v):
         return 1.0 / (1.0 + np.exp((v + 48.0) / 6.0))
 
+    def r_inf(self, v):
+        inputs = (self.firing_rate(v, self.V_half, self.slope).reshape(1, self.N) @ self.W_pos_slow).flatten()
+        return inputs
+
     def tau_NaP(self, v, tau_NaP_max):
         return tau_NaP_max / np.cosh((v + 48.0) / 12.0)
-
-    def r_inf(self, v):
-        v_half = -35
-        k_half = 6
-        return 1.0 / (1.0 + np.exp(-(v - v_half) / k_half))
 
     def I_NaP(self, v, h_NaP):
         res = np.zeros_like(v)
@@ -95,30 +98,16 @@ class Network():
         res[c] = self.g_ad[c] * m_ad[c] * (v[c] - self.E_ad[c])
         return res
 
-
-    #advanced synaptic currents
-
-    # def I_SynE(self, v):
-    #     tonic_drives_all = np.sum(self.drives, axis=0)
-    #     I_tonicE = self.g_synE * (v - self.E_synE) * tonic_drives_all
-    #     I_synE = I_tonicE + self.g_synE * (v - self.E_synE) *
-    #     return I_synE
-    #
-    # def I_SynI(self, v):
-    #     I_synI = self.g_synI * (v - self.E_synI) * \
-    #              (self.firing_rate(v, self.V_half, self.slope).reshape(1, self.N) @  self.W_neg).flatten()
-    #     return I_synI
-
-    # def rhs_r(self, v):
-    #     res = (self.r_inf(v) - self.r) /
-    #     return res
-
     def I_SynE(self, v):
         tonic_drives_all = np.sum(self.drives, axis=0)
         I_tonicE = self.g_synE * (v - self.E_synE) * tonic_drives_all
         I_synE = I_tonicE + self.g_synE * (v - self.E_synE) * \
                  (self.firing_rate(v, self.V_half, self.slope).reshape(1, self.N) @  self.W_pos).flatten()
         return I_synE
+
+    def I_SynE_slow(self, v):
+        I_synE_slow = self.g_synE_slow * self.r * (v - self.E_synE)
+        return I_synE_slow
 
     def I_SynI(self, v):
         I_synI = self.g_synI * (v - self.E_synI) * \
@@ -137,36 +126,48 @@ class Network():
         res[c] = (self.K_ad[c] * self.firing_rate(v[c], self.V_half[c], self.slope[c]) - m_ad[c]) / self.tau_ad[c]
         return res
 
+    def rhs_r(self, v, r):
+        res = np.zeros_like(r)
+        c = self.g_synE_slow != 0.0
+        res[c] = (self.r_inf(self.v)[c] - r[c]) / self.tau_synE_slow[c]
+        return res
+
     def rhs_v(self, v, m_ad, h_NaP):
         return (1.0 / self.C) * \
                (- self.I_NaP(v, h_NaP) - self.I_adaptation(v, m_ad) - self.I_leakage(v)
-                - self.I_SynE(v) - self.I_SynI(v) + self.input_cur)
+                - self.I_SynE(v) - self.I_SynI(v) - self.I_SynE_slow(v) + self.input_cur)
 
     def step(self):
         #Runge-Kutta 4th order update
         k_v1 = self.dt * self.rhs_v(self.v, self.m_ad, self.h_NaP)
         k_m1 = self.dt * self.rhs_m_ad(self.v, self.m_ad)
         k_h1 = self.dt * self.rhs_h_NaP(self.v, self.h_NaP)
+        k_r1 = self.dt * self.rhs_r(self.v, self.r)
 
         k_v2 = self.dt * self.rhs_v(self.v + k_v1 / 2, self.m_ad + k_m1 / 2, self.h_NaP + k_h1 / 2)
         k_m2 = self.dt * self.rhs_m_ad(self.v + k_v1 / 2, self.m_ad + k_m1 / 2)
         k_h2 = self.dt * self.rhs_h_NaP(self.v + k_v1 / 2, self.h_NaP + k_h1 / 2)
+        k_r2 = self.dt * self.rhs_r(self.v + k_v1 / 2, self.r + k_r1 / 2)
 
         k_v3 = self.dt * self.rhs_v(self.v + k_v2 / 2, self.m_ad + k_m2 / 2, self.h_NaP + k_h2 / 2)
         k_m3 = self.dt * self.rhs_m_ad(self.v + k_v2 / 2, self.m_ad + k_m2 / 2)
         k_h3 = self.dt * self.rhs_h_NaP(self.v + k_v2 / 2, self.h_NaP + k_h2 / 2)
+        k_r3 = self.dt * self.rhs_r(self.v + k_v2 / 2, self.r + k_r2 / 2)
 
         k_v4 = self.dt * self.rhs_v(self.v + k_v3, self.m_ad + k_m3, self.h_NaP + k_h3)
         k_m4 = self.dt * self.rhs_m_ad(self.v + k_v3, self.m_ad + k_m3)
         k_h4 = self.dt * self.rhs_h_NaP(self.v + k_v3, self.h_NaP + k_h3)
+        k_r4 = self.dt * self.rhs_r(self.v + k_v3, self.r + k_r3)
 
         new_v = self.v + 1.0 / 6.0 * (k_v1 + 2 * k_v2 + 2 * k_v3 + k_v4)
         new_m_ad = self.m_ad + 1.0 / 6.0 * (k_m1 + 2 * k_m2 + 2 * k_m3 + k_m4)
         new_h_NaP = self.h_NaP + 1.0 / 6.0 * (k_h1 + 2 * k_h2 + 2 * k_h3 + k_h4)
+        new_r = self.r + 1.0 / 6.0 * (k_r1 + 2 * k_r2 + 2 * k_r3 + k_r4)
 
         self.v = new_v
         self.m_ad = new_m_ad
         self.h_NaP = new_h_NaP
+        self.r = new_r
         return None
 
     def run(self, T_steps):
@@ -209,6 +210,7 @@ if __name__ == '__main__':
     'g_l' : 2.8,
     'g_synE' : 10,
     'g_synI' : 60,
+    'g_synE_slow' : 0,
     'E_Na' : 50,
     'E_K' : -85,
     'E_ad' : -85,
@@ -219,7 +221,8 @@ if __name__ == '__main__':
     'slope' : 4,
     'tau_ad' : 2000,
     'K_ad' : 0.9,
-    'tau_NaP_max' : 6000}
+    'tau_NaP_max' : 6000,
+    'tau_synE_slow' : 500}
 
     population_names = ['PreI',  # 0
                         'EarlyI',  # 1
@@ -237,7 +240,8 @@ if __name__ == '__main__':
                         "PN",  # 13
                         "VN",  # 14
                         "KF_inh",  # 15
-                        "NTS_inh"]  # 16
+                        "NTS_inh", #16
+                        "SI"]  # 17
 
     #create populations
     for name in population_names:
@@ -245,13 +249,11 @@ if __name__ == '__main__':
 
     #modifications:
     PreI.g_NaP = 5.0
-    PreI.g_ad = 0.0
-    HN.g_NaP = 0.0
-    HN.g_ad = 0.0
-    PN.g_NaP = 0.0
-    PN.g_ad = 0.0
-    VN.g_NaP = 0.0
-    VN.g_ad = 0.0
+    PreI.g_ad = HN.g_ad = PN.g_ad = VN.g_ad = SI.g_ad =  0.0
+    HN.g_NaP = PN.g_NaP = VN.g_NaP = SI.g_NaP  = 0.0
+    Relay.tau_ad = 10000.0
+    PostI.tau_ad = 10000.0
+    Relay.g_synE_slow = 30.0
 
     # populations dictionary
     populations = dict()
@@ -259,21 +261,23 @@ if __name__ == '__main__':
         populations[name] = eval(name)
 
     inh_NTS = 1
-    inh_KF = 2
+    inh_KF = 1
     generate_params(inh_NTS, inh_KF)
     file = open("../../data/rCPG_swCPG.json", "rb+")
     params = json.load(file)
     W = np.array(params["b"])
+    W_slow = np.zeros((len(population_names), len(population_names)))
+    W_slow[17, 5] = 0.5
     drives = np.array(params["c"])
     dt = 0.5
-    net = Network(populations, W, drives, dt, history_len=int(40000/dt))
+    net = Network(populations, W, W_slow, drives, dt, history_len=int(40000/dt))
     # get rid of all transients
     net.run(int(15000/dt)) # runs for 15 seconds
     # run for 15 more seconds
     net.run(int(15000/dt))
     #set input to Relay neurons
     inp = np.zeros(net.N)
-    inp[5] = 370
+    inp[17] = 370
     net.set_input_current(inp)
     # run for 10 more seconds
     net.run(int(10000/dt))
@@ -282,7 +286,12 @@ if __name__ == '__main__':
     net.run(int(15000/dt))
     # create_dir_if_not_exist("../img/")
     # net.plot(show = True, save_to = f"../img/Model_10_02_2020/{get_postfix(inh_NTS, inh_KF)}.png")
-
+    v = np.array(net.v_history)
+    fr = net.firing_rate(v, v_half=-30, slope=4)
+    plt.plot(fr[:, 5], color='b')
+    plt.plot(fr[:, 17], color='r')
+    plt.plot(fr[:, 2], color='green')
+    plt.show(block=True)
 
 
 
