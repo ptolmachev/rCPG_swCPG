@@ -6,7 +6,7 @@ from utils.gen_utils import get_project_root
 
 def generate_params(inh_NTS, inh_KF):
     params = dict()
-    num_nrns = 17
+    num_nrns = 18
     num_drives = 3
     x = [0.1, 1.0, 10][inh_NTS] # Disinh-inh of NTS
     y = [0.1, 1.0, 10][inh_KF] # Disinh-inh of KF
@@ -18,6 +18,7 @@ def generate_params(inh_NTS, inh_KF):
     # 15 - NTS_inh
     b = np.zeros((num_nrns, num_nrns))
     # positive weights
+    # b[17,5] = 0.0  #SI -> Relay
     b[0,1] = 0.3  #PreI -> EarlyI # Rubins (2009): (0.4)    Rubins (2011): (0.35)
     b[0,4] = 0.6  #PreI -> RampI
     b[0,12] = 0.4 # PreI -> M_HN
@@ -25,7 +26,8 @@ def generate_params(inh_NTS, inh_KF):
     b[4,13] = 0.6 # RampI -> M_HN
     b[4,13] = 0.5 # RampI -> M_PN
     b[4,14] = 0.6 # RampI -> M_VN
-    b[5,2] = 0.4 # Relay -> PostI
+    # b[5,2] = 0.4 # Relay -> PostI true
+    b[5,2] = 0.3 # Relay -> PostI
     b[5,6] = 0.84 # Relay -> Sw1
     b[5,7] = 0.77 # Relay -> Sw2
     b[5,8] = 0.65 # Relay -> Sw3

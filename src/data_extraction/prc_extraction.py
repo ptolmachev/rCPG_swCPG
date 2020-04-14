@@ -8,43 +8,139 @@ import numpy as np
 from utils.sp_utils import butter_lowpass_filter, get_onsets_and_ends, get_timings, get_insp_starts_and_ends, scale
 from utils.plot_utils import plot_power_spectrum
 from copy import deepcopy
-from scipy.optimize import minimize
+from scipy.optimize import minimize, curve_fit, leastsq
+from scipy.integrate import quad
+import sympy
 
 
-def get_phase_shift(signal, dt, stim_start, stim_end, transient_offset):
-    # if signal_source == 'simulations':
-    #     pass
-    # if signal_source == 'experiments':
-    #     pass
+def function_to_fit(x, th, order):
+    res = x[0] * np.ones_like(th)
+    for i in range(order):
+        res += x[1 + i] * np.cos((i+1) * th) + x[1 + i + order] * np.sin((i+1) * th)
+    return res
+
+def constr_fun(x):
+    return x[0] - 1/(2*np.pi)
+
+def func_to_minimise(x, th, y, order):
+    return np.sum((function_to_fit(x, th, order) - y) ** 2)
+
+def fit_sigma(th, y, order):
+    cons = {'type': 'eq', 'fun': constr_fun}
+    res = minimize(func_to_minimise, x0=np.random.rand(2*order + 1), args=(th, y, order), constraints=cons)
+    if res.success == False:
+        print("The fit wasn't successful")
+        return None
+    else:
+        return res.x
+
+def get_protophase_to_phase_mapping(protophase, omega):
+    # protophase_dot = np.diff(protophase)
+    # x = (protophase)[1:] % (2 * np.pi)
+    # y = (1 / protophase_dot) * omega
+    n_bins = 200
+    transient_inds = 100
+    res = np.histogram(protophase[transient_inds:] % (2 * np.pi), bins=n_bins, range=[0, 2 * np.pi], density=True)
+    th = (res[1] - 2 * np.pi / (n_bins * 2))[1:]
+    y = res[0]
+    # to neglect transients
+    # th = th[150:-150]
+    # y = y[150:-150]
+    # Do the parameter fitting
+    order = 25
+    coeff = fit_sigma(th, y, order)
+
+    # figure = plt.figure(figsize=(20, 10))
+    # plt.scatter(th, y, s=4)
+    # plt.plot(np.sort(th), function_to_fit(coeff, np.sort(th), order=order), linewidth=3, color='r')
+    # plt.grid(True)
+    # # plt.ylim([-1, 5])
+    # plt.show(block = True)
+
+    if not (coeff is None):
+        z = sympy.Symbol('z')
+        expr = coeff[0]* 2*np.pi
+        for i in range(order):
+            expr += (coeff[i + 1] * sympy.cos((i + 1) * z) + coeff[i + 1 + order] * sympy.sin((i + 1) * z)) * 2*np.pi
+        integrated_sigma = sympy.lambdify(z, sympy.integrate(expr, (z, 0, z)), 'numpy')
+        return integrated_sigma
+    else:
+        return None
+
+def get_phase_shift(signl, dt, stim_start, stim_end, transient_offset):
     fs = 1000/dt #in Hz
-    sig = savgol_filter(signal, 71, 3)
-    sig = butter_lowpass_filter(sig, 1, fs, order=2)
-    analytic_signal = hilbert(sig)
-    amplitude_envelope = np.abs(analytic_signal)
-    offset = np.mean(analytic_signal[:stim_start])
+    signl_filtered = butter_lowpass_filter(signl, 0.7, fs, order=2)
+
+    # first, figure out the frequency of oscillations (in cycles per index)
+    # _b - before the stimulus, _a - after
+    signl_b = signl_filtered[:stim_start]
+    analytic_signal_b = hilbert(signl_b)
+    offset = np.mean(analytic_signal_b)
+    shifted_analytic_signal_b = analytic_signal_b - offset
+    protophase = np.unwrap(np.angle(hilbert(signl_filtered) - offset))
+    protophase_b = protophase[: stim_start ]
+    protophase_a = protophase[stim_start + transient_offset:]
+
+    # original phase is omega * t + c
+    def line(x, t, y):
+        omega, c = x
+        return np.sum((omega * t + c - y) ** 2)
+
+    omega, c = minimize(line, x0=np.random.rand(2), args=(np.arange(len(protophase_b)), protophase_b)).x
+    #second, define the mapping from protophase to phase
+    protophase_to_phase = get_protophase_to_phase_mapping(protophase_b, omega)
+    if protophase_to_phase is None:
+        return np.nan
+
+    # transient_inds = 100
+    # fig = plt.figure(figsize=(20, 10))
+    # res = np.histogram(protophase_b[transient_inds:] % (2 * np.pi), bins=100, range=[0, 2 * np.pi], density=True)
+    # plt.plot(res[1][:-1], res[0], linewidth=2, label="histogram protophase")
+    # res = np.histogram(protophase_to_phase(protophase_b[transient_inds:]) % (2 * np.pi), bins=100, range=[0, 2 * np.pi], density=True)
+    # plt.plot(res[1][:-1], res[0], linewidth=2, label="histogram phase")
+    # plt.grid(True)
+    # plt.xlabel("Phase", fontsize=24)
+    # plt.ylabel("Density", fontsize=24)
+    # plt.legend(fontsize=24)
+    # plt.show(block=True)
+
+    analytic_signal = hilbert(signl_filtered)
     shifted_analytic_signal = analytic_signal - offset
-    instantaneous_phase = np.unwrap(np.angle(shifted_analytic_signal))
-    instantaneous_phase_before = instantaneous_phase[:stim_start]
-    instantaneous_phase_after = instantaneous_phase[stim_end + transient_offset:]
-    amplitude_envelope_normalised = np.max(instantaneous_phase) * scale(amplitude_envelope)
+    phase = protophase_to_phase(protophase)
+    # having the phase, find the phase shift
+    transient_offset = 300
+    phase_b = phase[:stim_start]
+    t_b = np.arange(len(phase_b))
+    phase_a = phase[stim_start + transient_offset:]
+    t_a = np.arange(len(phase))[stim_start + transient_offset:]
 
-    t_before = np.arange(len(instantaneous_phase_before))
-    t_full = np.arange(len(instantaneous_phase))
-    t_after = np.arange(len(instantaneous_phase))[stim_end + transient_offset:]
+    def constr_fun(x):
+        return x[0] - omega
 
-    # original phase is a * t + c (c=0)
-    def fun_minimize1(a, t, y):
-        return np.sum((a * t - y) ** 2)
-    a = minimize(fun_minimize1, x0=np.random.rand(), args=(t_before, instantaneous_phase_before)).x
-    # phase after all transients: a * x + b
-    def fun_minimize2(b, a, t, y):
-        return np.sum((a * t + b - y) ** 2)
-    b = minimize(fun_minimize2, x0=np.random.rand(), args=(a, t_after, instantaneous_phase_after)).x[0]
-    # old_phase = ax + c
-    # new_phase = ax + b
-    # delta phi = (c - b) / a
-    delta_Phi = (- b) / a
-    return delta_Phi[0]
+    a, c = minimize(line, x0=np.random.rand(2), args=(t_b, phase_b)).x
+    a, b = minimize(line, x0=np.random.rand(2), args=(t_a, phase_a), constraints={'type': 'eq', 'fun': constr_fun}).x
+    delta_Phi = (c - b) / a
+
+    # plot to check
+    # fig = plt.figure(figsize=(20, 5))
+    # plt.plot(phase - (a * np.arange(len(phase)) + c), color='r', linewidth=3)
+    # plt.plot(protophase - (a * np.arange(len(protophase)) + c), color='b', linewidth=3)
+    # # t = np.arange(len(phase))
+    # # plt.plot(t[:stim_start], a * t[:stim_start] + c, color='b')
+    # # plt.plot(t[stim_start:], a * t[stim_start:] + b, color='g')
+    # # plt.plot(t, signl, color='r', alpha=0.7)
+    # plt.axvline(stim_start, color='k')
+    # plt.axvline(stim_end, color='k')
+    # plt.grid(True)
+    # plt.ylabel("Deviation from the straight line", fontsize=24)
+    # plt.show(block=True)
+    # plt.close()
+    # fig = plt.figure(figsize=(20, 5))
+    # plt.plot(phase, color='r', linewidth=3)
+    # plt.plot(protophase , color='b', linewidth=3)
+    # plt.show(block=True)
+    # plt.close()
+    return delta_Phi #in inds not in ms
 
 def get_features_from_experimental_signal(signal, dt, stim_start, stim_end, transient_offset):
     insp_begins, insp_ends = get_onsets_and_ends(signal, model='l2', pen=1000, min_len=50)
@@ -112,7 +208,7 @@ def extract_PRC(dataset_chunks):
 
 def run_PRC_extraction(data_folder, save_to):
     folders = get_folders(data_folder, "_prc")
-    for folder in folders:
+    for i, folder in enumerate(folders):
         file = f'chunked.pkl'
         data = pickle.load(open(f'{data_folder}/{folder}/{file}', 'rb+'))
         params_save_to = f'{save_to}/parameters_prc_{folder}.pkl'

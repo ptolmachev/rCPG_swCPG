@@ -132,54 +132,57 @@ def plot_comparisons(amp, duration, plot_params):
     y_lim_T1divT0 = plot_params["y_lim_T1divT0"]
 
     #LOADING EXPERIMENTAL DATA
-    inds = [0, 1, 2]
+    inds = [3]
     Phase_exp, Cophase_exp, Phase_shift_exp, T0_exp, T1_exp = load_experimental_data(inds)
 
-    #LOADING NUMERICAL DATA
-    file_load = f'{data_path}/num_exp_results/short_stim/info_var_phase_{amp}_{duration}.pkl'
-    # Phase_num, Cophase_num, Phase_shift_num, T0_num, T1_num = load_numerical_data(file_load)
-    Phase_num, Cophase_num, T0_num, T1_num = load_numerical_data(file_load)
-    fig1 = plt.figure()
-    plt.title("Phase-Cophase")
-    y = Cophase_exp
-    z = Cophase_num
-    p = Polynomial.fit(Phase_exp, y, deg=6)
-    plt.scatter(Phase_exp, y)
-    plt.scatter(Phase_num, z, color = "orange")
-    plt.plot(np.sort(Phase_exp), p(np.sort(Phase_exp)), color='r', linewidth=3)
-    plt.grid(True)
-    plt.xlabel("Phase")
-    plt.ylabel("Cophase")
-    fig1.savefig(f'{img_path}/num_experiments/short_stim/short_stim_{amp}_{duration}/phase_cophase_comparison')
+    # # LOADING NUMERICAL DATA
+    # file_load = f'{data_path}/num_exp_results/short_stim/info_var_phase_{amp}_{duration}.pkl'
+    # # Phase_num, Cophase_num, Phase_shift_num, T0_num, T1_num = load_numerical_data(file_load)
+    # Phase_num, Cophase_num, T0_num, T1_num = load_numerical_data(file_load)
+    # fig1 = plt.figure()
+    # plt.title("Phase-Cophase")
+    # y = Cophase_exp
+    # z = Cophase_num
+    # p = Polynomial.fit(Phase_exp, y, deg=6)
+    # plt.scatter(Phase_exp, y)
+    # plt.scatter(Phase_num, z, color = "orange")
+    # plt.plot(np.sort(Phase_exp), p(np.sort(Phase_exp)), color='r', linewidth=3)
+    # plt.grid(True)
+    # plt.xlabel("Phase")
+    # plt.ylabel("Cophase")
+    # fig1.savefig(f'{img_path}/num_experiments/short_stim/short_stim_{amp}_{duration}/phase_cophase_comparison')
+    # # #
+    # fig2 = plt.figure()
+    # plt.title("T1/T0")
+    # y = T1_exp / T0_exp
+    # z = T1_num/ T0_num
+    # p = Polynomial.fit(Phase_exp, y, deg=6)
+    # plt.scatter(Phase_exp, y)
+    # plt.scatter(Phase_num, z, color = "orange")
+    # plt.plot(np.sort(Phase_exp), p(np.sort(Phase_exp)), color='r', linewidth=3)
+    # plt.grid(True)
+    # # plt.ylim([0, 1.1 * np.max(y - np.mean(y)) + np.mean(y)])
+    # plt.ylim([0, 2])
+    # plt.xlabel("Phase")
+    # plt.ylabel("T1/T0 ratio")
+    # fig2.savefig(f'{img_path}/num_experiments/short_stim/short_stim_{amp}_{duration}/T1_div_T0_comparison')
     #
-    fig2 = plt.figure()
-    plt.title("T1/T0")
-    y = T1_exp / T0_exp
-    z = T1_num/ T0_num
-    p = Polynomial.fit(Phase_exp, y, deg=6)
-    plt.scatter(Phase_exp, y)
-    plt.scatter(Phase_num, z, color = "orange")
-    plt.plot(np.sort(Phase_exp), p(np.sort(Phase_exp)), color='r', linewidth=3)
-    plt.grid(True)
-    # plt.ylim([0, 1.1 * np.max(y - np.mean(y)) + np.mean(y)])
-    plt.ylim([0, 2])
-    plt.xlabel("Phase")
-    plt.ylabel("T1/T0 ratio")
-    fig2.savefig(f'{img_path}/num_experiments/short_stim/short_stim_{amp}_{duration}/T1_div_T0_comparison')
-    #
-    fig3 = plt.figure()
+    fig3 = plt.figure(figsize=(20,20))
     plt.title("delta Phi(Phi)")
     y = Phase_shift_exp
-    # z = T1_num/ T0_num
-    plt.scatter(Phase_exp, y)
+    z = (Phase_exp + Cophase_exp - 1) # phase shift from different perspective
+    plt.scatter(Phase_exp, y, color = 'b', label='Phase response advanced')
+    plt.scatter(Phase_exp, z, color = 'r', marker='x', alpha = 0.5, label='Phase response threshold')
     # plt.scatter(phase_num, z, color = "orange")
     # plt.plot(np.sort(phase), p(np.sort(phase)), color='r', linewidth=3)
     plt.grid(True)
-    plt.ylim([0, 1.2])
+    plt.ylim([-1, 1])
     plt.xlabel("Phase")
     plt.ylabel("delta Phi")
-    fig3.savefig(f'{img_path}/other_plots/delta_Phi')
-    #
+    plt.legend()
+    plt.show(block=True)
+    fig3.savefig(f'{img_path}/other_plots/delta_Phi_3')
+
     return None
 
 if __name__ == '__main__':
@@ -207,7 +210,7 @@ if __name__ == '__main__':
     # plot_feature_from_num_experiment(amp, duration, plot_params)
 
     amp = 150
-    duration = 1000
+    duration = 500
     plot_params = {}
     plot_params["fit_poly"] = True
     plot_params["y_lim_T0"] = [0, 7500]
