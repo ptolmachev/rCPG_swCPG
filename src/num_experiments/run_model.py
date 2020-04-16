@@ -28,7 +28,7 @@ def run_model(dt, t_start, t_end, amp, stoptime):
         'tau_ad': 2000,
         'K_ad': 0.9,
         'tau_NaP_max': 6000,
-        'tau_synE_slow': 500}
+        'tau_synE_slow': 200}
 
     population_names = ["PreI", "EarlyI", "PostI", "AugE", "RampI", "Relay", "Sw1", "Sw2", "Sw3", "KF_t", "KF_p",
                         "KF_r", "HN", "PN", "VN", "KF_inh", "NTS_inh", "SI"]
@@ -64,9 +64,9 @@ def run_model(dt, t_start, t_end, amp, stoptime):
     PreI.g_NaP = 5.0
     PreI.g_ad = HN.g_ad = PN.g_ad = VN.g_ad = SI.g_ad =  0.0
     HN.g_NaP = PN.g_NaP = VN.g_NaP = SI.g_NaP  = 0.0
-    Relay.tau_ad = 15000.0
-    PostI.tau_ad = 10000.0
-    Relay.g_synE_slow = 30.0
+    Relay.tau_ad = 6000.0
+    PostI.tau_ad = 6000.0
+    Relay.g_synE_slow = 25.0
 
     # populations dictionary
     populations = dict()
@@ -119,9 +119,9 @@ if __name__ == '__main__':
 
     data_path = str(get_project_root()) + "/data"
     img_path = str(get_project_root()) + "/img"
-    stim_durations = [500, 10000]
-    amps = [150, 300]
-    dt = 0.75
+    stim_durations = [300, 10000]
+    amps = [200, 200]
+    dt = 0.5
     t_starts = [22500, 24000, 25500, 27000, 28500]
     stoptime = 60000
     for inh_NTS, inh_KF in [(1, 1), (1, 2), (2, 1)]:
