@@ -2,6 +2,8 @@ import turtle
 import numpy as np
 import json
 
+from utils.gen_utils import get_project_root
+
 
 class Neural_node():
     def __init__(self, type, name, pos, r):
@@ -81,7 +83,7 @@ def draw_line(t, pos1, pos2, style_params):
     color = style_params['color']
     cap = style_params['cap']
 
-    t.pen(pencolor=color, pensize=np.exp(1.5 * (np.abs(size) - np.median(np.abs(b)))))
+    t.pen(pencolor=color, pensize=1) #np.exp(0.01 * (np.abs(size) - np.median(np.abs(b))))
     t.penup()
     t.setposition(pos1)
     a = t.towards(pos2)
@@ -181,19 +183,22 @@ if __name__ == '__main__':
 
     # #draw connection
     # # load gson
-    file = open("../num_experiments/rCPG_swCPG.json", "rb+")
+    data_path = str(get_project_root()) + "/data"
+    file = open(f"{data_path}/rCPG_swCPG.json", "rb+")
     params = json.load(file)
     b = np.array(params["b"])
     c = np.array(params["c"])
 
     # 0- PreI   # 1 - EarlyI  # 2 - PostI
     # 3 - AugE  # 4 - RampI   # 5 - Relay
-    # 6 - NTS1  # 7 - NTS2    # 8 - NTS3
-    # 9 - KF_t   # 10 - KF_p    # 11 - M_HN
-    # 12- M_PN  # 13 - M_VN   # 14 - KF_inh
-    # 15 - NTS_inh
+    # 6 - Sw 1  # 7 - Sw2     # 8 - Sw3
+    # 9 - KF_t   # 10 - KF_p   # 11 - KF_r
+    # 12 - M_HN  # 13- M_PN  # 14 - M_VN
+    # 15 - KF_inh # 16 - NTS_inh # 17 - SI
+
     # write table of correpondance of nodes to numbers
-    table = ["PreI", "EarlyI", "PostI", "AugE", "RampI", "Relay", "Sw1", "Sw2", "Sw3", "KF_t", "KF_p", "KF_r", "HN", "PN", "VN"]
+    table = ["PreI", "EarlyI", "PostI", "AugE", "RampI", "Relay", "Sw1", "Sw2", "Sw3", "KF_t", "KF_p", "KF_r",
+             "HN", "PN", "VN"] #, "KF_inh", "NTS_inh", "SI"]
     for i in range(len(table)):
         for j in range(len(table)):
             if b[i, j] != 0:
@@ -201,7 +206,6 @@ if __name__ == '__main__':
                 name_A = table[i]
                 name_B = table[j]
                 draw_connection(eval(name_A), eval(name_B), strength)
-    draw_connection(SensoryInp, Relay, 0.4)
 
     turtle.hideturtle()
     ts = turtle.getscreen()

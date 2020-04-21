@@ -16,6 +16,7 @@ class NeuralPopulation():
 
 class Network():
     def __init__(self, populations, fast_synaptic_weights, slow_synaptic_weights, drives, dt, history_len):
+    # def __init__(self, populations, fast_synaptic_weights, drives, dt, history_len):
         # should be a dictionary
         self.history_len = history_len
         self.populations = populations
@@ -23,8 +24,8 @@ class Network():
         self.W = fast_synaptic_weights
         self.W_neg = np.maximum(-self.W, 0)
         self.W_pos = np.maximum(self.W, 0)
-        self.W_neg_slow = np.maximum(-slow_synaptic_weights, 0)
-        self.W_pos_slow = np.maximum(slow_synaptic_weights, 0)
+        # self.W_neg_slow = np.maximum(-slow_synaptic_weights, 0)
+        # self.W_pos_slow = np.maximum(slow_synaptic_weights, 0)
 
         self.drives = drives
         self.dt = dt
@@ -36,8 +37,8 @@ class Network():
         self.input_cur = np.zeros(self.N)
         self.names = []
         self.C, self.g_NaP, self.g_K, self.g_ad, self.g_l, self.g_synE, self.g_synI, self.g_synE_slow, self.E_Na, self.E_K, self.E_l,\
-        self.E_ad, self.E_synE, self.E_synI, self.V_half, self.slope, self.K_ad, self.tau_ad, self.tau_NaP_max, self.tau_synE_slow = \
-        [np.zeros(self.N) for i in range(20)]
+        self.E_ad, self.E_synE, self.E_synI, self.V_half, self.slope, self.K_ad, self.tau_ad, self.tau_NaP_max = [np.zeros(self.N) for i in range(19)] #, self.tau_synE_slow
+
         self.v_history = deque(maxlen=self.history_len)
         self.t = deque(maxlen=self.history_len)
         self.v_history.append(self.v)
@@ -47,7 +48,7 @@ class Network():
         for i, (name, population) in enumerate(populations.items()):
             self.names.append(name)
             params_list = ["C", "g_NaP", "g_K", "g_ad", "g_l", "g_synE", "g_synI", "g_synE_slow", "E_Na", "E_K", "E_l",
-                        "E_ad", "E_synE", "E_synI", "V_half", "slope", "K_ad", "tau_ad", "tau_NaP_max", "tau_synE_slow"]
+                        "E_ad", "E_synE", "E_synI", "V_half", "slope", "K_ad", "tau_ad", "tau_NaP_max"]#, "tau_synE_slow"]
             for p_name in params_list:
                 exec(f'self.{p_name}[i] = population.{p_name}')
 
@@ -67,9 +68,9 @@ class Network():
     def h_NaP_inf(self, v):
         return 1.0 / (1.0 + np.exp((v + 48.0) / 6.0))
 
-    def r_inf(self, v):
-        inputs = (self.firing_rate(v, self.V_half, self.slope).reshape(1, self.N) @ self.W_pos_slow).flatten()
-        return inputs
+    # def r_inf(self, v):
+    #     inputs = (self.firing_rate(v, self.V_half, self.slope).reshape(1, self.N) @ self.W_pos_slow).flatten()
+    #     return inputs
 
     def tau_NaP(self, v, tau_NaP_max):
         return tau_NaP_max / np.cosh((v + 48.0) / 12.0)
@@ -105,9 +106,9 @@ class Network():
                  (self.firing_rate(v, self.V_half, self.slope).reshape(1, self.N) @  self.W_pos).flatten()
         return I_synE
 
-    def I_SynE_slow(self, v):
-        I_synE_slow = self.g_synE_slow * self.r * (v - self.E_synE)
-        return I_synE_slow
+    # def I_SynE_slow(self, v):
+    #     I_synE_slow = self.g_synE_slow * self.r * (v - self.E_synE)
+    #     return I_synE_slow
 
     def I_SynI(self, v):
         I_synI = self.g_synI * (v - self.E_synI) * \
@@ -126,48 +127,48 @@ class Network():
         res[c] = (self.K_ad[c] * self.firing_rate(v[c], self.V_half[c], self.slope[c]) - m_ad[c]) / self.tau_ad[c]
         return res
 
-    def rhs_r(self, v, r):
-        res = np.zeros_like(r)
-        c = self.g_synE_slow != 0.0
-        res[c] = (self.r_inf(self.v)[c] - r[c]) / self.tau_synE_slow[c]
-        return res
+    # def rhs_r(self, v, r):
+    #     res = np.zeros_like(r)
+    #     c = self.g_synE_slow != 0.0
+    #     res[c] = (self.r_inf(self.v)[c] - r[c]) / self.tau_synE_slow[c]
+    #     return res
 
     def rhs_v(self, v, m_ad, h_NaP):
         return (1.0 / self.C) * \
                (- self.I_NaP(v, h_NaP) - self.I_adaptation(v, m_ad) - self.I_leakage(v)
-                - self.I_SynE(v) - self.I_SynI(v) - self.I_SynE_slow(v) + self.input_cur)
+                - self.I_SynE(v) - self.I_SynI(v) + self.input_cur) # - self.I_SynE_slow(v)
 
     def step(self):
         #Runge-Kutta 4th order update
         k_v1 = self.dt * self.rhs_v(self.v, self.m_ad, self.h_NaP)
         k_m1 = self.dt * self.rhs_m_ad(self.v, self.m_ad)
         k_h1 = self.dt * self.rhs_h_NaP(self.v, self.h_NaP)
-        k_r1 = self.dt * self.rhs_r(self.v, self.r)
+        # k_r1 = self.dt * self.rhs_r(self.v, self.r)
 
         k_v2 = self.dt * self.rhs_v(self.v + k_v1 / 2, self.m_ad + k_m1 / 2, self.h_NaP + k_h1 / 2)
         k_m2 = self.dt * self.rhs_m_ad(self.v + k_v1 / 2, self.m_ad + k_m1 / 2)
         k_h2 = self.dt * self.rhs_h_NaP(self.v + k_v1 / 2, self.h_NaP + k_h1 / 2)
-        k_r2 = self.dt * self.rhs_r(self.v + k_v1 / 2, self.r + k_r1 / 2)
+        # k_r2 = self.dt * self.rhs_r(self.v + k_v1 / 2, self.r + k_r1 / 2)
 
         k_v3 = self.dt * self.rhs_v(self.v + k_v2 / 2, self.m_ad + k_m2 / 2, self.h_NaP + k_h2 / 2)
         k_m3 = self.dt * self.rhs_m_ad(self.v + k_v2 / 2, self.m_ad + k_m2 / 2)
         k_h3 = self.dt * self.rhs_h_NaP(self.v + k_v2 / 2, self.h_NaP + k_h2 / 2)
-        k_r3 = self.dt * self.rhs_r(self.v + k_v2 / 2, self.r + k_r2 / 2)
+        # k_r3 = self.dt * self.rhs_r(self.v + k_v2 / 2, self.r + k_r2 / 2)
 
         k_v4 = self.dt * self.rhs_v(self.v + k_v3, self.m_ad + k_m3, self.h_NaP + k_h3)
         k_m4 = self.dt * self.rhs_m_ad(self.v + k_v3, self.m_ad + k_m3)
         k_h4 = self.dt * self.rhs_h_NaP(self.v + k_v3, self.h_NaP + k_h3)
-        k_r4 = self.dt * self.rhs_r(self.v + k_v3, self.r + k_r3)
+        # k_r4 = self.dt * self.rhs_r(self.v + k_v3, self.r + k_r3)
 
         new_v = self.v + 1.0 / 6.0 * (k_v1 + 2 * k_v2 + 2 * k_v3 + k_v4)
         new_m_ad = self.m_ad + 1.0 / 6.0 * (k_m1 + 2 * k_m2 + 2 * k_m3 + k_m4)
         new_h_NaP = self.h_NaP + 1.0 / 6.0 * (k_h1 + 2 * k_h2 + 2 * k_h3 + k_h4)
-        new_r = self.r + 1.0 / 6.0 * (k_r1 + 2 * k_r2 + 2 * k_r3 + k_r4)
+        # new_r = self.r + 1.0 / 6.0 * (k_r1 + 2 * k_r2 + 2 * k_r3 + k_r4)
 
         self.v = new_v
         self.m_ad = new_m_ad
         self.h_NaP = new_h_NaP
-        self.r = new_r
+        # self.r = new_r
         return None
 
     def run(self, T_steps):
@@ -221,8 +222,8 @@ if __name__ == '__main__':
     'slope' : 4,
     'tau_ad' : 2000,
     'K_ad' : 0.9,
-    'tau_NaP_max' : 6000,
-    'tau_synE_slow' : 500}
+    'tau_NaP_max' : 6000}
+    # 'tau_synE_slow' : 500}
 
     population_names = ['PreI',  # 0
                         'EarlyI',  # 1
@@ -253,7 +254,7 @@ if __name__ == '__main__':
     HN.g_NaP = PN.g_NaP = VN.g_NaP = SI.g_NaP  = 0.0
     Relay.tau_ad = 10000.0
     PostI.tau_ad = 10000.0
-    Relay.g_synE_slow = 30.0
+    # Relay.g_synE_slow = 30.0
 
     # populations dictionary
     populations = dict()

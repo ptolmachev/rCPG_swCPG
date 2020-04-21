@@ -21,9 +21,7 @@
   <component name="ChangeListManager">
     <list default="true" id="eebbf286-5f0d-44eb-8bff-357892bdab06" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/rCPG_swCPG.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/rCPG_swCPG.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/num_experiments/params_gen.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/num_experiments/params_gen.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/num_experiments/run_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/num_experiments/run_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/plots/plot_prc_params.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/plots/plot_prc_params.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,7 +47,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$/PycharmProjects/Typing_data" />
+    <property name="last_opened_file_path" value="$USER_HOME$/PycharmProjects/keybr_typing_data_analysis" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -61,7 +59,7 @@
       <recent name="$PROJECT_DIR$/src/experimental_data_processing" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.run_model">
+  <component name="RunManager" selected="Python.plot_prc_params">
     <configuration name="connectivity_drawing" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="rCPG_swCPG" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -169,10 +167,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.plot_prc_params" />
         <item itemvalue="Python.run_model" />
         <item itemvalue="Python.params_gen" />
         <item itemvalue="Python.connectivity_drawing" />
-        <item itemvalue="Python.plot_prc_params" />
         <item itemvalue="Python.prc_extraction" />
       </list>
     </recent_temporary>
@@ -215,50 +213,50 @@
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
     <state x="657" y="144" width="666" height="826" key="#prc_extraction/70.27.1850.1053@70.27.1850.1053" timestamp="1586396817062" />
-    <state x="476" y="312" width="1241" height="768" key="#xdebugger.evaluate" timestamp="1586787861028">
+    <state x="370" y="81" width="1241" height="818" key="#xdebugger.evaluate" timestamp="1587108995808">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state x="476" y="312" width="1241" height="768" key="#xdebugger.evaluate/70.27.1850.1053@70.27.1850.1053" timestamp="1586787861028" />
+    <state x="370" y="81" width="1241" height="818" key="#xdebugger.evaluate/70.27.1850.1053@70.27.1850.1053" timestamp="1587108995808" />
     <state width="1848" height="480" key="DebuggerActiveHint" timestamp="1586402892451">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
     <state width="1848" height="480" key="DebuggerActiveHint/70.27.1850.1053@70.27.1850.1053" timestamp="1586402892451" />
-    <state x="778" y="311" width="424" height="491" key="FileChooserDialogImpl" timestamp="1587039227128">
+    <state x="778" y="311" width="424" height="491" key="FileChooserDialogImpl" timestamp="1587178689808">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state x="778" y="311" width="424" height="491" key="FileChooserDialogImpl/70.27.1850.1053@70.27.1850.1053" timestamp="1587039227128" />
-    <state width="1827" height="275" key="GridCell.Tab.0.bottom" timestamp="1587041735536">
+    <state x="778" y="311" width="424" height="491" key="FileChooserDialogImpl/70.27.1850.1053@70.27.1850.1053" timestamp="1587178689808" />
+    <state width="1827" height="340" key="GridCell.Tab.0.bottom" timestamp="1587110637113">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="275" key="GridCell.Tab.0.bottom/70.27.1850.1053@70.27.1850.1053" timestamp="1587041735536" />
-    <state width="1827" height="275" key="GridCell.Tab.0.center" timestamp="1587041735536">
+    <state width="1827" height="340" key="GridCell.Tab.0.bottom/70.27.1850.1053@70.27.1850.1053" timestamp="1587110637113" />
+    <state width="1827" height="340" key="GridCell.Tab.0.center" timestamp="1587110637112">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="275" key="GridCell.Tab.0.center/70.27.1850.1053@70.27.1850.1053" timestamp="1587041735536" />
-    <state width="1827" height="275" key="GridCell.Tab.0.left" timestamp="1587041735536">
+    <state width="1827" height="340" key="GridCell.Tab.0.center/70.27.1850.1053@70.27.1850.1053" timestamp="1587110637112" />
+    <state width="1827" height="340" key="GridCell.Tab.0.left" timestamp="1587110637112">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="275" key="GridCell.Tab.0.left/70.27.1850.1053@70.27.1850.1053" timestamp="1587041735536" />
-    <state width="1827" height="275" key="GridCell.Tab.0.right" timestamp="1587041735536">
+    <state width="1827" height="340" key="GridCell.Tab.0.left/70.27.1850.1053@70.27.1850.1053" timestamp="1587110637112" />
+    <state width="1827" height="340" key="GridCell.Tab.0.right" timestamp="1587110637112">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="275" key="GridCell.Tab.0.right/70.27.1850.1053@70.27.1850.1053" timestamp="1587041735536" />
-    <state width="1827" height="340" key="GridCell.Tab.1.bottom" timestamp="1586787904583">
+    <state width="1827" height="340" key="GridCell.Tab.0.right/70.27.1850.1053@70.27.1850.1053" timestamp="1587110637112" />
+    <state width="1827" height="340" key="GridCell.Tab.1.bottom" timestamp="1587110637114">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="340" key="GridCell.Tab.1.bottom/70.27.1850.1053@70.27.1850.1053" timestamp="1586787904583" />
-    <state width="1827" height="340" key="GridCell.Tab.1.center" timestamp="1586787904583">
+    <state width="1827" height="340" key="GridCell.Tab.1.bottom/70.27.1850.1053@70.27.1850.1053" timestamp="1587110637114" />
+    <state width="1827" height="340" key="GridCell.Tab.1.center" timestamp="1587110637113">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="340" key="GridCell.Tab.1.center/70.27.1850.1053@70.27.1850.1053" timestamp="1586787904583" />
-    <state width="1827" height="340" key="GridCell.Tab.1.left" timestamp="1586787904582">
+    <state width="1827" height="340" key="GridCell.Tab.1.center/70.27.1850.1053@70.27.1850.1053" timestamp="1587110637113" />
+    <state width="1827" height="340" key="GridCell.Tab.1.left" timestamp="1587110637113">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="340" key="GridCell.Tab.1.left/70.27.1850.1053@70.27.1850.1053" timestamp="1586787904582" />
-    <state width="1827" height="340" key="GridCell.Tab.1.right" timestamp="1586787904583">
+    <state width="1827" height="340" key="GridCell.Tab.1.left/70.27.1850.1053@70.27.1850.1053" timestamp="1587110637113" />
+    <state width="1827" height="340" key="GridCell.Tab.1.right" timestamp="1587110637113">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="340" key="GridCell.Tab.1.right/70.27.1850.1053@70.27.1850.1053" timestamp="1586787904583" />
+    <state width="1827" height="340" key="GridCell.Tab.1.right/70.27.1850.1053@70.27.1850.1053" timestamp="1587110637113" />
     <state x="484" y="188" width="1022" height="737" key="SettingsEditor" timestamp="1586396843281">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
@@ -336,8 +334,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/src/plots/plot_prc_params.py</url>
-          <line>172</line>
-          <option name="timeStamp" value="110" />
+          <line>181</line>
+          <option name="timeStamp" value="115" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
