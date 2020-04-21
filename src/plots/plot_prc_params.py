@@ -132,7 +132,7 @@ def plot_comparisons(amp, duration, plot_params):
     y_lim_T1divT0 = plot_params["y_lim_T1divT0"]
 
     #LOADING EXPERIMENTAL DATA
-    inds = [3]
+    inds = [0,1, 2, 3]
     Phase_exp, Cophase_exp, Phase_shift_exp, T0_exp, T1_exp = load_experimental_data(inds)
 
     # # LOADING NUMERICAL DATA
@@ -168,20 +168,40 @@ def plot_comparisons(amp, duration, plot_params):
     # fig2.savefig(f'{img_path}/num_experiments/short_stim/short_stim_{amp}_{duration}/T1_div_T0_comparison')
     #
     fig3 = plt.figure(figsize=(20,20))
-    plt.title("delta Phi(Phi)")
+    plt.title("delta Phi(Phi)", fontsize=24)
     y = Phase_shift_exp
     z = (Phase_exp + Cophase_exp - 1) # phase shift from different perspective
-    plt.scatter(Phase_exp, y, color = 'b', label='Phase response advanced')
+    Phase_exp, y, z = zip(*sorted(zip(Phase_exp, y, z)))
+
+    from scipy.signal import savgol_filter
+    from sklearn.mixture import BayesianGaussianMixture
+    from sklearn.preprocessing import StandardScaler
+    scaler = StandardScaler()
+    X = (np.hstack([np.array(Phase_exp).reshape(-1,1), np.array(y).reshape(-1,1)]))
+    X = scaler.fit_transform(X)
+    clf = BayesianGaussianMixture(n_components=2, covariance_type='full', init_params='random')
+    mask = clf.fit_predict(X)
+    inds_1 = np.where(mask == 0)[0]
+    inds_2 = np.where(mask == 1)[0]
+    Phase_exp_1 = np.take(Phase_exp, inds_1)
+    Phase_exp_2 = np.take(Phase_exp, inds_2)
+    y_1 = np.take(y, inds_1)
+    y_2 = np.take(y, inds_2)
+    plt.scatter(Phase_exp_1[10:], savgol_filter(y_1[10:],3,1), color='orange')
+    plt.scatter(Phase_exp_2[10:], savgol_filter(y_2[10:],3,1), color='magenta')
+    # plt.scatter(Phase_exp, y, color = 'b', label='Phase response advanced')
     plt.scatter(Phase_exp, z, color = 'r', marker='x', alpha = 0.5, label='Phase response threshold')
     # plt.scatter(phase_num, z, color = "orange")
     # plt.plot(np.sort(phase), p(np.sort(phase)), color='r', linewidth=3)
     plt.grid(True)
     plt.ylim([-1, 1])
-    plt.xlabel("Phase")
-    plt.ylabel("delta Phi")
-    plt.legend()
+    plt.xlabel("Phase",fontsize=24)
+    plt.ylabel("delta Phi",fontsize=24)
+    plt.xticks(fontsize=24)
+    plt.yticks(fontsize=24)
+    plt.legend(fontsize=24)
     plt.show(block=True)
-    fig3.savefig(f'{img_path}/other_plots/delta_Phi_3')
+    fig3.savefig(f'{img_path}/other_plots/delta_Phi_0')
 
     return None
 

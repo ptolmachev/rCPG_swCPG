@@ -66,7 +66,7 @@ def run_model(dt, t_start, t_end, amp, stoptime):
     HN.g_NaP = PN.g_NaP = VN.g_NaP = SI.g_NaP  = 0.0
     Relay.tau_ad = 6000.0
     PostI.tau_ad = 6000.0
-    Relay.g_synE_slow = 25.0
+    Relay.g_synE_slow = 15.0
 
     # populations dictionary
     populations = dict()
@@ -76,9 +76,9 @@ def run_model(dt, t_start, t_end, amp, stoptime):
     data_path = str(get_project_root()) + "/data"
     file = open(f"{data_path}/rCPG_swCPG.json", "rb+")
     params = json.load(file)
-    W = np.array(params["b"])
+    # W = np.array(params["b"])
     W_slow = np.zeros((len(population_names), len(population_names)))
-    W_slow[17, 5] = 0.5
+    # W_slow[17, 5] = 0.5
     drives = np.array(params["c"])
     net = Network(populations, W, W_slow, drives, dt, history_len=int(stoptime / dt))
     # if for some reason the running has failed try once again
