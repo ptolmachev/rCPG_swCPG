@@ -27,8 +27,7 @@ def run_model(dt, t_start, t_end, amp, stoptime):
         'slope': 4,
         'tau_ad': 2000,
         'K_ad': 0.9,
-        'tau_NaP_max': 6000,
-        'tau_synE_slow': 200}
+        'tau_NaP_max': 6000}
 
     population_names = ["PreI", "EarlyI", "PostI", "AugE", "RampI", "Relay", "Sw1", "Sw2", "Sw3", "KF_t", "KF_p",
                         "KF_r", "HN", "PN", "VN", "KF_inh", "NTS_inh", "SI"]
@@ -64,9 +63,8 @@ def run_model(dt, t_start, t_end, amp, stoptime):
     PreI.g_NaP = 5.0
     PreI.g_ad = HN.g_ad = PN.g_ad = VN.g_ad = SI.g_ad =  0.0
     HN.g_NaP = PN.g_NaP = VN.g_NaP = SI.g_NaP  = 0.0
-    Relay.tau_ad = 6000.0
-    PostI.tau_ad = 6000.0
-    Relay.g_synE_slow = 15.0
+    Relay.tau_ad = 10000.0
+    PostI.tau_ad = 10000.0
 
     # populations dictionary
     populations = dict()
@@ -76,11 +74,9 @@ def run_model(dt, t_start, t_end, amp, stoptime):
     data_path = str(get_project_root()) + "/data"
     file = open(f"{data_path}/rCPG_swCPG.json", "rb+")
     params = json.load(file)
-    # W = np.array(params["b"])
-    W_slow = np.zeros((len(population_names), len(population_names)))
-    # W_slow[17, 5] = 0.5
+    W = np.array(params["b"])
     drives = np.array(params["c"])
-    net = Network(populations, W, W_slow, drives, dt, history_len=int(stoptime / dt))
+    net = Network(populations, W, drives, dt, history_len=int(stoptime / dt))
     # if for some reason the running has failed try once again
     net.run(int(t_start / dt))
     # set input to Relay neurons
@@ -92,7 +88,6 @@ def run_model(dt, t_start, t_end, amp, stoptime):
     net.set_input_current(np.zeros(net.N))
     # run til stoptime
     net.run(int((stoptime - (t_end - t_start) - t_start) / dt))
-
     # img_path = str(get_project_root()) + "/img"
     # net.plot(show=False, save_to=f"{img_path}/{folder_save_img_to}/single_trial_{amp}.png")
     V_array = net.v_history
@@ -101,20 +96,6 @@ def run_model(dt, t_start, t_end, amp, stoptime):
     return signals, t
 
 if __name__ == '__main__':
-    # dt = 0.75
-    # amp = 150
-    # stim_duration = 500
-    # t_start = 24000
-    # t_end = t_start + stim_duration
-    # stoptime = 60000
-    # signals, t = run_model(dt, t_start, t_end, amp, stoptime)
-    # data_path = str(get_project_root()) + "/data"
-    # img_path = str(get_project_root()) + "/img"
-    # pickle.dump((signals, t), open(f'{data_path}/signals_intact_model.pkl', 'wb+'))
-    # fig = plot_num_exp_traces(signals)
-    # folder_save_img_to = img_path + "/" + f"other_plots"
-    # fig.savefig(folder_save_img_to + "/" + f"num_exp_{amp}_{stim_duration}" + ".png")
-    # plt.close(fig)
     from matplotlib import pyplot as plt
 
     data_path = str(get_project_root()) + "/data"
