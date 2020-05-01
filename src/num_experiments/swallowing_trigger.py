@@ -82,16 +82,16 @@ if __name__ == '__main__':
     N = 4
     W = np.zeros((N, N))
     W[0, 1] = -0.55 #Sw1 -> Sw2
-    W[1, 0] = -0.37 #Sw2 -> Sw1
+    W[1, 0] = -0.39 #Sw2 -> Sw1
 
     W[2, 0] = 0.69 #Relay -> Sw1
     W[2, 1] = 0.71 #Relay -> Sw2
 
-    W[3, 0] = -0.05 #NTS_Inhibitor -> Sw1
-    W[3, 1] = -0.05 #NTS_Inhibitor -> Sw2
+    W[3, 0] = -0.1 #NTS_Inhibitor -> Sw1
+    W[3, 1] = -0.1 #NTS_Inhibitor -> Sw2
     # W[3, 2] = 0.2 #NTS_Inhibitor -> Sw2
 
-    d = np.array([[0.3, 0.42, 0, 0.3]]).reshape(1, -1)
+    d = np.array([[0.33, 0.45, 0, 0.3]]).reshape(1, -1)
     dt = 0.75
     amp = 200
     stim_start = 12500
