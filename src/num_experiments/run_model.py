@@ -62,9 +62,11 @@ def run_model(dt, t_start, t_end, amp, stoptime):
     #modifications:
     PreI.g_NaP = 5.0
     PreI.g_ad = HN.g_ad = PN.g_ad = VN.g_ad = SI.g_ad =  0.0
-    HN.g_NaP = PN.g_NaP = VN.g_NaP = SI.g_NaP  = 0.0
-    Relay.tau_ad = 10000.0
+    HN.g_NaP = PN.g_NaP = VN.g_NaP = SI.g_NaP = 0.0
     PostI.tau_ad = 10000.0
+    Relay.tau_ad = 15000.0
+    Sw1.tau_ad = 1000.0
+    Sw2.tau_ad = 1000.0
 
     # populations dictionary
     populations = dict()
@@ -100,9 +102,9 @@ if __name__ == '__main__':
 
     data_path = str(get_project_root()) + "/data"
     img_path = str(get_project_root()) + "/img"
-    stim_durations = [300, 10000]
+    stim_durations = [200, 10000]
     amps = [200, 200]
-    dt = 0.5
+    dt = 0.75
     t_starts = [22500, 24000, 25500, 27000, 28500]
     stoptime = 60000
     for inh_NTS, inh_KF in [(1, 1), (1, 2), (2, 1)]:

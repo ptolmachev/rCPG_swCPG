@@ -228,8 +228,10 @@ if __name__ == '__main__':
     PreI.g_NaP = 5.0
     PreI.g_ad = HN.g_ad = PN.g_ad = VN.g_ad = SI.g_ad =  0.0
     HN.g_NaP = PN.g_NaP = VN.g_NaP = SI.g_NaP  = 0.0
-    Relay.tau_ad = 10000.0
+    Relay.tau_ad = 15000.0
     PostI.tau_ad = 10000.0
+    Sw1.tau_ad = 1000.0
+    Sw2.tau_ad = 1000.0
 
     # populations dictionary
     populations = dict()
