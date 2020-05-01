@@ -26,7 +26,7 @@ def generate_params(inh_NTS, inh_KF):
     b[5,2] = 0.4 # Relay -> PostI
     b[5,6] = 0.69 # Relay -> Sw1
     b[5,7] = 0.71 # Relay -> Sw2
-    b[5,8] = 0.65 # Relay -> Sw3
+    b[5,8] = 0.8 # Relay -> Sw3
     b[5,9] = 0.4 # Relay -> KF_t
     b[5,10] = 0.4 # Relay -> KF_p
     b[6,12] = 0.5 # Sw1 -> M_HN
@@ -62,35 +62,35 @@ def generate_params(inh_NTS, inh_KF):
     # b[3, 6] = -0.01  # AugE -> Sw1
     # b[3, 7] = -0.02  # AugE -> Sw2
 
-    # b[5, 0] = -0.2  # Relay -> PreI
-    # b[5, 1] = -0.2  # Relay -> EarlyI
+    b[5, 0] = -0.2  # Relay -> PreI
+    b[5, 1] = -0.2  # Relay -> EarlyI
 
-    # b[6, 0] = -0.05  # Sw1 -> PreI
-    # b[6, 1] = -0.05  # Sw1 -> EarlyI
+    b[6, 0] = -0.2  # Sw1 -> PreI
+    b[6, 1] = -0.2  # Sw1 -> EarlyI
     b[6, 7] = -0.55 * x  # Sw1 -> Sw2
-    b[7, 6] = -0.35 * x  # Sw2 -> Sw1
+    b[7, 6] = -0.39 * x  # Sw2 -> Sw1
 
-    b[11, 0] = -0.07  # KF_relay -> PreI
-    b[11, 1] = -0.06  # KF_relay -> EarlyI
+    b[11, 0] = -0.05  # KF_relay -> PreI
+    b[11, 1] = -0.05  # KF_relay -> EarlyI
     # b[11, 6] = -0.08  # KF_relay -> Sw1
     # b[11, 7] = -0.08  # KF_relay -> Sw2
 
     b[15, 9] = -0.3 * y  # KF_inh -> KF_t
     b[15, 10] = -0.3 * y  # KF_inh -> KF_p
     b[16, 5] = -0.3 * x  # NTS_inh -> Relay
-    b[16, 6] = -0.2 * x  # NTS_inh -> Sw1
-    b[16, 7] = -0.2 * x  # NTS_inh -> Sw2
-    b[16, 8] = -0.2 * x  # NTS_inh -> Sw3
+    b[16, 6] = -0.1 * x  # NTS_inh -> Sw1
+    b[16, 7] = -0.1 * x  # NTS_inh -> Sw2
+    b[16, 8] = -0.1 * x  # NTS_inh -> Sw3
 
     c = np.zeros((num_drives, num_nrns))
     # other
     c[0,0] = 0.262 #To PreI
-    c[0,1] = 0.38  #To EarlyI
+    c[0,1] = 0.39  #To EarlyI
     c[0,2] = 0.032  #To PostI
     c[0,3] = 0.385  #To AugE
     c[0,4] = 0.53  #To RampI
-    c[0,6] = 0.25 #To Sw1
-    c[0,7] = 0.38  #To Sw2
+    c[0,6] = 0.33 #To Sw1
+    c[0,7] = 0.45  #To Sw2
     c[0,8] = 0.3  #To Sw3
     c[0,9] = 0.8  #To KF_t
     c[0,10] = 0.8  #To KF_p
