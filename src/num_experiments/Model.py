@@ -15,13 +15,12 @@ class NeuralPopulation():
             exec(f"self.{p_name} = params[\"{p_name}\"]")
 
 class Network():
-    def __init__(self, populations, fast_synaptic_weights, drives, dt, history_len):
-    # def __init__(self, populations, fast_synaptic_weights, drives, dt, history_len):
+    def __init__(self, populations, synaptic_weights, drives, dt, history_len):
         # should be a dictionary
         self.history_len = history_len
         self.populations = populations
         self.N = len(self.populations)
-        self.W = fast_synaptic_weights
+        self.W = synaptic_weights
         self.W_neg = np.maximum(-self.W, 0)
         self.W_pos = np.maximum(self.W, 0)
 
