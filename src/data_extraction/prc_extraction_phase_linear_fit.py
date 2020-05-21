@@ -39,7 +39,7 @@ def line(x, t, y):
     omega, c = x
     return np.sum((omega * t + c - y) ** 2)
 
-def map_protophasse_to_phase(protophase, n_bins, transient_inds, order):
+def map_protophase_to_phase(protophase, n_bins, transient_inds, order):
     # protophase_dot = np.diff(protophase)
     # x = (protophase)[1:] % (2 * np.pi)
     # y = (1 / protophase_dot) * omega
@@ -69,7 +69,7 @@ def get_phase_shift(signl, dt, stim_start, stim_end, params):
     protophase_b = protophase[: stim_start ]
 
     #second, define the mapping from protophase to phase
-    protophase_to_phase = map_protophasse_to_phase(protophase_b, n_bins=200, transient_inds=100, order=50)
+    protophase_to_phase = map_protophase_to_phase(protophase_b, n_bins=200, transient_inds=100, order=50)
     if protophase_to_phase is None:
         return np.nan
 
