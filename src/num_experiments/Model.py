@@ -156,10 +156,10 @@ class Network():
     def plot(self, show, save_to):
         V_array = np.array(self.v_history).T
         t_array = np.array(self.t)
-        fig, axes = plt.subplots(self.N - 2, 1, figsize=(25, 15))
+        fig, axes = plt.subplots(self.N, 1, figsize=(25, 15))
         if type(axes) != np.ndarray: axes = [axes]
         fr = self.firing_rate(V_array.T, self.V_half, self.slope).T
-        for i in range(self.N - 2): # we dont need inhibitor populations
+        for i in range(self.N): # we dont need inhibitor populations
             if i == 0: axes[i].set_title('Firing Rates', fontdict={"size" : 25})
             axes[i].plot(t_array, fr[i, :], 'k', linewidth=3, label=str(self.names[i]), alpha=0.9)
             axes[i].legend(loc = 1, fontsize=25)
@@ -171,7 +171,8 @@ class Network():
                 axes[i].set_xticklabels([])
             axes[i].set_xlabel('t, ms', fontdict={"size" : 25})
         plt.subplots_adjust(wspace=0.01, hspace=0)
-        fig.savefig(save_to)
+        if not (save_to is None):
+            fig.savefig(save_to)
         if show:
             plt.show()
         plt.close()
@@ -187,7 +188,6 @@ if __name__ == '__main__':
     'g_l' : 2.8,
     'g_synE' : 10,
     'g_synI' : 60,
-    'g_synE_slow' : 0,
     'E_Na' : 50,
     'E_K' : -85,
     'E_ad' : -85,
