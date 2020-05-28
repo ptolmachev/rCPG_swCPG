@@ -206,7 +206,7 @@ if __name__ == '__main__':
                 name_A = table[i]
                 name_B = table[j]
                 draw_connection(eval(name_A), eval(name_B), strength)
-
+    draw_connection((SensoryInp), (Relay), 1)
     turtle.hideturtle()
     ts = turtle.getscreen()
     ts.getcanvas().postscript(file=file_name)

@@ -17,37 +17,36 @@ def run_simulations(params, folder_save_to):
     dt = params["dt"] #0.75
     stoptime = params["stoptime"] #70000
     num_shifts = params["num_shifts"] #100
-    settle_time = params["settle_time"] #25000
+    settle_time_inds = int(params["settle_time"] / dt) #20000 / dt
     signals, t = run_model(dt, t_start=0, t_end=1, amp=0, stoptime=stoptime)
     # signals, t = pickle.load(open("../data/signals_intact_model.pkl", "rb+"))
     # get rid of transients 20000:
     # warning period is in indices not in ms!
-    T, T_std = get_period(signals[0, settle_time:])
+    # T, T_std = get_period(signals[0, settle_time:])
+
     # start from the end of expiration (begin of inspiration)
-    PreI = signals[0, settle_time:]
-    t_start_insp, t_end_insp = (get_insp_starts_and_ends(PreI))
-    t_start_insp = (t_start_insp) * dt + settle_time
-    t_end_insp = (t_end_insp) * dt + settle_time
+    PreI = signals[0, settle_time_inds:]
+    T = get_period(t[settle_time_inds:], PreI)
+    t_start_insp_inds, t_end_insp_inds = (get_insp_starts_and_ends(PreI))
+    t_start_insp = (t_start_insp_inds + settle_time_inds) * dt
+    t_end_insp = (t_end_insp_inds + settle_time_inds) * dt
     t1_s = t_start_insp[:5]
     # shifts in ms
-    shifts = np.array([T * i / num_shifts for i in range(num_shifts)]) * dt
-
-    for i in tqdm(range(len(shifts))[::-1]):
+    time_shifts = np.array([T * i / num_shifts for i in range(num_shifts)])
+    for i in tqdm(range(len(time_shifts))[::-1]):
         for j in range(len(t1_s)):
-            shift = shifts[i]
-            t1 = int(t1_s[j] + shift)
+            time_shift = time_shifts[i]
+            t1 = int(t1_s[j] + time_shift)
             # print("Shift: {}, Impulse at time : {}".format(shift, t1))
             t2 = t1 + stim_duration
             # create and run a model
-            signals, t = run_model(dt, t1, t2, amp, stoptime)
+            signals, t = run_model(dt, t1, t2, amp, stoptime) # t1 and t2 specified in ms
             data = dict()
             data['signals'] = signals
             data['t'] = t
             data['dt'] = dt
-            data['phase'] = np.round((2 * np.pi) * (i / len(shifts)), 2)
-            data['shift'] = shift
+            data['phase'] = np.round((2 * np.pi) * (i / len(time_shifts)), 2)
             data['period'] = T
-            data['period_std'] = T_std
             data['start_stim'] = t1
             data['duration'] = stim_duration
             data['amp'] = amp
@@ -58,11 +57,11 @@ if __name__ == '__main__':
     params = {}
     params["dt"] = 0.75
     params["stoptime"] = 65000
-    params["num_shifts"] = 50
-    params["settle_time"] = 25000
-    amps = [200]
+    params["num_shifts"] = 100
+    params["settle_time"] = 20000 #ms
+    amps = [150, 200]
     stim_descriptor = 'short'
-    stim_durations = [250]
+    stim_durations = [250, 400, 750]
     data_path = str(get_project_root()) + "/data"
     img_path = str(get_project_root()) + "/img"
     root_folder_signals = f"{data_path}/num_exp_runs/{stim_descriptor}_stim"
