@@ -29,7 +29,7 @@ def generate_params(inh_NTS, inh_KF):
     b[5,8] = 0.1 # Relay -> Sw3
     b[5,9] = 0.4 # Relay -> KF_t
     b[5,10] = 0.3 # Relay -> KF_p
-    b[6,2] = 0.15 # Sw1 -> PostI
+    b[6,2] = 0.2 # Sw1 -> PostI
     b[6,12] = 0.5 # Sw1 -> M_HN
     b[6,14] = 0.6 # Sw1 -> M_VN
     b[8,1] = 0.2 # Sw3 -> EarlyI

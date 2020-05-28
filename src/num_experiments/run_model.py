@@ -102,7 +102,7 @@ if __name__ == '__main__':
 
     data_path = str(get_project_root()) + "/data"
     img_path = str(get_project_root()) + "/img"
-    stim_durations = [200, 10000]
+    stim_durations = [300, 10000]
     amps = [200, 200]
     dt = 0.75
     t_starts = [22500, 24000, 25500, 27000, 28500]

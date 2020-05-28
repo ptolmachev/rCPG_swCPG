@@ -6,8 +6,8 @@ from tqdm.auto import tqdm
 from matplotlib import pyplot as plt
 
 params = {}
-amps = [150]
-stim_durations = [1000]
+amps = [200]
+stim_durations = [300]
 data_path = str(get_project_root()) + "/data"
 img_path = str(get_project_root()) + "/img"
 for amp in amps:
