@@ -20,8 +20,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="eebbf286-5f0d-44eb-8bff-357892bdab06" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/model_construction/rCPG_and_drive_populations.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/model_construction/rCPG_and_swCPG.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/num_experiments/rCPG.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/num_experiments/rCPG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/num_experiments/rCPG.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model_construction/rCPG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/num_experiments/swallowing_trigger.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/model_construction/swallowing_trigger.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,14 +55,14 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/model_construction" />
       <recent name="$PROJECT_DIR$/src/data_extraction" />
       <recent name="$PROJECT_DIR$/src/prc_extraction" />
       <recent name="$PROJECT_DIR$/src/utils" />
       <recent name="$PROJECT_DIR$/src/num_experiments" />
-      <recent name="$PROJECT_DIR$/src/experimental_data_processing" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.rCPG">
+  <component name="RunManager" selected="Python.rCPG_and_swCPG">
     <configuration name="Model" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="rCPG_swCPG" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -81,48 +84,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="params_gen" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="rCPG_swCPG" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/num_experiments" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/num_experiments/params_gen.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="plot_prc_params" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="rCPG_swCPG" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/plots" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/plots/plot_prc_params.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="rCPG" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="rCPG_swCPG" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -135,7 +96,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/num_experiments/rCPG.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/model_construction/rCPG.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -144,7 +105,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="run_model" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="rCPG_and_drive_populations" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="rCPG_swCPG" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -156,7 +117,49 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/num_experiments/run_model.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/model_construction/rCPG_and_drive_populations.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="rCPG_and_swCPG" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="rCPG_swCPG" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/model_construction" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/model_construction/rCPG_and_swCPG.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="swallowing_trigger" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="rCPG_swCPG" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/model_construction" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/model_construction/swallowing_trigger.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -167,11 +170,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.rCPG" />
+        <item itemvalue="Python.rCPG_and_swCPG" />
+        <item itemvalue="Python.swallowing_trigger" />
+        <item itemvalue="Python.rCPG_and_drive_populations" />
         <item itemvalue="Python.Model" />
-        <item itemvalue="Python.run_model" />
-        <item itemvalue="Python.params_gen" />
-        <item itemvalue="Python.plot_prc_params" />
+        <item itemvalue="Python.rCPG" />
       </list>
     </recent_temporary>
   </component>
@@ -213,10 +216,10 @@
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
     <state x="657" y="144" width="666" height="826" key="#prc_extraction/70.27.1850.1053@70.27.1850.1053" timestamp="1586396817062" />
-    <state x="679" y="262" width="1241" height="818" key="#xdebugger.evaluate" timestamp="1590977901053">
+    <state x="352" y="428" width="1241" height="642" key="#xdebugger.evaluate" timestamp="1590994659749">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state x="679" y="262" width="1241" height="818" key="#xdebugger.evaluate/70.27.1850.1053@70.27.1850.1053" timestamp="1590977901053" />
+    <state x="352" y="428" width="1241" height="642" key="#xdebugger.evaluate/70.27.1850.1053@70.27.1850.1053" timestamp="1590994659749" />
     <state width="1848" height="480" key="DebuggerActiveHint" timestamp="1586402892451">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
@@ -225,38 +228,38 @@
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
     <state x="778" y="311" width="424" height="491" key="FileChooserDialogImpl/70.27.1850.1053@70.27.1850.1053" timestamp="1587178689808" />
-    <state width="1827" height="275" key="GridCell.Tab.0.bottom" timestamp="1590985844228">
+    <state width="1827" height="275" key="GridCell.Tab.0.bottom" timestamp="1590996416099">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="275" key="GridCell.Tab.0.bottom/70.27.1850.1053@70.27.1850.1053" timestamp="1590985844228" />
-    <state width="1827" height="275" key="GridCell.Tab.0.center" timestamp="1590985844228">
+    <state width="1827" height="275" key="GridCell.Tab.0.bottom/70.27.1850.1053@70.27.1850.1053" timestamp="1590996416099" />
+    <state width="1827" height="275" key="GridCell.Tab.0.center" timestamp="1590996416098">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="275" key="GridCell.Tab.0.center/70.27.1850.1053@70.27.1850.1053" timestamp="1590985844228" />
-    <state width="1827" height="275" key="GridCell.Tab.0.left" timestamp="1590985844228">
+    <state width="1827" height="275" key="GridCell.Tab.0.center/70.27.1850.1053@70.27.1850.1053" timestamp="1590996416098" />
+    <state width="1827" height="275" key="GridCell.Tab.0.left" timestamp="1590996416098">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="275" key="GridCell.Tab.0.left/70.27.1850.1053@70.27.1850.1053" timestamp="1590985844228" />
-    <state width="1827" height="275" key="GridCell.Tab.0.right" timestamp="1590985844228">
+    <state width="1827" height="275" key="GridCell.Tab.0.left/70.27.1850.1053@70.27.1850.1053" timestamp="1590996416098" />
+    <state width="1827" height="275" key="GridCell.Tab.0.right" timestamp="1590996416099">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="275" key="GridCell.Tab.0.right/70.27.1850.1053@70.27.1850.1053" timestamp="1590985844228" />
-    <state width="1827" height="340" key="GridCell.Tab.1.bottom" timestamp="1590977903752">
+    <state width="1827" height="275" key="GridCell.Tab.0.right/70.27.1850.1053@70.27.1850.1053" timestamp="1590996416099" />
+    <state width="1827" height="340" key="GridCell.Tab.1.bottom" timestamp="1590994667538">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="340" key="GridCell.Tab.1.bottom/70.27.1850.1053@70.27.1850.1053" timestamp="1590977903752" />
-    <state width="1827" height="340" key="GridCell.Tab.1.center" timestamp="1590977903752">
+    <state width="1827" height="340" key="GridCell.Tab.1.bottom/70.27.1850.1053@70.27.1850.1053" timestamp="1590994667538" />
+    <state width="1827" height="340" key="GridCell.Tab.1.center" timestamp="1590994667534">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="340" key="GridCell.Tab.1.center/70.27.1850.1053@70.27.1850.1053" timestamp="1590977903752" />
-    <state width="1827" height="340" key="GridCell.Tab.1.left" timestamp="1590977903752">
+    <state width="1827" height="340" key="GridCell.Tab.1.center/70.27.1850.1053@70.27.1850.1053" timestamp="1590994667534" />
+    <state width="1827" height="340" key="GridCell.Tab.1.left" timestamp="1590994667534">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="340" key="GridCell.Tab.1.left/70.27.1850.1053@70.27.1850.1053" timestamp="1590977903752" />
-    <state width="1827" height="340" key="GridCell.Tab.1.right" timestamp="1590977903752">
+    <state width="1827" height="340" key="GridCell.Tab.1.left/70.27.1850.1053@70.27.1850.1053" timestamp="1590994667534" />
+    <state width="1827" height="340" key="GridCell.Tab.1.right" timestamp="1590994667534">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
-    <state width="1827" height="340" key="GridCell.Tab.1.right/70.27.1850.1053@70.27.1850.1053" timestamp="1590977903752" />
+    <state width="1827" height="340" key="GridCell.Tab.1.right/70.27.1850.1053@70.27.1850.1053" timestamp="1590994667534" />
     <state x="484" y="188" width="1022" height="737" key="SettingsEditor" timestamp="1586396843281">
       <screen x="70" y="27" width="1850" height="1053" />
     </state>
@@ -334,9 +337,14 @@
           <option name="timeStamp" value="115" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/num_experiments/rCPG.py</url>
+          <url>file://$PROJECT_DIR$/src/model_construction/rCPG.py</url>
           <line>117</line>
           <option name="timeStamp" value="117" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/num_experiments/Model.py</url>
+          <line>94</line>
+          <option name="timeStamp" value="136" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
