@@ -153,7 +153,7 @@ class Network():
             self.v_history.append(deepcopy(self.v))
             self.t.append(self.t[-1] + self.dt)
 
-    def plot(self, show, save_to):
+    def plot(self):
         V_array = np.array(self.v_history).T
         t_array = np.array(self.t)
         fig, axes = plt.subplots(self.N, 1, figsize=(25, 15))
@@ -171,12 +171,7 @@ class Network():
                 axes[i].set_xticklabels([])
             axes[i].set_xlabel('t, ms', fontdict={"size" : 25})
         plt.subplots_adjust(wspace=0.01, hspace=0)
-        if not (save_to is None):
-            fig.savefig(save_to)
-        if show:
-            plt.show()
-        plt.close()
-        return None
+        return fig, axes
 
 
 if __name__ == '__main__':
