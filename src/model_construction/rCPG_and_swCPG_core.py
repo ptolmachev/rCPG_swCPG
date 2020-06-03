@@ -36,6 +36,7 @@ def generate_params(inh_NTS, inh_KF):
     W[1, 0] = -0.08 # EarlyI -> PreI
     W[1, 2] = -0.25 # EarlyI -> PostI
     W[1, 3] = -0.43 # EarlyI -> AugE
+    W[1, 5] = -0.01 # EarlyI -> Sw1
 
     W[2, 0] = -0.35 # PostI -> PreI
     W[2, 1] = -0.28 # PostI ->  EarlyI
@@ -45,13 +46,16 @@ def generate_params(inh_NTS, inh_KF):
     W[3, 1] = -0.40 # AugE -> EarlyI
     W[3, 2] = -0.05 # AugE -> PostI
 
+
     W[4, 0] = 0.00 # KF -> PreI
     W[4, 2] = 1.30 # KF -> PostI
     W[4, 3] = 0.00 # KF -> AugE
+    W[4, 5] = -0.03 # KF -> Sw1
+    W[4, 6] = -0.03 # KF -> Sw2
 
     W[5, 0] = -0.30   # Sw1 -> PreI
     W[5, 1] = -0.30   # Sw1 -> EarlyI
-    W[5, 3] = -0.30   # Sw1 -> AugE
+    W[5, 3] = -0.25   # Sw1 -> AugE
     W[5, 6] = -0.55 * x  # Sw1 -> Sw2
     W[6, 5] = -0.39 * x  # Sw2 -> Sw1
 
@@ -80,7 +84,7 @@ def generate_params(inh_NTS, inh_KF):
     drives[0, 4] = 0.62 # -> KF
 
     # NTS
-    drives[1, 5] = 0.33  # -> Sw1
+    drives[1, 5] = 0.32  # -> Sw1
     drives[1, 6] = 0.45  # -> Sw2
     drives[1, 7] = 0.62 # -> Sw3
 
