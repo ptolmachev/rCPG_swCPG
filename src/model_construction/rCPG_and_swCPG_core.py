@@ -35,37 +35,38 @@ def generate_params(inh_NTS, inh_KF):
 
     W[1, 0] = -0.08 # EarlyI -> PreI
     W[1, 2] = -0.25 # EarlyI -> PostI
-    W[1, 3] = -0.35 # EarlyI -> AugE
+    W[1, 3] = -0.43 # EarlyI -> AugE
 
-    W[2, 0] = -0.32 # PostI -> PreI
-    W[2, 1] = -0.07 # PostI -> EarlyI
-    W[2, 3] = -0.26 # PostI -> AugE
+    W[2, 0] = -0.35 # PostI -> PreI
+    W[2, 1] = -0.28 # PostI ->  EarlyI
+    W[2, 3] = -0.37 # PostI -> AugE
 
-    W[3, 0] = -0.20 # AugE -> PreI
-    W[3, 1] = -0.35 # AugE -> EarlyI
+    W[3, 0] = -0.35 # AugE -> PreI
+    W[3, 1] = -0.40 # AugE -> EarlyI
     W[3, 2] = -0.05 # AugE -> PostI
 
     W[4, 0] = 0.00 # KF -> PreI
-    W[4, 1] = 0.18 # KF -> EarlyI
-    W[4, 2] = 1.36 # KF -> PostI
-    W[4, 3] = 0.52 # KF -> AugE
+    W[4, 2] = 1.30 # KF -> PostI
+    W[4, 3] = 0.00 # KF -> AugE
 
-    W[5, 0] = -0.2  # Sw1 -> PreI
-    W[5, 1] = -0.2  # Sw1 -> EarlyI
-    W[5, 3] = -0.2  # Sw1 -> AugE
-
+    W[5, 0] = -0.30   # Sw1 -> PreI
+    W[5, 1] = -0.30   # Sw1 -> EarlyI
+    W[5, 3] = -0.30   # Sw1 -> AugE
     W[5, 6] = -0.55 * x  # Sw1 -> Sw2
     W[6, 5] = -0.39 * x  # Sw2 -> Sw1
 
     W[7, 0] = 0.00 # Sw3 -> PreI
-    W[7, 1] = 0.18 # Sw3 -> EarlyI
-    W[7, 2] = 0.88 # Sw3 -> PostI
-    W[7, 3] = 0.35 # Sw3 -> AugE
+    W[7, 2] = 0.80 # Sw3 -> PostI
+    # W[7, 3] = 0.15 # Sw3 -> AugE
 
-    W[8, 4] = 1.00  # Relay -> KF
+    W[8, 0] = -0.30  # Relay -> PreI
+    W[8, 1] = -0.30  # Relay -> EarlyI
+    W[8, 3] = -0.30  # Relay -> AugE
+    W[8, 4] = 0.30  # Relay -> KF
     W[8, 5] = 0.69  # Relay -> Sw1
     W[8, 6] = 0.71  # Relay -> Sw2
-    W[8, 7] = 1.00  # Relay -> Sw3
+    W[8, 7] = 0.30  # Relay -> Sw3
+
 
     W[9, 5] = -0.1 * x # NTS_inh -> Sw1
     W[9, 6] = -0.1 * x # NTS_inh -> Sw2
@@ -84,10 +85,10 @@ def generate_params(inh_NTS, inh_KF):
     drives[1, 7] = 0.62 # -> Sw3
 
     # other
-    drives[2, 0] = 0.065 # -> PreI
-    drives[2, 1] = 0.20 # -> EarlyI
+    drives[2, 0] = 0.10 # -> PreI
+    drives[2, 1] = 0.25 # -> EarlyI
     drives[2, 2] = 0.00 # -> PostI
-    drives[2, 3] = 0.08 # -> AugE
+    drives[2, 3] = 0.15 # -> AugE
     drives[2, 9] = 0.3  # -> NTS_inh
     drives[2, 10] = 0.3 # -> KF_inh
 
@@ -132,7 +133,9 @@ def construct_model(dt, default_neural_params, connectivity_params):
     PreI.g_ad = 0.0
     PreI.slope = 8
     PostI.K_ad = 1.3
+    PostI.tau_ad = 5000.0
     Relay.tau_ad = 15000.0
+    KF.tau_ad = 10000.0
     Sw1.tau_ad = 1000.0
     Sw2.tau_ad = 1000.0
     # populations dictionary
@@ -161,7 +164,7 @@ if __name__ == '__main__':
     default_neural_params = json.load(open(f'{data_folder}/params/default_neural_params.json','r'))
     dt = 0.75
     stoptime = 60000
-    amp = 300
+    amp = 200
     # long stim
     stim_duration = 10000
     start = 25000

@@ -63,23 +63,21 @@ if __name__ == '__main__':
     W[1, 2] = -0.25 # EarlyI -> PostI
     W[1, 3] = -0.35 # EarlyI -> AugE
 
-    W[2, 0] = -0.30 # PostI -> PreI
-    W[2, 1] = -0.05 # PostI -> EarlyI
-    W[2, 3] = -0.24 # PostI -> AugE
+    W[2, 0] = -0.35 # PostI -> PreI
+    W[2, 1] = -0.20 # PostI ->  EarlyI
+    W[2, 3] = -0.35 # PostI -> AugE
 
-    W[3, 0] = -0.20 # AugE -> PreI
-    W[3, 1] = -0.35 # AugE -> EarlyI
+    W[3, 0] = -0.35 # AugE -> PreI
+    W[3, 1] = -0.40 # AugE -> EarlyI
     W[3, 2] = -0.05 # AugE -> PostI
 
     W[4, 0] = 0.00 # KF -> PreI
-    W[4, 1] = 0.18 # KF -> EarlyI
     W[4, 2] = 1.36 # KF -> PostI
-    W[4, 3] = 0.53 # KF -> AugE
+    W[4, 3] = 0.52 # KF -> AugE
 
-    W[5, 0] = 0.00 # KF -> PreI
-    W[5, 1] = 0.18 # KF -> EarlyI
-    W[5, 2] = 0.88 # KF -> PostI
-    W[5, 3] = 0.36 # KF -> AugE
+    W[5, 0] = 0.00 # Sw3 -> PreI
+    W[5, 2] = 0.88 # Sw3 -> PostI
+    W[5, 3] = 0.35 # Sw3 -> AugE
 
     drives = np.zeros((5, N))
     drives[0, 4] = 0.6 # -> KF
@@ -88,8 +86,8 @@ if __name__ == '__main__':
     drives[1, 5] = 0.6 # -> Sw3
 
     # other
-    drives[2, 0] = 0.065 # -> PreI
-    drives[2, 1] = 0.20 # -> EarlyI
+    drives[2, 0] = 0.14 # -> PreI
+    drives[2, 1] = 0.32 # -> EarlyI
     drives[2, 2] = 0.00 # -> PostI
     drives[2, 3] = 0.08 # -> AugE
 
