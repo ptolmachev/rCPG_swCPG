@@ -23,7 +23,11 @@ def generate_params(inh_NTS, inh_KF):
                         "Sw3",    # 7
                         "Relay",  # 8
                         "NTS_inh",# 9
-                        "KF_inh"  # 10
+                        "KF_inh",  # 10
+                        "RampI", # 11
+                        "PN",  # 12
+                        "HN",  # 13
+                        "VN"   # 14
                         ]
     N = len(population_names)
 
@@ -32,20 +36,26 @@ def generate_params(inh_NTS, inh_KF):
     W[0, 1] = 0.40 # PreI -> EarlyI
     W[0, 2] = 0.00 # PreI -> PostI
     W[0, 3] = 0.00 # PreI -> AugE
+    W[0, 11] = 0.40 # PreI -> RampI
+    W[0, 12] = 0.2 # PreI -> PN
+    W[0, 13] = 0.5 # PreI -> HN
 
     W[1, 0] = -0.08 # EarlyI -> PreI
     W[1, 2] = -0.25 # EarlyI -> PostI
     W[1, 3] = -0.43 # EarlyI -> AugE
     W[1, 5] = -0.01 # EarlyI -> Sw1
+    W[1, 11] = -0.20  # EarlyI -> RampI
 
     W[2, 0] = -0.35 # PostI -> PreI
     W[2, 1] = -0.28 # PostI ->  EarlyI
     W[2, 3] = -0.37 # PostI -> AugE
+    W[2, 11] = -0.6  # PostI -> RampI
+    W[2, 14] = 0.75 #  PostI -> VN
 
     W[3, 0] = -0.35 # AugE -> PreI
     W[3, 1] = -0.40 # AugE -> EarlyI
     W[3, 2] = -0.05 # AugE -> PostI
-
+    W[3, 11] = -0.6  # AugE -> RampI
 
     W[4, 0] = 0.00 # KF -> PreI
     W[4, 2] = 1.30 # KF -> PostI
@@ -56,6 +66,7 @@ def generate_params(inh_NTS, inh_KF):
     W[5, 0] = -0.30   # Sw1 -> PreI
     W[5, 1] = -0.30   # Sw1 -> EarlyI
     W[5, 3] = -0.35   # Sw1 -> AugE
+    W[5, 14] = 0.4    # Sw1 -> VN
     W[5, 6] = -0.55 * x  # Sw1 -> Sw2
     W[6, 5] = -0.39 * x  # Sw2 -> Sw1
 
@@ -66,18 +77,22 @@ def generate_params(inh_NTS, inh_KF):
     W[8, 0] = -0.30  # Relay -> PreI
     W[8, 1] = -0.30  # Relay -> EarlyI
     W[8, 3] = -0.30  # Relay -> AugE
-    W[8, 4] = 0.30  # Relay -> KF
+    W[8, 11] = -0.30  # Relay -> RampI
+    W[8, 4] = 0.50  # Relay -> KF
     W[8, 5] = 0.69  # Relay -> Sw1
     W[8, 6] = 0.71  # Relay -> Sw2
-    W[8, 7] = 0.30  # Relay -> Sw3
-
+    W[8, 7] = 0.15  # Relay -> Sw3
 
     W[9, 5] = -0.1 * x # NTS_inh -> Sw1
     W[9, 6] = -0.1 * x # NTS_inh -> Sw2
     W[9, 7] = -0.1 * x # NTS_inh -> Sw3
     W[9, 8] = -0.1 * x # NTS_inh -> Relay
 
-    W[10, 4] = -0.1 * y # KF_inh -> KF
+    W[10, 4] = -0.12 * y # KF_inh -> KF
+
+    W[11, 12] = 0.80 #  RampI -> PN
+    W[11, 13] = 0.80 #  RampI -> HN
+    W[11, 14] = 0.80 #  RampI -> VN
 
     drives = np.zeros((5, N))
     # KF
@@ -101,6 +116,7 @@ def generate_params(inh_NTS, inh_KF):
     drives[3, 1] = 0.30 # -> EarlyI
     drives[3, 2] = 0.0 # -> PostI
     drives[3, 3] = 0.4 # -> AugE
+    drives[3, 11] = 0.75 # -> RampI
 
     #PreBotC
     drives[4, 0] = 0.025  # -> PreI
@@ -110,7 +126,7 @@ def generate_params(inh_NTS, inh_KF):
     params["drives"] = drives.tolist()
     params["populations"] = population_names
     data_path = str(get_project_root()) + "/data"
-    json.dump(params, open(f'{data_path}/params/rCPG_swCPG_{str(date.today())}.json', 'w', encoding='utf-8'), separators=(',', ':'),
+    json.dump(params, open(f'{data_path}/params/rCPG_swCPG_full_{str(date.today())}.json', 'w', encoding='utf-8'), separators=(',', ':'),
               sort_keys=True, indent=4)
     return None
 
@@ -131,6 +147,10 @@ def construct_model(dt, default_neural_params, connectivity_params):
     Relay = NeuralPopulation("Relay", default_neural_params)
     NTS_inh = NeuralPopulation("NTS_inh", default_neural_params)
     KF_inh = NeuralPopulation("KF_inh", default_neural_params)
+    RampI = NeuralPopulation("RampI", default_neural_params)
+    PN = NeuralPopulation("PN", default_neural_params)
+    HN = NeuralPopulation("HN", default_neural_params)
+    VN = NeuralPopulation("VN", default_neural_params)
 
     # modifications:
     PreI.g_NaP = 5.0
@@ -142,6 +162,10 @@ def construct_model(dt, default_neural_params, connectivity_params):
     KF.tau_ad = 10000.0
     Sw1.tau_ad = 1000.0
     Sw2.tau_ad = 1000.0
+    PN.g_ad = 0.0
+    HN.g_ad = 0.0
+    VN.g_ad = 0.0
+
     # populations dictionary
     populations = dict()
     for name in population_names:
@@ -177,12 +201,12 @@ if __name__ == '__main__':
         print(amp, stim_duration, start)
         postfix = get_postfix(inh_NTS, inh_KF)
         generate_params(inh_NTS, inh_KF)
-        connectivity_params = json.load(open(f'{data_folder}/params/rCPG_swCPG_{str(date.today())}.json', 'r'))
+        connectivity_params = json.load(open(f'{data_folder}/params/rCPG_swCPG_full_{str(date.today())}.json', 'r'))
         Network_model = construct_model(dt, default_neural_params, connectivity_params)
         run_model(Network_model, start, stoptime, amp, stim_duration)
         fig, axes = Network_model.plot()
         folder_save_img_to = img_folder + "/" + f"other_plots/{str(date.today())}"
-        fig.savefig(folder_save_img_to + "/" + f"rCPG_swCPG_core_{amp}_{stim_duration}_{postfix}" + ".png")
+        fig.savefig(folder_save_img_to + "/" + f"rCPG_swCPG_full_{amp}_{stim_duration}_{postfix}" + ".png")
         plt.close(fig)
 
     # Short stim:
@@ -192,7 +216,7 @@ if __name__ == '__main__':
     inh_NTS = 1
     postfix = get_postfix(inh_NTS, inh_KF)
     generate_params(inh_NTS, inh_KF)
-    connectivity_params = json.load(open(f'{data_folder}/params/rCPG_swCPG_{str(date.today())}.json', 'r'))
+    connectivity_params = json.load(open(f'{data_folder}/params/rCPG_swCPG_full_{str(date.today())}.json', 'r'))
     for start in stim_starts:
         print(amp, stim_duration, start)
         Network_model = construct_model(dt, default_neural_params, connectivity_params)
@@ -200,31 +224,8 @@ if __name__ == '__main__':
         fig, axes = Network_model.plot()
 
         folder_save_img_to = img_folder + "/" + f"other_plots/{str(date.today())}"
-        fig.savefig(folder_save_img_to + "/" + f"rCPG_swCPG_core_{amp}_{stim_duration}_{start}_{postfix}" + ".png")
+        fig.savefig(folder_save_img_to + "/" + f"rCPG_swCPG_full_{amp}_{stim_duration}_{start}_{postfix}" + ".png")
         plt.close(fig)
-
-        # if inh_NTS == 1 and inh_KF == 1:
-        #     # short stim
-        #     for t_start in stim_starts:
-        #         stim_duration = stim_durations[0]
-        #         print(amp, stim_duration, t_start)
-        #         postfix = get_postfix(inh_NTS, inh_KF)
-        #         t_end = t_start + stim_duration
-        #         generate_params(inh_NTS, inh_KF)
-        #         file = open("rCPG_swCPG.json", "rb+")
-        #         params = json.load(file)
-        #         W = np.array(params["b"])
-        #         drives = np.array(params["c"])
-        #         signals, t = run_model(dt, t_start, t_end, amp, stoptime)
-        #         plt.close()
-        #         fig = plot_num_exp_traces(signals)
-        #         folder_save_img_to = img_folder + "/" + f"other_plots/traces"
-        #         fig.savefig(folder_save_img_to + "/" + f"num_exp_{t_start}_{amp}_{stim_duration}_{postfix}" + ".png")
-        #         plt.close(fig)
-    #     fig, axes = net.plot()
-    #     img_path = str(get_project_root()) + "/img"
-    #     create_dir_if_not_exist(f"{img_path}/other_plots/Rubins_modification/")
-    #     plt.savefig(f"{img_path}/other_plots/Rubins_modification/{i}.png")
 
 
 
