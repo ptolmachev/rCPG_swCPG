@@ -1,3 +1,14 @@
+# Comment from Mathias 05.06.2020:
+# I actually do not understand what is going on - The VNA looks very nice now and short stimuli resetting looks reasonable.
+# We done!
+# But now comes the downfall:
+# the tonic component during sequential swallowing is still weak -  this could be somehow acceptable -  however!!
+# after KF inhibition you still have only a 20-30%  prolongation inspiration as indicated by the phrenic nerve discharge
+# and worse is that you maintain postinspiratory discharge - what is published in about 20 papers is complete flat line
+# of postinspiratory discharge and doubling of the duration of phrenic nerve discharge as the absolute bare minimum
+# - more prolongation would be great.
+
+
 import numpy as np
 from matplotlib import pyplot as plt
 import json
