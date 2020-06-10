@@ -42,7 +42,7 @@ def generate_params(inh_NTS, inh_KF):
     W[0, 4] = 0.6  # PreI -> RampI
     W[0, 12] = 0.4  # PreI -> HN
 
-    W[1, 0] = -0.02  # EarlyI -> PreI
+    W[1, 0] = -0.06  # EarlyI -> PreI
     W[1,2] = -0.3   #EarlyI -> PostI
     W[1,3] = -0.4  #EarlyI -> AugE
     W[1,4] = -0.15  #EarlyI -> RampI
@@ -154,18 +154,10 @@ def construct_model(dt, default_neural_params, connectivity_params):
     HN = NeuralPopulation("HN", default_neural_params)
     VN = NeuralPopulation("VN", default_neural_params)
 
-    # modifications:
     PreI.g_NaP = 5.0
-    PreI.g_ad = 0.0
-    PreI.slope = 8
-    PostI.K_ad = 1.3
-    # PostI.tau_ad = 5000.0
-    Relay.tau_ad = 10000.0
-    # Sw1.tau_ad = 1000.0
-    # Sw2.tau_ad = 1000.0
-    PN.g_ad = 0.0
-    HN.g_ad = 0.0
-    VN.g_ad = 0.0
+    PreI.g_ad = HN.g_ad = PN.g_ad = VN.g_ad = RampI.g_ad = 0.0
+    HN.g_NaP = PN.g_NaP = VN.g_NaP = 0.0
+    Relay.tau_ad = 8000.0
 
     # populations dictionary
     populations = dict()
