@@ -39,7 +39,7 @@ def generate_params(inh_NTS, inh_KF):
     N = len(population_names)
     W = np.zeros((N,N))
     W[0, 1] = 0.3  # PreI -> EarlyI
-    W[0, 4] = 0.6  # PreI -> RampI
+    W[0, 4] = 0.1  # PreI -> RampI
     W[0, 12] = 0.7  # PreI -> HN
     W[0, 13] = 0.2  # PreI -> PN
 
@@ -52,60 +52,64 @@ def generate_params(inh_NTS, inh_KF):
     W[2,0] = -0.33    #PostI -> PreI
     W[2,1] = -0.35  #PostI -> EarlyI
     W[2,3] = -0.35   #PostI -> AugE
-    W[2,4] = -0.70   #PostI -> RampI
-    W[2,6] = -0.06  #PostI -> Sw1
-    W[2,7] = -0.07  #PostI -> Sw2
-    W[2,14] = 0.30  #PostI -> VN
+    W[2,4] = -0.85   #PostI -> RampI
+    # W[2,6] = -0.06  #PostI -> Sw1
+    # W[2,7] = -0.07  #PostI -> Sw2
+    W[2,14] = 0.37  #PostI -> VN
 
-    W[3,0] = -0.55   #AugE -> PreI
+    W[3,0] = -0.50   #AugE -> PreI
     W[3,1] = -0.40  #AugE -> EarlyI
     W[3,2] = -0.02  #AugE -> PostI
-    W[3,4] = -0.67  #AugE -> RampI
-    W[3,6] = -0.01 #AugE -> Sw1
-    W[3,7] = -0.02 #AugE -> Sw2
+    W[3,4] = -0.80  #AugE -> RampI
+    # W[3,6] = -0.01 #AugE -> Sw1
+    # W[3,7] = -0.02 #AugE -> Sw2
     W[3,9] = -0.01  #AugE -> KF_t
     W[3,10] = -0.01 #AugE -> KF_p
 
     W[4,12] = 0.2 # RampI -> M_HN
     W[4,13] = 0.7 # RampI -> M_PN
-    W[4,14] = 0.45 # RampI -> M_VN
+    W[4,14] = 0.60 # RampI -> M_VN
 
-    W[5,0] = -0.30 # Relay -> PreI
-    W[5,1] = -0.30 # Relay -> EarlyI
-    W[5,2] = 0.4 # Relay -> PostI
-    W[5,3] = -0.15 # Relay -> AugE
+    W[5,0] = -0.40 # Relay -> PreI
+    W[5,1] = -0.40 # Relay -> EarlyI
+    W[5,2] = 0.50 # Relay -> PostI
+    W[5,3] = -0.25 # Relay -> AugE
     W[5,4] = -0.2 # Relay -> RampI
-    W[5,6] = 0.84 # Relay -> Sw1
-    W[5,7] = 0.77 # Relay -> Sw2
+    W[5,6] = 0.69 # Relay -> Sw1
+    W[5,7] = 0.71 # Relay -> Sw2
     W[5,8] = 0.65 # Relay -> Sw3
     W[5,9] = 0.5 # Relay -> KF_t
     W[5,10] = 0.5 # Relay -> KF_p
 
-    W[6, 7] = -0.3*x #Sw1 -> Sw2
-    # W[6, 12] = 0.5  # Sw1 -> HN
-    # W[6, 14] = 0.6  # Sw1 -> VN
+    W[6, 0] = -0.30  # Sw1 -> PreI
+    W[6, 1] = -0.30  # Sw1 -> EarlyI
+    W[6, 3] = -0.15  # Sw1 -> AugE
+    W[6, 4] = -0.35  # Sw1 -> RampI
+    W[6, 7] = -0.55 * x #Sw1 -> Sw2
+    W[6, 12] = 0.5  # Sw1 -> HN
+    W[6, 14] = 0.6  # Sw1 -> VN
 
-    W[7,6] = -0.35*x #Sw2 -> Sw1
+    W[7,6] = -0.39 * x #Sw2 -> Sw1
 
     W[8,1] = 0.2 # Sw3 -> EarlyI
-    W[8,2] = 0.4 # Sw3 -> PostI
+    W[8,2] = 0.55 # Sw3 -> PostI
 
     W[9, 11] = 1.4  # KF_t -> KF_relay
 
-    W[10,2] = 0.85 # KF_p -> PostI
+    W[10,2] = 0.86 # KF_p -> PostI
     W[10,8] = 0.5 # KF_p -> Sw3
     W[10, 14] = 0.38  # KF_p -> M_VN
 
     W[11,0] = -0.07 #KF_relay -> PreI
     W[11,1] = -0.06 #KF_relay -> EarlyI
-    W[11,6] = -0.08 #KF_relay -> Sw1
-    W[11,7] = -0.08 #KF_relay -> Sw2
+    # W[11,6] = -0.08 #KF_relay -> Sw1
+    # W[11,7] = -0.08 #KF_relay -> Sw2
 
     W[15,9] = -0.3*y #KF_inh -> KF_t
     W[15,10] = -0.3*y #KF_inh -> KF_p
     W[16,5] = -0.3*x #NTS_inh -> Relay
-    W[16,6] = -0.2*x #NTS_inh -> Sw1
-    W[16,7] = -0.2*x #NTS_inh -> Sw2
+    W[16,6] = -0.1*x #NTS_inh -> Sw1
+    W[16,7] = -0.1*x #NTS_inh -> Sw2
     W[16,8] = -0.2*x #NTS_inh -> Sw3
 
     drives = np.zeros((1, N))
@@ -114,9 +118,9 @@ def generate_params(inh_NTS, inh_KF):
     drives[0,1] = 0.38  #To EarlyI
     drives[0,2] = 0.05  #To PostI
     drives[0,3] = 0.39  #To AugE
-    drives[0,4] = 0.57  #To RampI
-    drives[0,6] = 0.63 #To Sw1
-    drives[0,7] = 0.74  #To Sw2
+    drives[0,4] = 0.70  #To RampI
+    drives[0,6] = 0.33 #To Sw1
+    drives[0,7] = 0.45  #To Sw2
     drives[0,8] = 0.8  #To Sw3
     drives[0,9] = 0.8  #To KF_t
     drives[0,10] = 0.8  #To KF_p
@@ -162,7 +166,9 @@ def construct_model(dt, default_neural_params, connectivity_params):
     PreI.g_ad = HN.g_ad = PN.g_ad = VN.g_ad = RampI.g_ad = 0.0
     HN.g_NaP = PN.g_NaP = VN.g_NaP = 0.0
     Relay.tau_ad = 8000.0
-    PostI.tau_ad = 5000.0
+    PostI.tau_ad = 7500.0
+    Sw1.tau_ad = 1000.0
+    Sw2.tau_ad = 1000.0
 
     # populations dictionary
     populations = dict()
