@@ -40,13 +40,13 @@ def generate_params(inh_NTS, inh_KF):
     W = np.zeros((N,N))
     W[0, 1] = 0.3  # PreI -> EarlyI
     W[0, 4] = 0.1  # PreI -> RampI
-    W[0, 12] = 0.7  # PreI -> HN
-    W[0, 13] = 0.2  # PreI -> PN
+    W[0, 12] = 0.75  # PreI -> HN
+    # W[0, 13] = 0.2  # PreI -> PN
 
     W[1, 0] = -0.10  # EarlyI -> PreI
     W[1,2] = -0.3   #EarlyI -> PostI
     W[1,3] = -0.4  #EarlyI -> AugE
-    W[1,4] = -0.20  #EarlyI -> RampI
+    W[1,4] = -0.17  #EarlyI -> RampI
     W[1, 6] = -0.01  # EarlyI -> Sw1
     W[1,10] = -0.3  #EarlyI -> KF_p
 
@@ -69,8 +69,8 @@ def generate_params(inh_NTS, inh_KF):
     W[3,10] = -0.01 #AugE -> KF_p
 
     W[4,12] = 0.2 # RampI -> M_HN
-    W[4,13] = 0.7 # RampI -> M_PN
-    W[4,14] = 0.60 # RampI -> M_VN
+    W[4,13] = 0.85 # RampI -> M_PN
+    W[4,14] = 0.55 # RampI -> M_VN
 
     W[5,0] = -0.40 # Relay -> PreI
     W[5,1] = -0.40 # Relay -> EarlyI
@@ -85,13 +85,13 @@ def generate_params(inh_NTS, inh_KF):
 
     W[6, 0] = -0.30  # Sw1 -> PreI
     W[6, 1] = -0.30  # Sw1 -> EarlyI
-    W[6, 3] = -0.15  # Sw1 -> AugE
+    W[6, 3] = -0.05  # Sw1 -> AugE
     W[6, 4] = -0.35  # Sw1 -> RampI
-    W[6, 7] = -0.60 * x #Sw1 -> Sw2
+    W[6, 7] = -0.62 * x #Sw1 -> Sw2
     W[6, 12] = 0.5  # Sw1 -> HN
     W[6, 14] = 0.6  # Sw1 -> VN
 
-    W[7,6] = -0.39 * x #Sw2 -> Sw1
+    W[7,6] = -0.41 * x #Sw2 -> Sw1
 
     W[8,1] = 0.2 # Sw3 -> EarlyI
     W[8,2] = 0.45 # Sw3 -> PostI
@@ -217,7 +217,7 @@ if __name__ == '__main__':
 
     # Short stim:
     stim_duration = 250
-    stim_starts = [22000,23000,24000]
+    stim_starts = [22000,22500,23000,23500,24000,24500]
     inh_KF = 1
     inh_NTS = 1
     postfix = get_postfix(inh_NTS, inh_KF)
