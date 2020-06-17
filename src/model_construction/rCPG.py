@@ -8,6 +8,18 @@ from src.utils.gen_utils import get_postfix, create_dir_if_not_exist, get_projec
 from src.num_experiments.Model import Network
 from src.num_experiments.Model import NeuralPopulation
 
+def get_postfix(set_drives):
+    if np.allclose(np.array(set_drives), np.array([1,1,1,1,1])):
+        postfix = 'intact'
+    elif np.allclose(np.array(set_drives), np.array([0,1,1,1,1])):
+        postfix = 'inh_KF'
+    elif np.allclose(np.array(set_drives), np.array([1, 0, 1, 1, 1])):
+        postfix = 'inh_NTS'
+    elif np.allclose(np.array(set_drives), np.array([0, 0, 0, 1, 1])):
+        postfix = 'BotC_PreBotC'
+    else:
+        postfix = 'other'
+    return postfix
 
 if __name__ == '__main__':
     default_neural_params = {
@@ -61,46 +73,45 @@ if __name__ == '__main__':
 
     W[1, 0] = -0.08 # EarlyI -> PreI
     W[1, 2] = -0.25 # EarlyI -> PostI
-    W[1, 3] = -0.35 # EarlyI -> AugE
+    W[1, 3] = -0.63 # EarlyI -> AugE
 
-    W[2, 0] = -0.30 # PostI -> PreI
-    W[2, 1] = -0.05 # PostI -> EarlyI
-    W[2, 3] = -0.24 # PostI -> AugE
+    W[2, 0] = -0.32 # PostI -> PreI
+    W[2, 1] = -0.20 # PostI -> EarlyI
+    W[2, 3] = -0.36 # PostI -> AugE
 
-    W[3, 0] = -0.20 # AugE -> PreI
-    W[3, 1] = -0.35 # AugE -> EarlyI
-    W[3, 2] = -0.05 # AugE -> PostI
+    W[3, 0] = -0.30 # AugE -> PreI
+    W[3, 1] = -0.43 # AugE -> EarlyI
+    W[3, 2] = -0.06 # AugE -> PostI
 
     drives = np.zeros((5, N))
-
     # # Pons
-    drives[0, 0] = 0.00 # -> PreI
-    drives[0, 1] = 0.05 # -> EarlyI
-    drives[0, 2] = 0.38 # -> PostI
-    drives[0, 3] = 0.15 # -> AugE
+    drives[0, 0] = 0.065 # -> PreI
+    drives[0, 1] = 0.20 # -> EarlyI
+    drives[0, 2] = 0.48 # -> PostI
+    drives[0, 3] = 0.22 # -> AugE
 
     # # NTS
     drives[1, 0] = 0.00 # -> PreI
-    drives[1, 1] = 0.05 # -> EarlyI
-    drives[1, 2] = 0.25 # -> PostI
-    drives[1, 3] = 0.1 # -> AugE
+    drives[1, 1] = 0.00 # -> EarlyI
+    drives[1, 2] = 0.11 # -> PostI
+    drives[1, 3] = 0.00 # -> AugE
 
     # other
-    drives[2, 0] = 0.065 # -> PreI
-    drives[2, 1] = 0.20 # -> EarlyI
+    drives[2, 0] = 0.00 # -> PreI
+    drives[2, 1] = 0.00 # -> EarlyI
     drives[2, 2] = 0.00 # -> PostI
-    drives[2, 3] = 0.08 # -> AugE
+    drives[2, 3] = 0.00 # -> AugE
 
     # BotC
-    drives[3, 0] = 0.07 # -> PreI
-    drives[3, 1] = 0.30 # -> EarlyI
-    drives[3, 2] = 0.0 # -> PostI
-    drives[3, 3] = 0.4 # -> AugE
+    drives[3, 0] = 0.09 # -> PreI
+    drives[3, 1] = 0.27 # -> EarlyI
+    drives[3, 2] = 0.00 # -> PostI
+    drives[3, 3] = 0.42 # -> AugE
 
     #PreBotC
     drives[4, 0] = 0.025  # -> PreI
 
-    set_drives = [[1,1,1,1,1],[0,1,1,1,1] ,[1,0,1,1,1], [0,0,0,1,1]]
+    set_drives = [[1,1,1,1,1],[0,1,1,1,1],[1,0,1,1,1], [0,0,0,1,1]]
     for i, m in enumerate(set_drives):
         drives_ = (drives.T * np.array(m)).T
         dt = 1.0
@@ -114,8 +125,8 @@ if __name__ == '__main__':
         net.run(int(30000/dt)) # runs for 30 seconds
         fig, axes = net.plot()
         img_path = str(get_project_root()) + "/img"
-        create_dir_if_not_exist(f"{img_path}/other_plots/Rubins_modification/")
-        plt.savefig(f"{img_path}/other_plots/Rubins_modification/{i}.png")
+        # create_dir_if_not_exist(f"{img_path}/other_plots/Rubins_modification/")
+        plt.savefig(f"{img_path}/other_plots/Rubins_modification/{get_postfix(set_drives[i])}.png")
         # plt.show(block = True)
 
 

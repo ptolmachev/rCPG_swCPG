@@ -115,7 +115,7 @@ def generate_params(inh_NTS, inh_KF):
     W[16,8] = -0.2*x #NTS_inh -> Sw3
 
     drives = np.zeros((1, N))
-    # other
+    # other`
     drives[0,0] = 0.265 #To PreI
     drives[0,1] = 0.38  #To EarlyI
     drives[0,2] = 0.05  #To PostI
@@ -217,7 +217,7 @@ if __name__ == '__main__':
 
     # Short stim:
     stim_duration = 250
-    stim_starts = [22000,22500,23000,23500,24000,24500]
+    stim_starts = [22000,23000,24000]
     inh_KF = 1
     inh_NTS = 1
     postfix = get_postfix(inh_NTS, inh_KF)
