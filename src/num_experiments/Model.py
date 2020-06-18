@@ -19,6 +19,7 @@ class Network():
         # should be a dictionary
         self.history_len = history_len
         self.populations = populations
+        self.population_names = list(populations.keys())
         self.N = len(self.populations)
         self.W = synaptic_weights
         self.W_neg = np.maximum(-self.W, 0)
