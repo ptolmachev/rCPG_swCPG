@@ -56,13 +56,13 @@ def set_weights_and_drives(x, y, population_names):
 
     W[p.index("KF_t"), p.index("PreI")] = +0.16 * x # KF_t -> PreI
     W[p.index("KF_t"), p.index("EarlyI")] = +0.66 * x # KF_t -> EarlyI
-    W[p.index("KF_t"), p.index("PostI")] = +1.40 * x # KF_t -> PostI
+    W[p.index("KF_t"), p.index("PostI")] = +1.10 * x # KF_t -> PostI
     W[p.index("KF_t"), p.index("AugE")] = +0.72 * x # KF_t -> AugE
     W[p.index("KF_t"), p.index("KF_relay")] = +0.7 * x  # KF_t -> KF_relay
 
     W[p.index("KF_p"), p.index("PreI")] = +0.00 * x # KF_p -> PreI
     W[p.index("KF_p"), p.index("EarlyI")] = +0.00 * x# KF_p -> EarlyI
-    W[p.index("KF_p"), p.index("PostI")] = +0.00 * x# KF_p -> PostI
+    W[p.index("KF_p"), p.index("PostI")] = +0.60 * x# KF_p -> PostI
     W[p.index("KF_p"), p.index("AugE")] = +0.00 * x# KF_p -> AugE
 
     W[p.index("KF_relay"), p.index("Sw1")] = -0.09  # KF_relay -> Sw1
@@ -74,23 +74,23 @@ def set_weights_and_drives(x, y, population_names):
 
     W[p.index("Sw1"), p.index("PreI")] = -0.30   # Sw1 -> PreI
     W[p.index("Sw1"), p.index("EarlyI")] = -0.17   # Sw1 -> EarlyI
-    W[p.index("Sw1"), p.index("AugE")] = -0.10   # Sw1 -> AugE
+    W[p.index("Sw1"), p.index("AugE")] = -0.15   # Sw1 -> AugE
     W[p.index("Sw1"), p.index("Sw2")] = -0.56  # Sw1 -> Sw2
     W[p.index("Sw2"), p.index("Sw1")] = -0.39  # Sw2 -> Sw1
 
     W[p.index("Relay"), p.index("PreI")] = -0.30 * y # Relay -> PreI
     W[p.index("Relay"), p.index("EarlyI")] = -0.30 * y  # Relay -> EarlyI
     W[p.index("Relay"), p.index("AugE")] = -0.30 * y # Relay -> AugE
-    W[p.index("Relay"), p.index("KF_t")] = 0.30 * x * y  # Relay -> KF_t
-    W[p.index("Relay"), p.index("KF_p")] = 0.20 * x * y # Relay -> KF_p
-    W[p.index("Relay"), p.index("Sw1")] = 0.71 * y  # Relay -> Sw1
+    W[p.index("Relay"), p.index("KF_t")] = 0.15 * x * y  # Relay -> KF_t
+    W[p.index("Relay"), p.index("KF_p")] = 0.15 * x * y # Relay -> KF_p
+    W[p.index("Relay"), p.index("Sw1")] = 0.74 * y  # Relay -> Sw1
     W[p.index("Relay"), p.index("Sw2")] = 0.71* y  # Relay -> Sw2
     W[p.index("Relay"), p.index("NTS_drive")] = 0.15 * y  # Relay -> NTS_drive
 
     drives = np.zeros((3, N))
     # other
     drives[0, p.index("KF_t")] = 0.81 * x  # -> KF_t
-    drives[0, p.index("KF_p")] = 0.25 * x  # -> KF_p
+    drives[0, p.index("KF_p")] = 0.50 * x  # -> KF_p
     drives[0, p.index("NTS_drive")] = 0.68 * y  # -> NTS_drive
     drives[0, p.index("Sw1")] = 0.33 * y  # -> Sw1
     drives[0, p.index("Sw2")] = 0.45 * y  # -> Sw2
