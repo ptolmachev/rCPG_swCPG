@@ -19,7 +19,7 @@ class Network():
         # should be a dictionary
         self.history_len = history_len
         self.populations = populations
-        self.population_names = list(populations.keys())
+        self.pop_names = list(populations.keys())
         self.N = len(self.populations)
         self.W = synaptic_weights
         self.W_neg = np.maximum(-self.W, 0)
@@ -36,6 +36,8 @@ class Network():
         self.C, self.g_NaP, self.g_K, self.g_ad, self.g_l, self.g_synE, self.g_synI, self.E_Na, self.E_K, self.E_l,\
         self.E_ad, self.E_synE, self.E_synI, self.V_half, self.slope, self.K_ad, self.tau_ad, self.tau_NaP_max = [np.zeros(self.N) for i in range(18)]
         self.v_history = deque(maxlen=self.history_len)
+        # self.a_history = deque(maxlen=self.history_len)
+        # self.b_history = deque(maxlen=self.history_len)
         self.t = deque(maxlen=self.history_len)
         self.v_history.append(self.v)
         self.t.append(0)
@@ -73,11 +75,11 @@ class Network():
         res[c] = self.g_NaP[c] * self.m_NaP(v[c]) * h_NaP[c] * (v[c] - self.E_Na[c])
         return res
 
-    def I_K(self, v):
-        res = np.zeros_like(v)
-        c = self.g_K != 0.0
-        res[c] = self.g_K[c] * ((self.m_K(v[c])) ** 4) * (v[c] - self.E_K[c])
-        return res
+    # def I_K(self, v):
+    #     res = np.zeros_like(v)
+    #     c = self.g_K != 0.0
+    #     res[c] = self.g_K[c] * ((self.m_K(v[c])) ** 4) * (v[c] - self.E_K[c])
+    #     return res
 
     def I_leakage(self, v):
         res = np.zeros_like(v)
@@ -153,6 +155,15 @@ class Network():
             self.step()
             self.v_history.append(deepcopy(self.v))
             self.t.append(self.t[-1] + self.dt)
+
+
+            # i1 = self.pop_names.index("NTS_drive")
+            # i2 = self.pop_names.index("NTS_inh")
+            # mp = self.v[i1]
+            # w = self.W_neg[i2, i1]
+            # fr = self.firing_rate(self.v[i2], self.V_half[i2], self.slope[i2])
+            # self.a_history.append(deepcopy(self.g_synE[i1] * (mp - self.E_synE[i1])))
+            # self.b_history.append(deepcopy(self.g_synI[i1] * (mp - self.E_synI[i1]) * w * fr))
 
     def plot(self):
         V_array = np.array(self.v_history).T
