@@ -12,15 +12,15 @@ from src.num_experiments.Model import NeuralPopulation
 
 def get_postfix(x, y):
     postfix = ''
-    if x < 1 :
+    if x == 2 :
         postfix += "KF_disinh"
-    elif x > 1 :
+    elif x == 0 :
         postfix += "KF_inh"
     elif x == 1:
         pass
-    if y < 1:
+    if y == 2:
         postfix += "_NTS_disinh"
-    elif y > 1:
+    elif y == 0:
         postfix += "_NTS_inh"
     elif y == 1:
         pass
@@ -42,9 +42,9 @@ def set_weights_and_drives(x, y, population_names):
     W[p.index("EarlyI"), p.index("PreI")] = -0.08 # EarlyI -> PreI
     W[p.index("EarlyI"), p.index("PostI")] = -0.25 # EarlyI -> PostI
     W[p.index("EarlyI"), p.index("AugE")] = -0.63 # EarlyI -> AugE
-    W[p.index("EarlyI"), p.index("KF_p")] = np.maximum(-Max_inhibition,-0.10 * x) # EarlyI -> KF_p
-    W[p.index("EarlyI"), p.index("Sw1")] = np.maximum(-Max_inhibition,-0.001 * y) # EarlyI -> Sw1
-    # W[p.index("EarlyI"), p.index("Sw2")] = np.maximum(-Max_inhibition,-0.001 * y) # EarlyI -> Sw2
+    W[p.index("EarlyI"), p.index("KF_p")] = -0.10 # EarlyI -> KF_p
+    W[p.index("EarlyI"), p.index("Sw1")] = -0.003 # EarlyI -> Sw1
+    # W[p.index("EarlyI"), p.index("Sw2")] = -0.001 # EarlyI -> Sw2
 
     W[p.index("PostI"), p.index("PreI")] = -0.32 # PostI -> PreI
     W[p.index("PostI"), p.index("EarlyI")] = -0.20 # PostI -> EarlyI
@@ -54,52 +54,46 @@ def set_weights_and_drives(x, y, population_names):
     W[p.index("AugE"), p.index("EarlyI")] = -0.43 # AugE -> EarlyI
     W[p.index("AugE"), p.index("PostI")] = -0.06 # AugE -> PostI
 
-    W[p.index("KF_t"), p.index("PreI")] = +0.16 # KF_t -> PreI
-    W[p.index("KF_t"), p.index("EarlyI")] = +0.66 # KF_t -> EarlyI
-    W[p.index("KF_t"), p.index("PostI")] = +1.50 # KF_t -> PostI
-    W[p.index("KF_t"), p.index("AugE")] = +0.72 # KF_t -> AugE
-    W[p.index("KF_t"), p.index("KF_relay")] = +0.7  # KF_t -> KF_relay
+    W[p.index("KF_t"), p.index("PreI")] = +0.16 * x # KF_t -> PreI
+    W[p.index("KF_t"), p.index("EarlyI")] = +0.66 * x # KF_t -> EarlyI
+    W[p.index("KF_t"), p.index("PostI")] = +1.40 * x # KF_t -> PostI
+    W[p.index("KF_t"), p.index("AugE")] = +0.72 * x # KF_t -> AugE
+    W[p.index("KF_t"), p.index("KF_relay")] = +0.7 * x  # KF_t -> KF_relay
 
-    W[p.index("KF_p"), p.index("PreI")] = +0.00 # KF_p -> PreI
-    W[p.index("KF_p"), p.index("EarlyI")] = +0.00 # KF_p -> EarlyI
-    W[p.index("KF_p"), p.index("PostI")] = +0.00 # KF_p -> PostI
-    W[p.index("KF_p"), p.index("AugE")] = +0.00 # KF_p -> AugE
+    W[p.index("KF_p"), p.index("PreI")] = +0.00 * x # KF_p -> PreI
+    W[p.index("KF_p"), p.index("EarlyI")] = +0.00 * x# KF_p -> EarlyI
+    W[p.index("KF_p"), p.index("PostI")] = +0.00 * x# KF_p -> PostI
+    W[p.index("KF_p"), p.index("AugE")] = +0.00 * x# KF_p -> AugE
 
-    W[p.index("KF_relay"), p.index("Sw1")] = -0.06  # KF_relay -> Sw1
+    W[p.index("KF_relay"), p.index("Sw1")] = -0.09  # KF_relay -> Sw1
     W[p.index("KF_relay"), p.index("Sw2")] = -0.05  # KF_relay -> Sw2
 
-    W[p.index("KF_inh"), p.index("KF_t")] = np.maximum(-Max_inhibition,-0.15 * x) # KF_inh -> KF_t
-    W[p.index("KF_inh"), p.index("KF_p")] = np.maximum(-Max_inhibition,-0.15 * x) # KF_inh -> KF_p
 
     W[p.index("NTS_drive"), p.index("PostI")] = 0.42  # NTS_drive -> PostI
 
-    W[p.index("NTS_inh"), p.index("NTS_drive")] = np.maximum(-Max_inhibition,-0.15 * y) # NTS_inh -> NTS_drive
-    W[p.index("NTS_inh"), p.index("Relay")] = np.maximum(-Max_inhibition,-0.15 * y)  # NTS_inh -> Relay
 
     W[p.index("Sw1"), p.index("PreI")] = -0.30   # Sw1 -> PreI
-    W[p.index("Sw1"), p.index("EarlyI")] = -0.20   # Sw1 -> EarlyI
-    W[p.index("Sw1"), p.index("AugE")] = -0.35   # Sw1 -> AugE
-    W[p.index("Sw1"), p.index("Sw2")] = np.maximum(-Max_inhibition,-0.56 * y)  # Sw1 -> Sw2
-    W[p.index("Sw2"), p.index("Sw1")] = np.maximum(-Max_inhibition,-0.39 * y)  # Sw2 -> Sw1
+    W[p.index("Sw1"), p.index("EarlyI")] = -0.17   # Sw1 -> EarlyI
+    W[p.index("Sw1"), p.index("AugE")] = -0.10   # Sw1 -> AugE
+    W[p.index("Sw1"), p.index("Sw2")] = -0.56  # Sw1 -> Sw2
+    W[p.index("Sw2"), p.index("Sw1")] = -0.39  # Sw2 -> Sw1
 
-    W[p.index("Relay"), p.index("PreI")] = -0.30  # Relay -> PreI
-    W[p.index("Relay"), p.index("EarlyI")] = -0.30  # Relay -> EarlyI
-    W[p.index("Relay"), p.index("AugE")] = -0.30  # Relay -> AugE
-    W[p.index("Relay"), p.index("KF_t")] = 0.50  # Relay -> KF_t
-    W[p.index("Relay"), p.index("KF_p")] = 0.50  # Relay -> KF_p
-    W[p.index("Relay"), p.index("Sw1")] = 0.69  # Relay -> Sw1
-    W[p.index("Relay"), p.index("Sw2")] = 0.71  # Relay -> Sw2
-    W[p.index("Relay"), p.index("NTS_drive")] = 0.15  # Relay -> NTS_drive
+    W[p.index("Relay"), p.index("PreI")] = -0.30 * y # Relay -> PreI
+    W[p.index("Relay"), p.index("EarlyI")] = -0.30 * y  # Relay -> EarlyI
+    W[p.index("Relay"), p.index("AugE")] = -0.30 * y # Relay -> AugE
+    W[p.index("Relay"), p.index("KF_t")] = 0.30 * x * y  # Relay -> KF_t
+    W[p.index("Relay"), p.index("KF_p")] = 0.20 * x * y # Relay -> KF_p
+    W[p.index("Relay"), p.index("Sw1")] = 0.71 * y  # Relay -> Sw1
+    W[p.index("Relay"), p.index("Sw2")] = 0.71* y  # Relay -> Sw2
+    W[p.index("Relay"), p.index("NTS_drive")] = 0.15 * y  # Relay -> NTS_drive
 
     drives = np.zeros((3, N))
     # other
-    drives[0, p.index("KF_t")] = 1.15  # -> KF_t
-    drives[0, p.index("KF_p")] = 0.45  # -> KF_p
-    drives[0, p.index("KF_inh")] = 0.60  # -> KF_inh
-    drives[0, p.index("NTS_drive")] = 1.00  # -> NTS_drive
-    drives[0, p.index("NTS_inh")] = 0.60  # -> NTS_inh
-    drives[0, p.index("Sw1")] = 0.33  # -> Sw1
-    drives[0, p.index("Sw2")] = 0.45  # -> Sw2
+    drives[0, p.index("KF_t")] = 0.81 * x  # -> KF_t
+    drives[0, p.index("KF_p")] = 0.25 * x  # -> KF_p
+    drives[0, p.index("NTS_drive")] = 0.68 * y  # -> NTS_drive
+    drives[0, p.index("Sw1")] = 0.33 * y  # -> Sw1
+    drives[0, p.index("Sw2")] = 0.45 * y  # -> Sw2
 
     # BotC
     drives[1, p.index("PreI")] = 0.09 # -> PreI
@@ -125,8 +119,6 @@ def construct_model(population_names, W, drives, dt, default_neural_params):
     Sw2 = NeuralPopulation("Sw2", default_neural_params)
     NTS_drive = NeuralPopulation("NTS_drive", default_neural_params)
     Relay = NeuralPopulation("Relay", default_neural_params)
-    NTS_inh = NeuralPopulation("NTS_inh", default_neural_params)
-    KF_inh = NeuralPopulation("KF_inh", default_neural_params)
 
     # modifications:
     PreI.g_NaP = 5.0
@@ -151,7 +143,7 @@ def run_model(net, start, stop, amplitude, duration):
     net.run(int(start / dt))
     # set input to Relay neurons
     inp = np.zeros(net.N)
-    inp[net.population_names.index("Relay")] = amplitude  # Relay Neurons
+    inp[net.pop_names.index("Relay")] = amplitude  # Relay Neurons
     net.set_input_current(inp)
     net.run(int((duration) / dt))
     net.set_input_current(np.zeros(net.N))
@@ -164,24 +156,25 @@ if __name__ == '__main__':
     img_folder = f"{get_project_root()}/img"
     default_neural_params = json.load(open(f'{data_folder}/params/default_neural_params.json', 'r+'))
 
-    population_names = ['PreI', 'EarlyI', "PostI", "AugE", "KF_t", "KF_p", "KF_relay", "KF_inh", "NTS_drive", "NTS_inh",
+    population_names = ['PreI', 'EarlyI', "PostI", "AugE", "KF_t", "KF_p", "KF_relay", "NTS_drive",
                         "Sw1", "Sw2", "Relay"]
     dt = 0.5
     stoptime = 60000
-    amp = 200
+    amp = 150
     # long stim
     stim_duration = 10000
     start = 25000
     create_dir_if_not_exist(img_folder + "/" + f"other_plots/{str(date.today())}")
-    for inh_KF, inh_NTS in [[1, 1], [1, 10], [10, 1]]: #,
+    for inh_KF, inh_NTS in [[1, 1], [1, 0], [0, 1]]: #,
         print(amp, stim_duration, start)
         postfix = get_postfix(inh_KF, inh_NTS)
         W, drives = set_weights_and_drives(inh_KF, inh_NTS, population_names)
         Network_model = construct_model(population_names, W, drives, dt, default_neural_params)
         run_model(Network_model, start, stoptime, amp, stim_duration)
+
         fig, axes = Network_model.plot()
         folder_save_img_to = img_folder + "/" + f"other_plots/{str(date.today())}"
-        fig.savefig(folder_save_img_to + "/" + f"rCPG_KF_NTS_{amp}_{stim_duration}_{postfix}" + ".png")
+        fig.savefig(folder_save_img_to + "/" + f"rCPG_swCPG_{amp}_{stim_duration}_{postfix}" + ".png")
         plt.close(fig)
 
     # Short stim:
@@ -198,7 +191,7 @@ if __name__ == '__main__':
         fig, axes = Network_model.plot()
 
         folder_save_img_to = img_folder + "/" + f"other_plots/{str(date.today())}"
-        fig.savefig(folder_save_img_to + "/" + f"rCPG_KF_NTS_{amp}_{stim_duration}_{start}_{postfix}" + ".png")
+        fig.savefig(folder_save_img_to + "/" + f"rCPG_swCPG_{amp}_{stim_duration}_{start}_{postfix}" + ".png")
         plt.close(fig)
 
 
