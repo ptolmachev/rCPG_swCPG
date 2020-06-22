@@ -46,8 +46,8 @@ def set_weights_and_drives(x, y, population_names):
     W[p.index("EarlyI"), p.index("Sw1")] = -0.003 # EarlyI -> Sw1
     # W[p.index("EarlyI"), p.index("Sw2")] = -0.001 # EarlyI -> Sw2
 
-    W[p.index("PostI"), p.index("PreI")] = -0.32 # PostI -> PreI
-    W[p.index("PostI"), p.index("EarlyI")] = -0.20 # PostI -> EarlyI
+    W[p.index("PostI"), p.index("PreI")] = -0.35 # PostI -> PreI
+    W[p.index("PostI"), p.index("EarlyI")] = -0.22 # PostI -> EarlyI
     W[p.index("PostI"), p.index("AugE")] = -0.36 # PostI -> AugE
 
     W[p.index("AugE"), p.index("PreI")] = -0.30 # AugE -> PreI
