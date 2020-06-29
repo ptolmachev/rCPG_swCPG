@@ -24,3 +24,4 @@ default_neural_params = {
     'tau_NaP_max' : 6000}
 create_dir_if_not_exist(f'{data_folder}/params')
 json.dump(default_neural_params, open(f'{data_folder}/params/default_neural_params.json', 'w+'))
+

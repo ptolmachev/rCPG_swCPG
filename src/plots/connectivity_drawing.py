@@ -80,10 +80,11 @@ class Neural_node():
 
 def draw_line(t, pos1, pos2, style_params):
     size = style_params['size']
+    max_size = style_params['max_size']
     color = style_params['color']
     cap = style_params['cap']
 
-    t.pen(pencolor=color, pensize=1) #np.exp(0.01 * (np.abs(size) - np.median(np.abs(b))))
+    t.pen(pencolor=color, pensize=5 * size / max_size) #np.exp(0.01 * (np.abs(size) - np.median(np.abs(b))))
     t.penup()
     t.setposition(pos1)
     a = t.towards(pos2)
@@ -96,11 +97,11 @@ def draw_line(t, pos1, pos2, style_params):
     t.stamp()
     t.penup()
 
-def draw_connection(node_A, node_B, strength):
+def draw_connection(node_A, node_B, strength, max_strength):
     if strength > 0:
         color = '#FF5555'
         con = 'ex'
-        style_params = {'size':  np.abs(strength), 'color': color, 'cap': 'arrow'}
+        style_params = {'size':  np.abs(strength), 'color': color, 'cap': 'arrow', 'max_size' : max_strength}
         if node_A.type == 'motor':
             x_start = node_A.x
             y_start = node_A.y
@@ -110,7 +111,7 @@ def draw_connection(node_A, node_B, strength):
     else:
         color = '#5555FF'
         con = 'inh'
-        style_params = {'size' : np.abs(strength), 'color': color, 'cap' : 'circle'}
+        style_params = {'size' : np.abs(strength), 'color': color, 'cap' : 'circle', 'max_size' : max_strength}
         x_start = node_A.x_inh
         y_start = node_A.y_inh
 
@@ -145,13 +146,12 @@ if __name__ == '__main__':
     t.speed(0.0)
     t.penup()
 
-
-    x = "r * 0.5 * np.random.rand() - r"
+    x = "r * 0.75 * np.random.rand() - r"
     SensoryInp = Neural_node(type='motor', name='SensoryInp', pos=(-6*(r) + eval(x), 4 *(r)+ eval(x)), r=r)
     Relay = Neural_node(type='both', name='Relay', pos=(-2 *(r)+ eval(x), 4 * (r) + eval(x)), r=r)
     Sw1 = Neural_node(type='both', name='Sw1', pos=(3.5*(r)+ eval(x), 2*(r)+ eval(x)), r=r)
     Sw2 = Neural_node(type='inhibitory', name='Sw2', pos=(0.5*(r)+ eval(x), 2*(r)+ eval(x)), r=r)
-    Sw3 = Neural_node(type='excitatory', name='Sw3', pos=(1.75*(r)+ eval(x), -0.25*(r)+ eval(x)), r=r)
+    NTS_drive = Neural_node(type='excitatory', name='NTS_drive', pos=(1.75*(r)+ eval(x), -0.25*(r)+ eval(x)), r=r)
     PreI = Neural_node(type='excitatory', name='PreI', pos=(2*(r)+ eval(x), -3*(r)+ eval(x)), r=r)
     EarlyI = Neural_node(type='both', name='EarlyI', pos=(2*(r)+ eval(x), -7*(r)+ eval(x)), r=r)
     PostI = Neural_node(type='both', name='PostI', pos=(-2*(r)+ eval(x), -3*(r)+ eval(x)), r=r)
@@ -159,7 +159,7 @@ if __name__ == '__main__':
     RampI  = Neural_node(type='excitatory', name='RampI', pos=(5*(r)+ eval(x), -5*(r)+ eval(x)), r=r)
     KF_t = Neural_node(type='excitatory', name='KF_t', pos=(-6 *(r)+ eval(x), -2 *(r)+ eval(x)), r=r)
     KF_p = Neural_node(type='excitatory', name='KF_p', pos=(-6*(r)+ eval(x), -4.5*(r)+ eval(x)), r=r)
-    KF_r = Neural_node(type='inhibitory', name='KF_r', pos=(-3.5*(r)+ eval(x), 0.5*(r)+ eval(x)), r=r)
+    KF_relay = Neural_node(type='inhibitory', name='KF_relay', pos=(-3.5*(r)+ eval(x), 0.5*(r)+ eval(x)), r=r)
     HN  = Neural_node(type='motor', name='HN', pos=(6 * r + eval(x), -1*r + eval(x)), r=r)
     PN = Neural_node(type='motor', name='PN', pos=(8 * r + eval(x) , -5 * r + eval(x)), r=r)
     VN = Neural_node(type='motor', name='VN', pos=(6 * r + eval(x), -9 * r + eval(x)), r=r)
@@ -168,7 +168,7 @@ if __name__ == '__main__':
     Relay.draw(t)
     Sw1.draw(t)
     Sw2.draw(t)
-    Sw3.draw(t)
+    NTS_drive.draw(t)
     PreI.draw(t)
     EarlyI.draw(t)
     PostI.draw(t)
@@ -176,37 +176,114 @@ if __name__ == '__main__':
     RampI.draw(t)
     KF_t.draw(t)
     KF_p.draw(t)
-    KF_r.draw(t)
+    KF_relay.draw(t)
     HN.draw(t)
     PN.draw(t)
     VN.draw(t)
 
     # #draw connection
-    # # load gson
-    data_path = str(get_project_root()) + "/data"
-    file = open(f"{data_path}/rCPG_swCPG.json", "rb+")
-    params = json.load(file)
-    b = np.array(params["b"])
-    c = np.array(params["c"])
+    x = 1
+    y = 1
+    population_names = ['PreI', 'EarlyI', "PostI", "AugE", "KF_t", "KF_p", "KF_relay", "NTS_drive",
+                        "Sw1", "Sw2", "Relay", "RampI"]
+    N = len(population_names)
+    p = population_names
+    W = np.zeros((N,N))
+    W[p.index("PreI"), p.index("EarlyI")] = 0.40 # PreI -> EarlyI
+    W[p.index("PreI"), p.index("PostI")] = 0.00 # PreI -> PostI
+    W[p.index("PreI"), p.index("AugE")] = 0.00 # PreI -> AugE
+    W[p.index("PreI"), p.index("RampI")] = 0.90 # PreI -> RampI
 
-    # 0- PreI   # 1 - EarlyI  # 2 - PostI
-    # 3 - AugE  # 4 - RampI   # 5 - Relay
-    # 6 - Sw 1  # 7 - Sw2     # 8 - Sw3
-    # 9 - KF_t   # 10 - KF_p   # 11 - KF_r
-    # 12 - M_HN  # 13- M_PN  # 14 - M_VN
-    # 15 - KF_inh # 16 - NTS_inh # 17 - SI
+    W[p.index("EarlyI"), p.index("PreI")] = -0.08 # EarlyI -> PreI
+    W[p.index("EarlyI"), p.index("PostI")] = -0.25 # EarlyI -> PostI
+    W[p.index("EarlyI"), p.index("AugE")] = -0.63 # EarlyI -> AugE
+    W[p.index("EarlyI"), p.index("KF_p")] = -0.10 # EarlyI -> KF_p
+    W[p.index("EarlyI"), p.index("Sw1")] = -0.003 # EarlyI -> Sw1
+    W[p.index("EarlyI"), p.index("RampI")] = -0.15 # EarlyI -> RampI
+
+    W[p.index("PostI"), p.index("PreI")] = -0.35 # PostI -> PreI
+    W[p.index("PostI"), p.index("EarlyI")] = -0.22 # PostI -> EarlyI
+    W[p.index("PostI"), p.index("AugE")] = -0.36 # PostI -> AugE
+    W[p.index("PostI"), p.index("RampI")] = -0.50 # PostI -> RampI
+
+    W[p.index("AugE"), p.index("PreI")] = -0.30 # AugE -> PreI
+    W[p.index("AugE"), p.index("EarlyI")] = -0.43 # AugE -> EarlyI
+    W[p.index("AugE"), p.index("PostI")] = -0.06 # AugE -> PostI
+    W[p.index("AugE"), p.index("RampI")] = -0.50 # AugE -> RampI
+
+    W[p.index("KF_t"), p.index("PreI")] = +0.16 * x # KF_t -> PreI
+    W[p.index("KF_t"), p.index("EarlyI")] = +0.66 * x # KF_t -> EarlyI
+    W[p.index("KF_t"), p.index("PostI")] = +1.10 * x # KF_t -> PostI
+    W[p.index("KF_t"), p.index("AugE")] = +0.72 * x # KF_t -> AugE
+    W[p.index("KF_t"), p.index("KF_relay")] = +0.7 * x  # KF_t -> KF_relay
+
+    W[p.index("KF_p"), p.index("PreI")] = +0.00 * x # KF_p -> PreI
+    W[p.index("KF_p"), p.index("EarlyI")] = +0.00 * x# KF_p -> EarlyI
+    W[p.index("KF_p"), p.index("PostI")] = +0.60 * x# KF_p -> PostI
+    W[p.index("KF_p"), p.index("AugE")] = +0.00 * x# KF_p -> AugE
+
+    W[p.index("KF_relay"), p.index("Sw1")] = -0.09  # KF_relay -> Sw1
+    W[p.index("KF_relay"), p.index("Sw2")] = -0.05  # KF_relay -> Sw2
+
+    W[p.index("NTS_drive"), p.index("PostI")] = 0.42  # NTS_drive -> PostI
+
+
+    W[p.index("Sw1"), p.index("PreI")] = -0.30   # Sw1 -> PreI
+    W[p.index("Sw1"), p.index("EarlyI")] = -0.17   # Sw1 -> EarlyI
+    W[p.index("Sw1"), p.index("AugE")] = -0.15   # Sw1 -> AugE
+    W[p.index("Sw1"), p.index("Sw2")] = -0.56  # Sw1 -> Sw2
+    W[p.index("Sw2"), p.index("Sw1")] = -0.39  # Sw2 -> Sw1
+
+    W[p.index("Relay"), p.index("PreI")] = -0.30 * y # Relay -> PreI
+    W[p.index("Relay"), p.index("EarlyI")] = -0.30 * y  # Relay -> EarlyI
+    W[p.index("Relay"), p.index("AugE")] = -0.30 * y # Relay -> AugE
+    W[p.index("Relay"), p.index("RampI")] = -0.30 * y # Relay -> RampI
+    W[p.index("Relay"), p.index("KF_t")] = 0.15 * x * y  # Relay -> KF_t
+    W[p.index("Relay"), p.index("KF_p")] = 0.15 * x * y # Relay -> KF_p
+    W[p.index("Relay"), p.index("Sw1")] = 0.74 * y  # Relay -> Sw1
+    W[p.index("Relay"), p.index("Sw2")] = 0.71* y  # Relay -> Sw2
+    W[p.index("Relay"), p.index("NTS_drive")] = 0.15 * y  # Relay -> NTS_drive
+
+    drives = np.zeros((3, N))
+    # other
+    drives[0, p.index("KF_t")] = 0.81 * x  # -> KF_t
+    drives[0, p.index("KF_p")] = 0.50 * x  # -> KF_p
+    drives[0, p.index("NTS_drive")] = 0.68 * y  # -> NTS_drive
+    drives[0, p.index("Sw1")] = 0.33 * y  # -> Sw1
+    drives[0, p.index("Sw2")] = 0.45 * y  # -> Sw2
+
+    # BotC
+    drives[1, p.index("PreI")] = 0.09  # -> PreI
+    drives[1, p.index("EarlyI")] = 0.27  # -> EarlyI
+    drives[1, p.index("PostI")] = 0.00  # -> PostI
+    drives[1, p.index("AugE")] = 0.42  # -> AugE
+    drives[1, p.index("RampI")] = 0.50  # -> RampI
+
+    c = drives
+    b = W
 
     # write table of correpondance of nodes to numbers
-    table = ["PreI", "EarlyI", "PostI", "AugE", "RampI", "Relay", "Sw1", "Sw2", "Sw3", "KF_t", "KF_p", "KF_r",
-             "HN", "PN", "VN"] #, "KF_inh", "NTS_inh", "SI"]
+    table = population_names
     for i in range(len(table)):
         for j in range(len(table)):
             if b[i, j] != 0:
                 strength = b[i, j]
                 name_A = table[i]
                 name_B = table[j]
-                draw_connection(eval(name_A), eval(name_B), strength)
-    draw_connection((SensoryInp), (Relay), 1)
+                draw_connection(eval(name_A), eval(name_B), strength, max_strength=np.max(np.abs(b)))
+    draw_connection((SensoryInp), (Relay), 1, max_strength=np.max(np.abs(b)))
+
+    draw_connection((PreI), (PN), 0.1, max_strength=np.max(np.abs(b)))
+    draw_connection((RampI), (PN), 0.9, max_strength=np.max(np.abs(b)))
+    draw_connection((PreI), (HN), 0.7, max_strength=np.max(np.abs(b)))
+    draw_connection((RampI), (HN), 0.15, max_strength=np.max(np.abs(b)))
+    draw_connection((Sw1), (HN), 0.35, max_strength=np.max(np.abs(b)))
+    draw_connection((RampI), (VN), 0.75, max_strength=np.max(np.abs(b)))
+    draw_connection((Sw1), (VN), 0.8, max_strength=np.max(np.abs(b)))
+    draw_connection((PostI), (VN), 0.6, max_strength=np.max(np.abs(b)))
+    draw_connection((KF_p), (VN), 0.4, max_strength=np.max(np.abs(b)))
+
+
     turtle.hideturtle()
     ts = turtle.getscreen()
     ts.getcanvas().postscript(file=file_name)
