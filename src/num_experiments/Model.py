@@ -156,7 +156,6 @@ class Network():
             self.v_history.append(deepcopy(self.v))
             self.t.append(self.t[-1] + self.dt)
 
-
             # i1 = self.pop_names.index("NTS_drive")
             # i2 = self.pop_names.index("NTS_inh")
             # mp = self.v[i1]
