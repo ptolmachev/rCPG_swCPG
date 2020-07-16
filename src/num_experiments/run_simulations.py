@@ -1,5 +1,8 @@
+import json
+
 import numpy as np
-from num_experiments.run_model import run_model
+
+from model_construction.rCPG_KF_NTS_latest import construct_model, run_model, set_weights_and_drives
 from src.utils.sp_utils import *
 import pickle
 from tqdm.auto import tqdm
@@ -8,9 +11,22 @@ from num_experiments.params_gen import generate_params
 import os
 from utils.gen_utils import create_dir_if_not_exist, get_project_root
 
+def construct_and_run_model(dt, t_start, duration, amp, stoptime):
+    data_folder = str(get_project_root()) + "/data"
+    img_folder = f"{get_project_root()}/img"
+    default_neural_params = json.load(open(f'{data_folder}/params/default_neural_params.json', 'r+'))
+    population_names = ['PreI', 'EarlyI', "PostI", "AugE", "KF_t", "KF_p", "KF_relay", "NTS_drive",
+                        "Sw1", "Sw2", "Relay", "RampI"]
+    W, drives = set_weights_and_drives(1, 1, population_names)
+    Network_model = construct_model(population_names, W, drives, dt, default_neural_params)
+    run_model(Network_model, t_start, stoptime, amp, duration)
+    V_array = Network_model.v_history
+    t = np.array(Network_model.t)
+    signals = Network_model.firing_rate(V_array, Network_model.V_half, Network_model.slope).T
+    return signals, t
+
 
 def run_simulations(params, folder_save_to):
-    generate_params(1, 1)
     # first, find the preiod, then create a list of points with the same phase if there are no stimulation at all
     stim_duration = params["stim_duration"] #250
     amp = params["amp"] #
@@ -18,7 +34,8 @@ def run_simulations(params, folder_save_to):
     stoptime = params["stoptime"] #70000
     num_shifts = params["num_shifts"] #100
     settle_time_inds = int(params["settle_time"] / dt) #20000 / dt
-    signals, t = run_model(dt, t_start=0, t_end=1, amp=0, stoptime=stoptime)
+
+    signals, t = construct_and_run_model(dt, 0, 1, amp, stoptime)
     # signals, t = pickle.load(open("../data/signals_intact_model.pkl", "rb+"))
     # get rid of transients 20000:
     # warning period is in indices not in ms!
@@ -38,9 +55,8 @@ def run_simulations(params, folder_save_to):
             time_shift = time_shifts[i]
             t1 = int(t1_s[j] + time_shift)
             # print("Shift: {}, Impulse at time : {}".format(shift, t1))
-            t2 = t1 + stim_duration
             # create and run a model
-            signals, t = run_model(dt, t1, t2, amp, stoptime) # t1 and t2 specified in ms
+            signals, t = construct_and_run_model(dt, t1, stim_duration, amp, stoptime) ## t1 and t2 should be specified in ms
             data = dict()
             data['signals'] = signals
             data['t'] = t
@@ -61,7 +77,7 @@ if __name__ == '__main__':
     params["settle_time"] = 20000 #ms
     amps = [150, 200]
     stim_descriptor = 'short'
-    stim_durations = [250, 400, 750]
+    stim_durations = [250, 500]
     data_path = str(get_project_root()) + "/data"
     img_path = str(get_project_root()) + "/img"
     root_folder_signals = f"{data_path}/num_exp_runs/{stim_descriptor}_stim"
@@ -73,3 +89,12 @@ if __name__ == '__main__':
             folder_signals = root_folder_signals + f"/num_exp_{stim_descriptor}_stim_{amp}_{stim_duration}"
             create_dir_if_not_exist(folder_signals)
             run_simulations(params, folder_signals)
+
+
+    # # run a single simulation (for debugging)
+    # dt = 0.75
+    # t1 =0
+    # stim_duration = 1
+    # amp = 0
+    # stoptime = 60000
+    # signals, t = construct_and_run_model(dt, t1, stim_duration, amp, stoptime)  ## t1 and t2 should be specified in ms
