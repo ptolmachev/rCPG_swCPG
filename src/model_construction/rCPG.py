@@ -8,39 +8,11 @@ from src.utils.gen_utils import get_postfix, create_dir_if_not_exist, get_projec
 from src.num_experiments.Model import Network
 from src.num_experiments.Model import NeuralPopulation
 
-def get_postfix(set_drives):
-    if np.allclose(np.array(set_drives), np.array([1,1,1,1,1])):
-        postfix = 'intact'
-    elif np.allclose(np.array(set_drives), np.array([0,1,1,1,1])):
-        postfix = 'inh_KF'
-    elif np.allclose(np.array(set_drives), np.array([1, 0, 1, 1, 1])):
-        postfix = 'inh_NTS'
-    elif np.allclose(np.array(set_drives), np.array([0, 0, 0, 1, 1])):
-        postfix = 'BotC_PreBotC'
-    else:
-        postfix = 'other'
-    return postfix
 
 if __name__ == '__main__':
-    default_neural_params = {
-    'C' : 20,
-    'g_NaP' : 0.0,
-    'g_K' : 5.0,
-    'g_ad' : 10.0,
-    'g_l' : 2.8,
-    'g_synE' : 10,
-    'g_synI' : 60,
-    'E_Na' : 50,
-    'E_K' : -85,
-    'E_ad' : -85,
-    'E_l' : -60,
-    'E_synE' : 0,
-    'E_synI' : -75,
-    'V_half' : -30,
-    'slope' : 4,
-    'tau_ad' : 2000,
-    'K_ad' : 0.9,
-    'tau_NaP_max' : 6000}
+    data_folder = str(get_project_root()) + "/data"
+    img_folder = f"{get_project_root()}/img"
+    default_neural_params = json.load(open(f'{data_folder}/params/default_neural_params.json', 'r+'))
 
     population_names = ['PreI',   # 0
                         'EarlyI', # 1
@@ -55,7 +27,6 @@ if __name__ == '__main__':
     PreI.g_NaP = 5.0
     PreI.g_ad =  0.0
     PreI.slope = 8
-
     PostI.K_ad = 1.3
     # PostI.tau_ad = 1000.0
 
@@ -126,8 +97,8 @@ if __name__ == '__main__':
         fig, axes = net.plot()
         img_path = str(get_project_root()) + "/img"
         # create_dir_if_not_exist(f"{img_path}/other_plots/Rubins_modification/")
-        plt.savefig(f"{img_path}/other_plots/Rubins_modification/{get_postfix(set_drives[i])}.png")
-        # plt.show(block = True)
+        # plt.savefig(f"{img_path}/other_plots/Rubins_modification/{get_postfix(set_drives[i])}.png")
+        plt.show(block = True)
 
 
 

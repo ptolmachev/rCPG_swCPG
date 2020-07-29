@@ -36,12 +36,14 @@ class Network():
         self.C, self.g_NaP, self.g_K, self.g_ad, self.g_l, self.g_synE, self.g_synI, self.E_Na, self.E_K, self.E_l,\
         self.E_ad, self.E_synE, self.E_synI, self.V_half, self.slope, self.K_ad, self.tau_ad, self.tau_NaP_max = [np.zeros(self.N) for i in range(18)]
         self.v_history = deque(maxlen=self.history_len)
-        # self.a_history = deque(maxlen=self.history_len)
-        # self.b_history = deque(maxlen=self.history_len)
+        self.m_history = deque(maxlen=self.history_len)
+        self.h_history = deque(maxlen=self.history_len)
         self.t = deque(maxlen=self.history_len)
         self.v_history.append(self.v)
+        self.m_history.append(self.m_ad)
+        self.h_history.append(self.h_NaP)
         self.t.append(0)
-
+        self.frozen_populations = np.zeros(self.N)
         #load neural parameters into the internal variables: "self.C[i] = population[i].C"
         for i, (name, population) in enumerate(populations.items()):
             self.names.append(name)
@@ -50,12 +52,21 @@ class Network():
             for p_name in params_list:
                 exec(f'self.{p_name}[i] = population.{p_name}')
 
+    def freeze_evolution(self, population_names_to_freeze):
+        for i in range(len(population_names_to_freeze)):
+            self.frozen_populations[self.pop_names.index(population_names_to_freeze[i])] = 1
+        return None
+
+
     def set_input_current(self, new_input_current):
         self.input_cur = deepcopy(new_input_current)
         return None
 
     def firing_rate(self, v, v_half, slope):
         return 1.0 / (1.0 + np.exp(-(v - v_half) / slope))
+
+    def firing_rate_inv(self, s, v_half, slope):
+        return -np.log(1.0 / s - 1.0) * slope + v_half
 
     def m_NaP(self, v):
         return 1.0 / (1.0 + np.exp(-(v + 40.0) / 6.0))
@@ -74,12 +85,6 @@ class Network():
         c = self.g_NaP != 0.0
         res[c] = self.g_NaP[c] * self.m_NaP(v[c]) * h_NaP[c] * (v[c] - self.E_Na[c])
         return res
-
-    # def I_K(self, v):
-    #     res = np.zeros_like(v)
-    #     c = self.g_K != 0.0
-    #     res[c] = self.g_K[c] * ((self.m_K(v[c])) ** 4) * (v[c] - self.E_K[c])
-    #     return res
 
     def I_leakage(self, v):
         res = np.zeros_like(v)
@@ -109,19 +114,26 @@ class Network():
         res = np.zeros_like(h_NaP)
         c = self.g_NaP != 0.0
         res[c] = (self.h_NaP_inf(v[c]) - h_NaP[c]) / self.tau_NaP(v[c], self.tau_NaP_max[c])
+        # if evolution of some populations is fixed, set the rhs to zero
+        res[self.frozen_populations == 1.0] = 0
         return res
 
     def rhs_m_ad(self, v, m_ad):
         res = np.zeros_like(m_ad)
         c = self.g_ad != 0.0
         res[c] = (self.K_ad[c] * self.firing_rate(v[c], self.V_half[c], self.slope[c]) - m_ad[c]) / self.tau_ad[c]
+        # if evolution of some populations is fixed, set the rhs to zero
+        res[self.frozen_populations == 1.0] = 0
         return res
 
 
     def rhs_v(self, v, m_ad, h_NaP):
-        return (1.0 / self.C) * \
+        res = (1.0 / self.C) * \
                (- self.I_NaP(v, h_NaP) - self.I_adaptation(v, m_ad) - self.I_leakage(v)
                 - self.I_SynE(v) - self.I_SynI(v) + self.input_cur)
+        # if evolution of some populations is fixed, set the rhs to zero
+        res[self.frozen_populations == 1.0] = 0
+        return res
 
     def step(self):
         #Runge-Kutta 4th order update
@@ -154,6 +166,8 @@ class Network():
         for i in range(T_steps):
             self.step()
             self.v_history.append(deepcopy(self.v))
+            self.m_history.append(self.m_ad)
+            self.h_history.append(self.h_NaP)
             self.t.append(self.t[-1] + self.dt)
 
             # i1 = self.pop_names.index("NTS_drive")
@@ -163,6 +177,23 @@ class Network():
             # fr = self.firing_rate(self.v[i2], self.V_half[i2], self.slope[i2])
             # self.a_history.append(deepcopy(self.g_synE[i1] * (mp - self.E_synE[i1])))
             # self.b_history.append(deepcopy(self.g_synI[i1] * (mp - self.E_synI[i1]) * w * fr))
+
+    def reset(self):
+        # deletes the history and set the network to a random initial condition
+        self.v = -100 * np.random.rand(self.N)
+        self.h_NaP = 0.4 + 0.0 * np.random.rand(self.N)
+        self.m_ad = 0.4 + 0.0 * np.random.rand(self.N)
+
+        self.input_cur = np.zeros(self.N)
+        self.v_history = deque(maxlen=self.history_len)
+        self.m_history = deque(maxlen=self.history_len)
+        self.h_history = deque(maxlen=self.history_len)
+        self.t = deque(maxlen=self.history_len)
+        self.v_history.append(self.v)
+        self.m_history.append(self.m_ad)
+        self.h_history.append(self.h_NaP)
+        self.t.append(0)
+        return None
 
     def plot(self):
         V_array = np.array(self.v_history).T

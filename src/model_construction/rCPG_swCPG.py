@@ -30,6 +30,8 @@ def get_postfix(x, y):
     return postfix
 
 def set_weights_and_drives(x, y, population_names):
+    # x - controls inhibition of KF
+    # y - control inhibition of NTS
     p = population_names
     N = len(p)
     W = np.zeros((N,N))
@@ -72,17 +74,16 @@ def set_weights_and_drives(x, y, population_names):
 
     W[p.index("NTS_drive"), p.index("PostI")] = 0.42  # NTS_drive -> PostI
 
-
-    W[p.index("Sw1"), p.index("PreI")] = -0.30   # Sw1 -> PreI
-    W[p.index("Sw1"), p.index("EarlyI")] = -0.17   # Sw1 -> EarlyI
+    # W[p.index("Sw1"), p.index("PreI")] = -0.30   # Sw1 -> PreI
+    # W[p.index("Sw1"), p.index("EarlyI")] = -0.17   # Sw1 -> EarlyI
     W[p.index("Sw1"), p.index("AugE")] = -0.15   # Sw1 -> AugE
     W[p.index("Sw1"), p.index("Sw2")] = -0.56  # Sw1 -> Sw2
     W[p.index("Sw2"), p.index("Sw1")] = -0.39  # Sw2 -> Sw1
 
-    W[p.index("Relay"), p.index("PreI")] = -0.30 * y # Relay -> PreI
-    W[p.index("Relay"), p.index("EarlyI")] = -0.30 * y  # Relay -> EarlyI
-    W[p.index("Relay"), p.index("AugE")] = -0.30 * y # Relay -> AugE
-    W[p.index("Relay"), p.index("RampI")] = -0.30 * y # Relay -> RampI
+    # W[p.index("Relay"), p.index("PreI")] = -0.30 * y # Relay -> PreI
+    # W[p.index("Relay"), p.index("EarlyI")] = -0.30 * y  # Relay -> EarlyI
+    # W[p.index("Relay"), p.index("AugE")] = -0.30 * y # Relay -> AugE
+    # W[p.index("Relay"), p.index("RampI")] = -0.30 * y # Relay -> RampI
     W[p.index("Relay"), p.index("KF_t")] = 0.15 * x * y  # Relay -> KF_t
     W[p.index("Relay"), p.index("KF_p")] = 0.15 * x * y # Relay -> KF_p
     W[p.index("Relay"), p.index("Sw1")] = 0.74 * y  # Relay -> Sw1
@@ -240,17 +241,17 @@ if __name__ == '__main__':
     #     plt.close(fig)
 
     # single run
-    dt = 0.5
-    stoptime = 60000
-    amp = 150
-    stim_duration = 250
-    start = 25000
-
-    W, drives = set_weights_and_drives(1, 1, population_names)
-    Network_model = construct_model(population_names, W, drives, dt, default_neural_params)
-    run_model(Network_model, start, stoptime, amp, stim_duration)
-    fig, axes = Network_model.plot()
-    plt.show(block = True)
+    # dt = 0.5
+    # stoptime = 60000
+    # amp = 150
+    # stim_duration = 250
+    # start = 25000
+    #
+    # W, drives = set_weights_and_drives(1, 1, population_names)
+    # Network_model = construct_model(population_names, W, drives, dt, default_neural_params)
+    # run_model(Network_model, start, stoptime, amp, stim_duration)
+    # fig, axes = Network_model.plot()
+    # plt.show(block = True)
 
 
 
