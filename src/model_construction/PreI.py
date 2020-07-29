@@ -21,25 +21,9 @@ from src.num_experiments.Model import NeuralPopulation
 
 
 if __name__ == '__main__':
-    default_neural_params = {
-    'C' : 20,
-    'g_NaP' : 0.0,
-    'g_K' : 5.0,
-    'g_ad' : 10.0,
-    'g_l' : 2.8,
-    'g_synE' : 10,
-    'g_synI' : 60,
-    'E_Na' : 50,
-    'E_K' : -85,
-    'E_ad' : -85,
-    'E_l' : -60,
-    'E_synE' : 0,
-    'E_synI' : -75,
-    'V_half' : -30,
-    'slope' : 4,
-    'tau_ad' : 2000,
-    'K_ad' : 0.9,
-    'tau_NaP_max' : 6000}
+    data_folder = str(get_project_root()) + "/data"
+    img_folder = f"{get_project_root()}/img"
+    default_neural_params = json.load(open(f'{data_folder}/params/default_neural_params.json', 'r+'))
 
     population_names = ['PreI']
     N = len(population_names)
@@ -77,8 +61,8 @@ if __name__ == '__main__':
         fig, axes = net.plot()
         fig.suptitle(f"Activity of PreI neurons. Drive = {drive}", fontsize = 24)
         img_path = str(get_project_root()) + "/img"
-        create_dir_if_not_exist(f"{img_path}/other_plots/PreI/")
-        plt.savefig(f"{img_path}/other_plots/PreI/{i}_drive={np.round(drive,5)}.png")
+        # create_dir_if_not_exist(f"{img_path}/other_plots/PreI/")
+        # plt.savefig(f"{img_path}/other_plots/PreI/{i}_drive={np.round(drive,5)}.png")
         # plt.show(block = True)
 
 

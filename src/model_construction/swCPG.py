@@ -1,3 +1,4 @@
+import json
 import numpy as np
 from matplotlib import  pyplot as plt
 from num_experiments.Model import Network, NeuralPopulation
@@ -5,34 +6,14 @@ from utils.gen_utils import get_project_root
 
 
 def run_simulations(W, d, dt, amp, stim_start, durations, stoptime):
-    default_neural_params = {
-        'C': 20,
-        'g_NaP': 0.0,
-        'g_K': 5.0,
-        'g_ad': 10.0,
-        'g_l': 2.8,
-        'g_synE': 10,
-        'g_synI': 60,
-        'E_Na': 50,
-        'E_K': -85,
-        'E_ad': -85,
-        'E_l': -60,
-        'E_synE': 0,
-        'E_synI': -75,
-        'V_half': -30,
-        'slope': 4,
-        'tau_ad': 2000,
-        'K_ad': 0.9,
-        'tau_NaP_max': 6000}
-    population_names = ['Sw1', 'Sw2', 'Relay', 'NTS_Inhibitor']
+    data_folder = str(get_project_root()) + "/data"
+    img_folder = f"{get_project_root()}/img"
+    default_neural_params = json.load(open(f'{data_folder}/params/default_neural_params.json', 'r+'))
+    population_names = ['Sw1', 'Sw2', 'Relay']
 
-    # # create populations
-    # for name in population_names:
-    #     exec(f"{name} = NeuralPopulation(\'{name}\', default_neural_params)")
     Relay = NeuralPopulation("Relay", default_neural_params)
     Sw1 = NeuralPopulation("Sw1", default_neural_params)
     Sw2 = NeuralPopulation("Sw2", default_neural_params)
-    NTS_Inhibitor = NeuralPopulation("NTS_Inhibitor", default_neural_params)
     Relay.tau_ad = 15000.0
     Sw1.tau_ad = 1000.0
     Sw2.tau_ad = 1000.0
@@ -46,9 +27,9 @@ def run_simulations(W, d, dt, amp, stim_start, durations, stoptime):
     drives = d
     for i in range(len(durations)):
         net = Network(populations, W, drives, dt, history_len=int(stoptime / dt))
-        net.v = -100 + 100 * np.random.rand(4) #np.array([-100, -20, -100, -20])
+        net.v = -100 + 100 * np.random.rand(len(population_names))
         inp = np.zeros(net.N)
-        inp[2] = amp
+        inp[population_names.index("Relay")] = amp
 
         net.run(int(stim_start/ dt))
         # set an impuls input to "three" neuron
@@ -72,14 +53,15 @@ def run_simulations(W, d, dt, amp, stim_start, durations, stoptime):
         plt.subplots_adjust(wspace=None, hspace=None)
         img_path = str(get_project_root()) + "/img"
         folder_save_img_to = img_path + "/" + f"other_plots/trigger"
-        fig.savefig(folder_save_img_to + "/" + f"trigger_{stim_start}_{amp}_{durations[i]}" + ".png")
+        # fig.savefig(folder_save_img_to + "/" + f"trigger_{stim_start}_{amp}_{durations[i]}" + ".png")
+        plt.show()
 
     return None
 
 
 if __name__ == '__main__':
 
-    N = 4
+    N = 3
     W = np.zeros((N, N))
     W[0, 1] = -0.55 #Sw1 -> Sw2
     W[1, 0] = -0.39 #Sw2 -> Sw1
@@ -87,11 +69,7 @@ if __name__ == '__main__':
     W[2, 0] = 0.69 #Relay -> Sw1
     W[2, 1] = 0.71 #Relay -> Sw2
 
-    W[3, 0] = -0.1 #NTS_Inhibitor -> Sw1
-    W[3, 1] = -0.1 #NTS_Inhibitor -> Sw2
-    # W[3, 2] = 0.2 #NTS_Inhibitor -> Sw2
-
-    d = np.array([[0.33, 0.45, 0, 0.3]]).reshape(1, -1)
+    d = np.array([[0.30, 0.42, 0]]).reshape(1, -1)
     dt = 0.75
     amp = 200
     stim_start = 12500

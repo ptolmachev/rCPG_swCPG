@@ -2,7 +2,7 @@ import json
 
 import numpy as np
 
-from model_construction.rCPG_KF_NTS_latest import construct_model, run_model, set_weights_and_drives
+from model_construction.rCPG_swCPG import construct_model, run_model, set_weights_and_drives
 from src.utils.sp_utils import *
 import pickle
 from tqdm.auto import tqdm
