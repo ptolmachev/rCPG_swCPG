@@ -1,0 +1,16 @@
+
+img/
+
+data/
+
+*.pkl
+
+*.mat
+
+*.pdf
+
+src/model_construction/__pycache__/
+
+src/num_experiments/__pycache__/
+
+src/utils/__pycache__/
