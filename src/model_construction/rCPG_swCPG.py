@@ -74,18 +74,18 @@ def set_weights_and_drives(x, y, population_names):
 
     W[p.index("NTS_drive"), p.index("PostI")] = 0.42  # NTS_drive -> PostI
 
-    # W[p.index("Sw1"), p.index("PreI")] = -0.30   # Sw1 -> PreI
-    # W[p.index("Sw1"), p.index("EarlyI")] = -0.17   # Sw1 -> EarlyI
+    W[p.index("Sw1"), p.index("PreI")] = -0.30   # Sw1 -> PreI
+    W[p.index("Sw1"), p.index("EarlyI")] = -0.17   # Sw1 -> EarlyI
     W[p.index("Sw1"), p.index("AugE")] = -0.15   # Sw1 -> AugE
     W[p.index("Sw1"), p.index("Sw2")] = -0.56  # Sw1 -> Sw2
     W[p.index("Sw2"), p.index("Sw1")] = -0.39  # Sw2 -> Sw1
 
-    # W[p.index("Relay"), p.index("PreI")] = -0.30 * y # Relay -> PreI
-    # W[p.index("Relay"), p.index("EarlyI")] = -0.30 * y  # Relay -> EarlyI
-    # W[p.index("Relay"), p.index("AugE")] = -0.30 * y # Relay -> AugE
-    # W[p.index("Relay"), p.index("RampI")] = -0.30 * y # Relay -> RampI
+    W[p.index("Relay"), p.index("PreI")] = -0.30 * y # Relay -> PreI
+    W[p.index("Relay"), p.index("EarlyI")] = -0.30 * y  # Relay -> EarlyI
+    W[p.index("Relay"), p.index("AugE")] = -0.30 * y # Relay -> AugE
+    W[p.index("Relay"), p.index("RampI")] = -0.30 * y # Relay -> RampI
     W[p.index("Relay"), p.index("KF_t")] = 0.15 * x * y  # Relay -> KF_t
-    W[p.index("Relay"), p.index("KF_p")] = 0.15 * x * y # Relay -> KF_p
+    W[p.index("Relay"), p.index("KF_p")] = 0.65 * x * y # Relay -> KF_p
     W[p.index("Relay"), p.index("Sw1")] = 0.74 * y  # Relay -> Sw1
     W[p.index("Relay"), p.index("Sw2")] = 0.71* y  # Relay -> Sw2
     W[p.index("Relay"), p.index("NTS_drive")] = 0.15 * y  # Relay -> NTS_drive
@@ -93,7 +93,7 @@ def set_weights_and_drives(x, y, population_names):
     drives = np.zeros((3, N))
     # other
     drives[0, p.index("KF_t")] = 0.81 * x  # -> KF_t
-    drives[0, p.index("KF_p")] = 0.50 * x  # -> KF_p
+    drives[0, p.index("KF_p")] = 0.10 * x  # -> KF_p
     drives[0, p.index("NTS_drive")] = 0.68 * y  # -> NTS_drive
     drives[0, p.index("Sw1")] = 0.33 * y  # -> Sw1
     drives[0, p.index("Sw2")] = 0.45 * y  # -> Sw2
@@ -179,14 +179,14 @@ def plot(net):
     PNA = 0.1 * fr[net.names.index("PreI"), start:] + 0.9 * fr[net.names.index("RampI"), start:]
     HNA = 0.7 * fr[net.names.index("PreI"), start:] + 0.15 * fr[net.names.index("RampI"), start:] \
           + 0.35 * fr[net.names.index("Sw1"),start:]
-    VNA = 0.75 * fr[net.names.index("RampI"), start:] + 0.8 * fr[net.names.index("Sw1"), start:] + \
-          0.6 * fr[net.names.index("PostI"), start:] + 0.4 * fr[net.names.index("KF_p"), start:]
+    VNA = 0.8 * fr[net.names.index("RampI"), start:] + 0.8 * fr[net.names.index("Sw1"), start:] + \
+          0.9 * fr[net.names.index("PostI"), start:] + 0.5 * fr[net.names.index("KF_p"), start:]
     Motor_outputs = [PNA, HNA, VNA]
     motor_outputs_names = ["PNA", "HNA", "VNA"]
     for i in range(N, N+3):
         axes[i].plot(t_array[start:], Motor_outputs[i - N], 'k', linewidth=3, label=str(motor_outputs_names[i - N]), alpha=0.9)
         axes[i].legend(loc=1, fontsize=20)
-        axes[i].set_ylim([-0.0, 1.0])
+        axes[i].set_ylim([-0.0, 1.3])
         axes[i].set_yticks([])
         axes[i].set_yticklabels([])
         if i != len(axes) - 1:
@@ -203,42 +203,42 @@ if __name__ == '__main__':
 
     population_names = ['PreI', 'EarlyI', "PostI", "AugE", "KF_t", "KF_p", "KF_relay", "NTS_drive",
                         "Sw1", "Sw2", "Relay", "RampI"]
-    # dt = 0.5
-    # stoptime = 60000
-    # amp = 150
-    # # long stim
-    # stim_duration = 10000
-    # start = 25000
-    # create_dir_if_not_exist(img_folder + "/" + f"other_plots/{str(date.today())}")
-    # for inh_KF, inh_NTS in [[1, 1], [1, 0], [0, 1]]: #,
-    #     print(amp, stim_duration, start)
-    #     postfix = get_postfix(inh_KF, inh_NTS)
-    #     W, drives = set_weights_and_drives(inh_KF, inh_NTS, population_names)
-    #     Network_model = construct_model(population_names, W, drives, dt, default_neural_params)
-    #     run_model(Network_model, start, stoptime, amp, stim_duration)
-    #
-    #     fig, axes = plot(Network_model)
-    #     # fig, axes = Network_model.plot()
-    #     folder_save_img_to = img_folder + "/" + f"other_plots/{str(date.today())}"
-    #     fig.savefig(folder_save_img_to + "/" + f"rCPG_swCPG_{amp}_{stim_duration}_{postfix}" + ".png")
-    #     plt.close(fig)
-    #
-    # # Short stim:
-    # stim_duration = 250
-    # stim_starts = [22000,23000,24000]
-    # inh_KF = 1
-    # inh_NTS = 1
-    # postfix = get_postfix(inh_KF, inh_NTS)
-    # W, drives = set_weights_and_drives(inh_KF, inh_NTS, population_names)
-    # for start in stim_starts:
-    #     print(amp, stim_duration, start)
-    #     Network_model = construct_model(population_names, W, drives, dt, default_neural_params)
-    #     run_model(Network_model, start, stoptime, amp, stim_duration)
-    #     # fig, axes = Network_model.plot()
-    #     fig, axes = plot(Network_model)
-    #     folder_save_img_to = img_folder + "/" + f"other_plots/{str(date.today())}"
-    #     fig.savefig(folder_save_img_to + "/" + f"rCPG_swCPG_{amp}_{stim_duration}_{start}_{postfix}" + ".png")
-    #     plt.close(fig)
+    dt = 0.5
+    stoptime = 60000
+    amp = 150
+    # long stim
+    stim_duration = 10000
+    start = 25000
+    create_dir_if_not_exist(img_folder + "/" + f"imgs_of_model_activity/{str(date.today())}")
+    for inh_KF, inh_NTS in [[1, 1], [1, 0], [0, 1]]: #,
+        print(amp, stim_duration, start)
+        postfix = get_postfix(inh_KF, inh_NTS)
+        W, drives = set_weights_and_drives(inh_KF, inh_NTS, population_names)
+        Network_model = construct_model(population_names, W, drives, dt, default_neural_params)
+        run_model(Network_model, start, stoptime, amp, stim_duration)
+
+        fig, axes = plot(Network_model)
+        # fig, axes = Network_model.plot()
+        folder_save_img_to = img_folder + "/" + f"imgs_of_model_activity/{str(date.today())}"
+        fig.savefig(folder_save_img_to + "/" + f"rCPG_swCPG_{amp}_{stim_duration}_{postfix}" + ".png")
+        plt.close(fig)
+
+    # Short stim:
+    stim_duration = 250
+    stim_starts = [22000,23000,24000]
+    inh_KF = 1
+    inh_NTS = 1
+    postfix = get_postfix(inh_KF, inh_NTS)
+    W, drives = set_weights_and_drives(inh_KF, inh_NTS, population_names)
+    for start in stim_starts:
+        print(amp, stim_duration, start)
+        Network_model = construct_model(population_names, W, drives, dt, default_neural_params)
+        run_model(Network_model, start, stoptime, amp, stim_duration)
+        # fig, axes = Network_model.plot()
+        fig, axes = plot(Network_model)
+        folder_save_img_to = img_folder + "/" + f"imgs_of_model_activity/{str(date.today())}"
+        fig.savefig(folder_save_img_to + "/" + f"rCPG_swCPG_{amp}_{stim_duration}_{start}_{postfix}" + ".png")
+        plt.close(fig)
 
     # single run
     # dt = 0.5
