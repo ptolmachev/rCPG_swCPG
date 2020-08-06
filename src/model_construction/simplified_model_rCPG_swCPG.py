@@ -19,7 +19,7 @@ class Neuron():
 
     def rhs(self, inp):
         v, m = self.state
-        rhs_v = -0.01 * v - m + self.drive + inp
+        rhs_v = 100 * (-0.01 * v - m + self.drive + inp)
         rhs_m = (self.fr() - m) / self.tau
         return np.array([rhs_v, rhs_m])
 
@@ -29,12 +29,6 @@ class Neuron():
         '''
         return firing_rate(self.state[0])
 
-    # def fr(self):
-    #     '''
-    #     Calculates firing rate of a neuron based on its average 'voltage'
-    #     '''
-    #     limit = 5
-    #     return (np.clip(self.state[0], -limit, limit) + limit) / (2 * limit)
 
     def get_next_state(self, inp):
         state = self.state + self.dt * self.rhs(inp)
@@ -97,10 +91,11 @@ class HCO():
     def get_state_history(self):
         return np.hstack([self.nrn1.get_state_history(), self.nrn2.get_state_history()])
 
-    def run(self, T_steps):
+    def run(self, T_steps, inputs):
         for i in range(T_steps):
-            self.step(inputs=np.zeros(2))
+            self.step(inputs=inputs)
         return None
+
 
 class Model_CPG_interaction():
     def __init__(self, params):
@@ -170,19 +165,29 @@ class Model_CPG_interaction():
 if __name__ == '__main__':
     # # checking HCO
     # dt = 0.1
-    # drives = 0.5 * np.ones(2)
-    # weights = 0.25 * np.ones(2)
-    # tau = 1500
+    #
+    # # # sw CPG
+    # # tau = 4000
+    # # drives = np.array([0.02, 0.45]) + 0.09
+    # # weights = -np.array([0.44, 0.17])
+    # # hco = HCO(dt=dt, drives=drives, weights=weights, tau=tau)
+    #
+    # # rCPG
+    # tau = 15000
+    # drives = np.array([0.12, 0.1])
+    # weights = -np.array([0.35, 0.25])
     # hco = HCO(dt=dt, drives=drives, weights=weights, tau=tau)
     #
-    # T = 10 #sec
+    # T = 40 #sec
     # T_steps = int(T * 1000 / dt)
     #
-    # hco.run(T_steps)
+    # hco.run(T_steps, inputs=np.zeros(2))
     # state_history = hco.get_state_history()
     # fig = plt.figure(figsize=(14, 7))
-    # plt.plot(state_history[:, 0], label="First Neuron")
-    # plt.plot(state_history[:, 2], label="Second Neuron")
+    # s1 = firing_rate(state_history[:, 0])
+    # s2 = firing_rate(state_history[:, 2])
+    # plt.plot(s1, label="First Neuron")
+    # plt.plot(s2, label="Second Neuron")
     # plt.legend(fontsize=15)
     # plt.title("Half-centre oscillator dynamics", fontsize=25)
     # plt.xlabel("t", fontsize=15)
@@ -192,48 +197,61 @@ if __name__ == '__main__':
 
     # testing the full model
     params = dict()
-    params['dt'] = dt = 0.1
+    params['dt'] = dt = 0.4
     params['tau'] = dict()
-    params['tau']['swCPG'] = 500
-    params['tau']['rCPG'] = 2500
-    params['tau']['KF'] = 3500
-    params['tau']['Relay'] = 3500
+    params['tau']['swCPG'] = 7000
+    params['tau']['rCPG'] = 10000
+    params['tau']['KF'] = 12000
+    params['tau']['Relay'] = 40000
 
     params['drives'] = dict()
-    params['drives']['swCPG'] = np.array([0.07, 0.2])
-    params['drives']['rCPG'] = np.array([0.5, 0.35])
-    params['drives']['KF'] = 0.55
-    params['drives']['Relay'] = -0.1
+    params['drives']['swCPG'] = np.array([0.02, 0.37])
+    params['drives']['rCPG'] = np.array([0.32, 0.32])
+    params['drives']['KF'] = 0.2
+    params['drives']['Relay'] = -0.2
 
     params['HCO_weights'] = dict()
-    params['HCO_weights']['swCPG'] = np.array([-0.65, -0.37])
-    params['HCO_weights']['rCPG'] = np.array([-0.25, -0.25])
+    params['HCO_weights']['swCPG'] = np.array([-0.5, -0.22])
+    params['HCO_weights']['rCPG'] = np.array([-0.55, -0.25])
 
     params['W'] = dict()
-    params['W']['Relay', 'swCPG'] = np.array([0.5, 0.35])
-    params['W']['Relay', 'rCPG'] = np.array([0.1, -0.45])
-    params['W']['Relay', 'KF'] = 0.6
-    params['W']['KF', 'rCPG'] = np.array([0.4, 0.05])
-    params['W']['KF', 'swCPG'] = np.array([-0.15, -0.17])
-    params['W']['swCPG', 'rCPG'] = 0 * np.array([[+0.01, -0.01], [+0.01, -0.01]])
+    params['W']['Relay', 'swCPG'] = np.array([0.08, 0.06])
+    params['W']['Relay', 'rCPG'] = np.array([-0.65, -0.65])
+    params['W']['Relay', 'KF'] = 0.1
+    params['W']['KF', 'rCPG'] = 0 * np.array([0.4, 0.05])
+    params['W']['KF', 'swCPG'] = 0 * np.array([-0.03, -0.04])
+    params['W']['swCPG', 'rCPG'] = np.array([[-0.4, -0.8], [0.00, 0.00]])
     params['W']['rCPG', 'swCPG'] = 0 * np.array([[0, -0.01], [0, -0.01]])
     model = Model_CPG_interaction(params)
+    model.swCPG.nrn2.tau = 10000
 
     T = 10 #sec
     T_steps = int(T * 1000 / dt)
     model.run(T_steps, input_to_Relay=0)
-    model.run(T_steps, input_to_Relay=0.55)
     model.run(T_steps, input_to_Relay=0)
+    model.run(T_steps, input_to_Relay=0.45)
+    model.run(T_steps, input_to_Relay=0)
+    model.run(int(0.25 * 1000 / dt), input_to_Relay=0.45)
+    model.run(int(11 * 1000 / dt), input_to_Relay=0)
+    model.run(int(0.25 * 1000 / dt), input_to_Relay=0.45)
+    model.run(int(11 * 1000 / dt), input_to_Relay=0)
+    model.run(int(0.25 * 1000 / dt), input_to_Relay=0.45)
+    model.run(int(11 * 1000 / dt), input_to_Relay=0)
 
     state_history = model.get_state_history()
-    N = state_history.shape[-1] // 2
-    fig, axes = plt.subplots(N, 1, figsize=(14, 7))
+
     labels = ['Sensory Relay', "KF", "rCPG expiratory", "rCPG inspiratory", "swCPG 1", "swCPG 2"]
-    for i in range(len(axes)):
-        axes[i].plot(firing_rate(state_history[:, 2 * i]), label=labels[i], color='k', linewidth=3)
-        axes[i].legend(fontsize=15, loc=4)
-        axes[i].set_ylim([0, 1.05])
+    labels_to_plot = ['Sensory Relay', "rCPG expiratory", "rCPG inspiratory", "swCPG 1", "swCPG 2"]
+    N = len(labels_to_plot)
+    fig, axes = plt.subplots(N, 1, figsize=(14, 7))
+    for label in (labels):
+        if label in labels_to_plot:
+            i = labels.index(label)
+            j = labels_to_plot.index(label)
+            axes[j].plot(firing_rate(state_history[:, 2 * i]), label=labels_to_plot[j], color='k', linewidth=3)
+            axes[j].legend(fontsize=15, loc=2)
+            axes[j].set_ylim([0, 1.05])
     plt.suptitle("Simplified model dynamics", fontsize=25)
-    axes[i].set_xlabel("t", fontsize=15)
+    axes[j].set_xlabel("t", fontsize=15)
     plt.subplots_adjust(wspace=0, hspace=0)
     plt.show()
